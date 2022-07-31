@@ -1,24 +1,21 @@
-import React, { useState, FormEvent } from 'react';
-import { useLoginMutation } from '../api'
-import DefaultLoader from '../../../components/Loaders/Default'
+import React, { useState, FormEvent } from "react";
+import { Link } from 'react-router-dom'
+import { useLoginMutation } from "../api";
+import DefaultLoader from "../../../components/Loaders/Default";
 
-interface LoginFormProps {
-    goToRegister: () => void
-}
+function LoginForm() {
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
-function LoginForm({ goToRegister }: LoginFormProps) {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-
-    const [login, { isLoading }] = useLoginMutation()
+    const [login, { isLoading }] = useLoginMutation();
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        login({ email, password })
+        login({ email, password });
     }
 
-    if (isLoading) return <DefaultLoader message='Attempting login' />
+    if (isLoading) return <DefaultLoader message="Attempting login" />;
 
     return (
         <form onSubmit={handleSubmit}>
@@ -43,8 +40,12 @@ function LoginForm({ goToRegister }: LoginFormProps) {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
-            <button type="submit">Login</button>
-            <button type='button' onClick={goToRegister}>Go to register</button>
+            <div>
+                <button type="submit">Login</button>
+            </div>
+            <div>
+                <Link to="/register">Register</Link>
+            </div>
         </form>
     );
 }
