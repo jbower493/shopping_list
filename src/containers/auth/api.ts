@@ -6,9 +6,18 @@ import type { User, Credentials } from "./models";
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({ baseUrl, credentials: "include" }),
+    tagTypes: ["User"],
     endpoints: (builder) => ({
         getUser: builder.query<User, void>({
             query: () => "user",
+            providesTags: ["User"],
+        }),
+        register: builder.mutation<void, Credentials>({
+            query: (payload) => ({
+                url: "register",
+                method: "POST",
+                body: payload,
+            }),
         }),
         login: builder.mutation<void, Credentials>({
             query: (payload) => ({
@@ -16,8 +25,9 @@ export const authApi = createApi({
                 method: "POST",
                 body: payload,
             }),
+            invalidatesTags: ['User']
         }),
     }),
 });
 
-export const { useGetUserQuery, useLoginMutation } = authApi;
+export const { useGetUserQuery, useRegisterMutation, useLoginMutation } = authApi;
