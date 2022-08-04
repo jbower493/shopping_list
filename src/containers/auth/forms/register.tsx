@@ -1,21 +1,19 @@
 import React, { useState, FormEvent } from "react";
 import { Link } from 'react-router-dom'
-import { useRegisterMutation } from "../api";
+
 import DefaultLoader from "../../../components/Loaders/Default";
 
 function LoginForm() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const [register, { isLoading }] = useRegisterMutation();
-
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        register({ email, password });
+        console.log({ email, password });
     }
 
-    if (isLoading) return <DefaultLoader message="Attempting register" />;
+    if ('isLoading') return <DefaultLoader message="Attempting register" />;
 
     return (
         <form onSubmit={handleSubmit}>
