@@ -1,51 +1,43 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { register } from '../api'
 
-import DefaultLoader from "../../../components/Loaders/Default";
+import DefaultLoader from '../../../components/Loaders/Default'
 
 function LoginForm() {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+
+    const { mutate, isLoading } = useMutation(register)
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+        e.preventDefault()
 
-        console.log({ email, password });
+        mutate({ email, password })
     }
 
-    if ('isLoading') return <DefaultLoader message="Attempting register" />;
+    if (isLoading) return <DefaultLoader message='Attempting register' />
 
     return (
         <form onSubmit={handleSubmit}>
             <div>
                 <h1>Register</h1>
-                <label htmlFor="email">Email</label>
-                <input
-                    id="email"
-                    type="text"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                <label htmlFor='email'>Email</label>
+                <input id='email' type='text' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div>
-                <label htmlFor="password">Password</label>
-                <input
-                    id="password"
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                <label htmlFor='password'>Password</label>
+                <input id='password' type='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div>
-                <button type="submit">Register</button>
+                <button type='submit'>Register</button>
             </div>
             <div>
-                <Link to="/login">Login</Link>
+                <Link to='/login'>Login</Link>
             </div>
         </form>
-    );
+    )
 }
 
-export default LoginForm;
+export default LoginForm

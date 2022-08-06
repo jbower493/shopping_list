@@ -1,19 +1,28 @@
-import React from "react";
+import React from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { queryClient } from '../../index'
+import { logout } from '../auth/api'
+import DefaultLoader from '../../components/Loaders/Default'
 
 function Dashboard() {
+    const { mutate, isLoading } = useMutation(logout, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(['user'])
+        }
+    })
 
     return (
         <div>
             <h2>Dashboard</h2>
-            {'isLoading' ? (
-                <div>Logging out...</div>
+            {isLoading ? (
+                <DefaultLoader message='Logging out' />
             ) : (
-                <button type="button" onClick={() => console.log()}>
+                <button type='button' onClick={() => mutate()}>
                     Logout
                 </button>
             )}
         </div>
-    );
+    )
 }
 
-export default Dashboard;
+export default Dashboard
