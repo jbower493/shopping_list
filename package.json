@@ -5,7 +5,6 @@
     "prettier": "prettier-config-jamie",
     "dependencies": {
         "@heroicons/react": "^1.0.6",
-        "@reduxjs/toolkit": "^1.8.3",
         "@tanstack/react-query": "^4.0.10",
         "@testing-library/jest-dom": "^5.14.1",
         "@testing-library/react": "^13.0.0",
@@ -45,8 +44,10 @@
     },
     "devDependencies": {
         "@types/styled-components": "^5.1.25",
+        "cypress": "^10.4.0",
         "eslint": "^8.21.0",
         "eslint-config-jamie": "file:.yalc/eslint-config-jamie",
+        "eslint-plugin-cypress": "^2.12.1",
         "prettier": "^2.7.1",
         "prettier-config-jamie": "file:.yalc/prettier-config-jamie"
     }
