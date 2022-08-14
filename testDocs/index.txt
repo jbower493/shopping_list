@@ -1,0 +1,17 @@
+cypress/e2e/app/app.cy.ts
+    Describe: Visit the app - SPL-1572,SPL-1126,SPL-1426
+        Successfully loads the app.
+
+cypress/e2e/login/login.cy.ts
+    Describe: Login process - SPL-1282,SPL-1439
+        Can load the login page. Nest level 1
+        Should contain the text "Login". Nest level 1
+    Describe: Logging in - SPL-1902,SPL-1911
+        Is a test that sits outside the nested describe block.
+        Describe: Outputs - 
+            Some test thing. Nest level 2
+            Describe: All about outputs - 
+                Can also do some outputs and stuff lol. Nest level 3
+    Describe: Input fields - 
+        Has an input field for password. Nest level 2
+
