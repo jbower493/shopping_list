@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '../../../index'
 import { login } from '../api'
-import DefaultLoader from '../../../components/Loaders/Default'
 
 function LoginForm() {
     const [email, setEmail] = useState<string>('')
@@ -21,7 +20,7 @@ function LoginForm() {
         mutate({ email, password })
     }
 
-    if (isLoading) return <DefaultLoader message='Attempting login' />
+    if (isLoading) return <h1>Loading</h1>
 
     return (
         <form onSubmit={handleSubmit}>
