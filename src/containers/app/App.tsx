@@ -1,19 +1,24 @@
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
+import useSwr from 'swr'
+import { ChakraProvider } from '@chakra-ui/react'
 import UserRouter from '../../router/user'
 import GuestRouter from '../../router/guest'
-import { getUser } from '../auth/api'
+import { getRequest } from 'utils/fetch'
 
 function App() {
-    const { data, isLoading, isError, isRefetching } = useQuery(['user'], getUser)
-
+    const { data, error } = useSwr('/user', getRequest)
+console.log(data, error)
     function renderApp() {
-        if (isLoading || isRefetching) return <h1>Getting User...</h1>
-        if (!data || isError) return <GuestRouter />
+        if (!data && !error) return <h1>Loading...</h1>
+        if (error) return <GuestRouter />
         return <UserRouter />
     }
 
-    return <div className='App'>{renderApp()}</div>
+    return (
+        <ChakraProvider>
+            <div className='App'>{renderApp()}</div>
+        </ChakraProvider>
+    )
 }
 
 export default App

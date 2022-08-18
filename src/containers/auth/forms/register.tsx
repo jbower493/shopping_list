@@ -1,21 +1,16 @@
 import React, { useState, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
-import { register } from '../api'
 
 function LoginForm() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
-    const { mutate, isLoading } = useMutation(register)
-
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        mutate({ email, password })
     }
 
-    if (isLoading) return <h1>Loading</h1>
+    // if (isLoading) return <h1>Loading</h1>
 
     return (
         <form onSubmit={handleSubmit}>
