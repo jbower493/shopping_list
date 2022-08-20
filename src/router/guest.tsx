@@ -9,6 +9,7 @@ function GuestRouter() {
             <Route path='/' element={<Navigate to='/login' replace />} />
             <Route path='/login' element={<LoginForm />} />
             <Route path='/register' element={<RegisterForm />} />
+            <Route path='*' element={<Navigate to='/login' replace />} />
         </Routes>
     )
 }

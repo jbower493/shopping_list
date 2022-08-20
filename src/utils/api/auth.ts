@@ -1,10 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { baseUrl } from 'config'
+import { appApi } from 'utils/api'
 import { User, Credentials, RegisterCredentials } from 'containers/auth/types'
 
-export const appApi = createApi({
-    baseQuery: fetchBaseQuery({ baseUrl, credentials: 'include' }),
-    tagTypes: ['User'],
+const authApi = appApi.injectEndpoints({
     endpoints: (builder) => ({
         getUser: builder.query<User, void>({
             query: () => '/user',
@@ -26,7 +23,7 @@ export const appApi = createApi({
                 body: credentials
             })
         }),
-        logout: builder.mutation({
+        logout: builder.mutation<void, void>({
             query: () => ({
                 url: '/logout',
                 method: 'GET'
@@ -36,4 +33,4 @@ export const appApi = createApi({
     })
 })
 
-export const { useGetUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation } = appApi
+export const { useGetUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi

@@ -1,7 +1,8 @@
 import React, { useState, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { useLoginMutation } from 'utils/api'
+import { useLoginMutation } from 'utils/api/auth'
 import Button from 'components/Button'
+import Loader from 'components/Loader'
 
 function LoginForm() {
     const [email, setEmail] = useState<string>('')
@@ -14,7 +15,7 @@ function LoginForm() {
         login({ email, password })
     }
 
-    if (isLoading) return <h1>Logging in...</h1>
+    if (isLoading) return <Loader fullPage />
 
     return (
         <div className='flex items-center h-full'>

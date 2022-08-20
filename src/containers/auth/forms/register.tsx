@@ -1,7 +1,8 @@
 import React, { useState, useEffect, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useRegisterMutation } from 'utils/api'
+import { useRegisterMutation } from 'utils/api/auth'
 import Button from 'components/Button'
+import Loader from 'components/Loader'
 
 function LoginForm() {
     const [name, setName] = useState('')
@@ -21,7 +22,7 @@ function LoginForm() {
         if (isSuccess) navigate('/login')
     }, [isSuccess])
 
-    if (isLoading) return <h1>Registering...</h1>
+    if (isLoading) return <Loader />
 
     return (
         <div className='flex items-center h-full'>
