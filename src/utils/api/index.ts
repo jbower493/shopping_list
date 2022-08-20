@@ -3,6 +3,6 @@ import { baseUrl } from 'config'
 
 export const appApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl, credentials: 'include' }),
-    tagTypes: ['User'],
+    tagTypes: ['User', 'Lists'],
     endpoints: () => ({})
 })
