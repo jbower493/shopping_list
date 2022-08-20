@@ -17,7 +17,7 @@ function LoginForm() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <h1>Login</h1>
+            <h1 className='text-emerald-500'>Login</h1>
             <div>
                 <label htmlFor='email'>Email</label>
                 <input id='email' type='text' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />

@@ -2,7 +2,7 @@
     "name": "shopping_list",
     "version": "0.1.0",
     "private": true,
-    "prettier": "prettier-config-jamie",
+    "prettier": "@jbower493/prettier-config",
     "dependencies": {
         "@heroicons/react": "^1.0.6",
         "@reduxjs/toolkit": "^1.8.5",
@@ -41,9 +41,12 @@
         ]
     },
     "devDependencies": {
+        "@jbower493/eslint-config-typescript": "^1.0.3",
+        "@jbower493/prettier-config": "^1.0.0",
+        "autoprefixer": "^10.4.8",
         "eslint": "^8.21.0",
-        "eslint-config-jamie": "file:.yalc/eslint-config-jamie",
+        "postcss": "^8.4.16",
         "prettier": "^2.7.1",
-        "prettier-config-jamie": "file:.yalc/prettier-config-jamie"
+        "tailwindcss": "^3.1.8"
     }
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import './index.css'
 import { ApiProvider } from '@reduxjs/toolkit/query/react'
 import App from 'containers/app/app'
 import { appApi } from 'utils/api'
