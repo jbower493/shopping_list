@@ -5,7 +5,7 @@ function Dashboard() {
     const [logout, { isLoading }] = useLogoutMutation()
 
     return (
-        <div>
+        <div className='h-screen'>
             <h2>Dashboard</h2>
             {isLoading ? (
                 <h1>Logging out...</h1>

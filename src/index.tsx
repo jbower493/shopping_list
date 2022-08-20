@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import { ApiProvider } from '@reduxjs/toolkit/query/react'
 import App from 'containers/app/app'
@@ -9,7 +10,9 @@ import reportWebVitals from './reportWebVitals'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
     <ApiProvider api={appApi}>
-        <App />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </ApiProvider>
 )
 

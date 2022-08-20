@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useRegisterMutation } from 'utils/api'
+import Button from 'components/Button'
 
 function LoginForm() {
     const [name, setName] = useState('')
@@ -23,27 +24,31 @@ function LoginForm() {
     if (isLoading) return <h1>Registering...</h1>
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1>Register</h1>
-            <div>
-                <label htmlFor='name'>Name</label>
-                <input id='name' type='text' name='name' value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div>
-                <label htmlFor='email'>Email</label>
-                <input id='email' type='email' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div>
-                <label htmlFor='password'>Password</label>
-                <input id='password' type='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <div>
-                <button type='submit'>Register</button>
-            </div>
-            <div>
-                <Link to='/login'>Login</Link>
-            </div>
-        </form>
+        <div className='flex items-center h-full'>
+            <form className='w-80 mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit}>
+                <h2 className='text-emerald-500 text-2xl mb-4 font-bold text-center'>Register</h2>
+                <div>
+                    <label htmlFor='name'>Name</label>
+                    <input id='name' type='text' name='name' value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div>
+                    <label htmlFor='email'>Email</label>
+                    <input id='email' type='email' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div>
+                    <label htmlFor='password'>Password</label>
+                    <input id='password' type='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div>
+                    <Button className='w-full mb-3' type='submit'>
+                        Register
+                    </Button>
+                </div>
+                <div>
+                    <Link to='/login'>Login</Link>
+                </div>
+            </form>
+        </div>
     )
 }
 
