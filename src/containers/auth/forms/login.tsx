@@ -1,23 +1,24 @@
 import React, { useState, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { useLoginMutation } from 'utils/api'
 
 function LoginForm() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
+    const [login, { data, isLoading }] = useLoginMutation()
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
-
-        
+        login({ email, password })
     }
 
-    // if (isLoading) return <h1>Loading</h1>
+    if (isLoading) return <h1>Logging in...</h1>
 
     return (
         <form onSubmit={handleSubmit}>
+            <h1>Login</h1>
             <div>
-                <h1>Login</h1>
                 <label htmlFor='email'>Email</label>
                 <input id='email' type='text' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
@@ -30,9 +31,6 @@ function LoginForm() {
             </div>
             <div>
                 <Link to='/register'>Register</Link>
-
-                <Link to='/user-one'>User One</Link>
-                <Link to='/user-two'>User Two</Link>
             </div>
         </form>
     )

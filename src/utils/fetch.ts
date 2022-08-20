@@ -15,11 +15,12 @@ export const getRequest = async <T>(url: string): Promise<T> => {
     throw { ...error, status: response.status }
 }
 
-export const postRequest = async <T>(url: string): Promise<T> => {
+export const postRequest = async <TReturn>(url: string, body: BodyInit): Promise<TReturn> => {
     const response = await fetch(`${baseUrl}${url}`, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body
     })
 
     if (response.ok) {

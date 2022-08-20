@@ -1,23 +1,37 @@
-import React, { useState, FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useRegisterMutation } from 'utils/api'
 
 function LoginForm() {
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const [register, { isLoading, isSuccess }] = useRegisterMutation()
+
+    const navigate = useNavigate()
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
-
+        register({ name, email, password })
     }
 
-    // if (isLoading) return <h1>Loading</h1>
+    useEffect(() => {
+        if (isSuccess) navigate('/login')
+    }, [isSuccess])
+
+    if (isLoading) return <h1>Registering...</h1>
 
     return (
         <form onSubmit={handleSubmit}>
+            <h1>Register</h1>
             <div>
-                <h1>Register</h1>
+                <label htmlFor='name'>Name</label>
+                <input id='name' type='text' name='name' value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div>
                 <label htmlFor='email'>Email</label>
-                <input id='email' type='text' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input id='email' type='email' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div>
                 <label htmlFor='password'>Password</label>

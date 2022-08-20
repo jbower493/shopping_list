@@ -1,15 +1,16 @@
 import React from 'react'
+import { useLogoutMutation } from 'utils/api'
 
 function Dashboard() {
-    const one = 1
+    const [logout, { isLoading }] = useLogoutMutation()
 
     return (
         <div>
             <h2>Dashboard</h2>
-            {!one ? (
-                <h1>Loading</h1>
+            {isLoading ? (
+                <h1>Logging out...</h1>
             ) : (
-                <button type='button' onClick={() => console.log('logout')}>
+                <button type='button' onClick={() => logout('logout')}>
                     Logout
                 </button>
             )}
