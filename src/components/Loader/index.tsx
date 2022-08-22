@@ -12,7 +12,7 @@ function Loader({ size, fullPage }: LoaderProps) {
     }
 
     const renderLoader = () => (
-        <div className={`${getSize()} rounded-full border-8 border-emerald-500 border-t-emerald-100 border-r-emerald-100 animate-spin`} />
+        <div className={`${getSize()} rounded-full border-emerald-500 border-t-emerald-100 border-r-emerald-100 animate-spin`} />
     )
 
     if (fullPage) return <div className='w-full h-full flex justify-center items-center'>{renderLoader()}</div>

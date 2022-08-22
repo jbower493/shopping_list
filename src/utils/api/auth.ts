@@ -8,16 +8,16 @@ const authApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { user: User } }) => res.data.user,
             providesTags: ['User']
         }),
-        login: builder.mutation({
-            query: (credentials: Credentials) => ({
+        login: builder.mutation<void, Credentials>({
+            query: (credentials) => ({
                 url: '/login',
                 method: 'POST',
                 body: credentials
             }),
             invalidatesTags: ['User']
         }),
-        register: builder.mutation({
-            query: (credentials: RegisterCredentials) => ({
+        register: builder.mutation<void, RegisterCredentials>({
+            query: (credentials) => ({
                 url: '/register',
                 method: 'POST',
                 body: credentials

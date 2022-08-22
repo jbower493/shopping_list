@@ -19,7 +19,7 @@ function LoginForm() {
 
     return (
         <div className='flex items-center h-full'>
-            <form className='w-80 mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit}>
+            <form className='max-w-xs w-full mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit}>
                 <h2 className='text-emerald-500 text-2xl mb-4 font-bold text-center'>Login</h2>
                 <div>
                     <label htmlFor='email'>Email</label>
