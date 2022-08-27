@@ -14,7 +14,7 @@ const authApi = appApi.injectEndpoints({
                 method: 'POST',
                 body: credentials
             }),
-            invalidatesTags: ['User']
+            invalidatesTags: (_, error) => (error ? [] : ['User'])
         }),
         register: builder.mutation<void, RegisterCredentials>({
             query: (credentials) => ({
