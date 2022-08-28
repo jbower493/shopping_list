@@ -1,4 +1,5 @@
 import React from 'react'
+import { Toaster } from 'react-hot-toast'
 import UserRouter from 'router/user'
 import GuestRouter from 'router/guest'
 import Sidebar from 'components/Sidebar'
@@ -43,6 +44,7 @@ function App() {
 
     return (
         <div>
+            <Toaster />
             <header className='fixed z-10 w-full h-14 px-6 flex justify-between items-center bg-white border-b border-b-gray-300'>
                 <h1 className='text-emerald-500'>Shopping List</h1>
                 {!isFetching && !isError && data ? renderLogoutButton() : ''}
