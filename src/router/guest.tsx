@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import LoginForm from '../containers/auth/forms/login'
+import LoginForm from '../containers/auth/forms/loginZod'
 import RegisterForm from '../containers/auth/forms/register'
 
 function GuestRouter() {
