@@ -1,45 +1,69 @@
-import React, { useState, useEffect, FormEvent } from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useRegisterMutation } from 'utils/api/auth'
 import Button from 'components/Button'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import InputField from 'components/Form/Inputs/InputField'
 import Loader from 'components/Loader'
 
-function LoginForm() {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+type Inputs = {
+    name: string
+    email: string
+    password: string
+}
 
-    const [register, { isLoading, isSuccess }] = useRegisterMutation()
-
+function RegisterForm() {
     const navigate = useNavigate()
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault()
-        register({ name, email, password })
+    const [registerUser, { isLoading, isSuccess }] = useRegisterMutation()
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm<Inputs>({
+        mode: 'onTouched'
+    })
+
+    const onSubmit: SubmitHandler<Inputs> = (data) => {
+        registerUser(data)
+            .then((result) => console.log(result))
+            .catch((error) => console.log(error))
     }
 
     useEffect(() => {
         if (isSuccess) navigate('/login')
     }, [isSuccess])
 
-    if (isLoading) return <Loader />
+    if (isLoading) return <Loader fullPage />
 
     return (
         <div className='flex items-center h-full'>
-            <form className='max-w-xs w-full mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit}>
-                <h2 className='text-emerald-500 text-2xl mb-4 font-bold text-center'>Register</h2>
-                <div>
-                    <label htmlFor='name'>Name</label>
-                    <input id='name' type='text' name='name' value={name} onChange={(e) => setName(e.target.value)} />
-                </div>
-                <div>
-                    <label htmlFor='email'>Email</label>
-                    <input id='email' type='email' name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div>
-                    <label htmlFor='password'>Password</label>
-                    <input id='password' type='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
+            <form className='max-w-xs w-full mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit(onSubmit)}>
+                <InputField<Inputs>
+                    label='Name'
+                    name='name'
+                    type='text'
+                    register={register}
+                    validation={{ required: 'This is required.' }}
+                    error={errors.name}
+                />
+                <InputField<Inputs>
+                    label='Email'
+                    name='email'
+                    type='email'
+                    register={register}
+                    validation={{ required: 'This is required.' }}
+                    error={errors.email}
+                />
+                <InputField<Inputs>
+                    label='Password'
+                    name='password'
+                    type='password'
+                    register={register}
+                    validation={{ required: 'This is required too.' }}
+                    error={errors.password}
+                />
                 <div>
                     <Button className='w-full mb-3' type='submit'>
                         Register
@@ -53,4 +77,4 @@ function LoginForm() {
     )
 }
 
-export default LoginForm
+export default RegisterForm
