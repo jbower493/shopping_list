@@ -14,16 +14,21 @@ const authApi = appApi.injectEndpoints({
                 method: 'POST',
                 body: newList
             }),
-            invalidatesTags: ['Lists']
+            invalidatesTags: (_, error) => (error ? [] : ['Lists'])
         }),
         deleteList: builder.mutation<void, number>({
             query: (id) => ({
                 url: `/list/${id}`,
-                method: 'GET'
+                method: 'DELETE'
             }),
-            invalidatesTags: ['Lists']
+            invalidatesTags: (_, error) => (error ? [] : ['Lists'])
+        }),
+        getSingleList: builder.query<List, number>({
+            query: () => '/list',
+            transformResponse: (res: { data: { list: List } }) => res.data.list,
+            providesTags: ['List']
         })
     })
 })
 
-export const { useGetListsQuery, useCreateListMutation, useDeleteListMutation } = authApi
+export const { useGetListsQuery, useCreateListMutation, useDeleteListMutation, useGetSingleListQuery } = authApi

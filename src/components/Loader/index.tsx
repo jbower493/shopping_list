@@ -3,17 +3,21 @@ import React from 'react'
 interface LoaderProps {
     size?: 'small'
     fullPage?: true
+    color?: 'primary' | 'disabled'
 }
 
-function Loader({ size, fullPage }: LoaderProps) {
+function Loader({ size, fullPage, color }: LoaderProps) {
     const getSize = () => {
         if (size) return 'w-4 h-4 border-2'
         return 'w-14 h-14 border-4'
     }
 
-    const renderLoader = () => (
-        <div className={`${getSize()} rounded-full border-emerald-500 border-t-emerald-100 border-r-emerald-100 animate-spin`} />
-    )
+    const getColor = () => {
+        if (color === 'disabled') return 'border-gray-400 gray-t-emerald-300 border-r-gray-300'
+        return 'border-emerald-500 border-t-emerald-100 border-r-emerald-100'
+    }
+
+    const renderLoader = () => <div className={`${getSize()} rounded-full ${getColor()} animate-spin`} />
 
     if (fullPage) return <div className='w-full h-full flex justify-center items-center'>{renderLoader()}</div>
 

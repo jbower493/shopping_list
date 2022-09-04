@@ -28,7 +28,7 @@ const authApi = appApi.injectEndpoints({
                 url: '/logout',
                 method: 'GET'
             }),
-            invalidatesTags: ['User']
+            invalidatesTags: (_, error) => (error ? [] : ['User'])
         })
     })
 })
