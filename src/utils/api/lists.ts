@@ -1,5 +1,6 @@
 import { appApi } from 'utils/api'
 import { List, NewList } from 'containers/lists/types'
+import type { MutationResponse } from 'utils/api'
 
 const authApi = appApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -8,7 +9,7 @@ const authApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { lists: List[] } }) => res.data.lists,
             providesTags: ['Lists']
         }),
-        createList: builder.mutation<void, NewList>({
+        createList: builder.mutation<MutationResponse, NewList>({
             query: (newList) => ({
                 url: '/list',
                 method: 'POST',
@@ -16,7 +17,7 @@ const authApi = appApi.injectEndpoints({
             }),
             invalidatesTags: (_, error) => (error ? [] : ['Lists'])
         }),
-        deleteList: builder.mutation<void, number>({
+        deleteList: builder.mutation<MutationResponse, number>({
             query: (id) => ({
                 url: `/list/${id}`,
                 method: 'DELETE'

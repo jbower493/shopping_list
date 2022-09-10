@@ -1,5 +1,6 @@
 import { appApi } from 'utils/api'
 import { User, Credentials, RegisterCredentials } from 'containers/auth/types'
+import type { MutationResponse } from 'utils/api'
 
 const authApi = appApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -8,7 +9,7 @@ const authApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { user: User } }) => res.data.user,
             providesTags: ['User']
         }),
-        login: builder.mutation<void, Credentials>({
+        login: builder.mutation<MutationResponse, Credentials>({
             query: (credentials) => ({
                 url: '/login',
                 method: 'POST',
@@ -16,14 +17,14 @@ const authApi = appApi.injectEndpoints({
             }),
             invalidatesTags: (_, error) => (error ? [] : ['User'])
         }),
-        register: builder.mutation<void, RegisterCredentials>({
+        register: builder.mutation<MutationResponse, RegisterCredentials>({
             query: (credentials) => ({
                 url: '/register',
                 method: 'POST',
                 body: credentials
             })
         }),
-        logout: builder.mutation<void, void>({
+        logout: builder.mutation<MutationResponse, void>({
             query: () => ({
                 url: '/logout',
                 method: 'GET'

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useRegisterMutation } from 'utils/api/auth'
 import Button from 'components/Button'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
 import Loader from 'components/Loader'
+import { toast } from 'react-hot-toast'
 
 type Inputs = {
     name: string
@@ -15,7 +16,7 @@ type Inputs = {
 function RegisterForm() {
     const navigate = useNavigate()
 
-    const [registerUser, { isLoading, isSuccess }] = useRegisterMutation()
+    const [registerUser, { isLoading }] = useRegisterMutation()
 
     const {
         register,
@@ -27,13 +28,12 @@ function RegisterForm() {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         registerUser(data)
-            .then((result) => console.log(result))
-            .catch((error) => console.log(error))
+            .unwrap()
+            .then((result) => {
+                toast.success(result.message)
+                navigate('/login')
+            })
     }
-
-    useEffect(() => {
-        if (isSuccess) navigate('/login')
-    }, [isSuccess])
 
     if (isLoading) return <Loader fullPage />
 

@@ -5,6 +5,7 @@ import Button from 'components/Button'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
 import Loader from 'components/Loader'
+import { toast } from 'react-hot-toast'
 
 type Inputs = {
     email: string
@@ -24,8 +25,10 @@ function LoginForm() {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         login(data)
-            .then((result) => console.log(result))
-            .catch((error) => console.log(error))
+            .unwrap()
+            .then((result) => {
+                toast.success(result.message)
+            })
     }
 
     if (isLoading) return <Loader fullPage />

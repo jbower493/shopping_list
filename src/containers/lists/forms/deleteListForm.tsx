@@ -33,11 +33,8 @@ function DeleteListForm() {
                         onClick={() => {
                             deleteList(Number(listId))
                                 .unwrap()
-                                .then(() => {
-                                    toast.success('Successfully deleted list.')
-                                })
-                                .catch(() => {
-                                    toast.error('Failed to delete list.')
+                                .then((result) => {
+                                    toast.success(result.message)
                                 })
                                 .finally(() => navigate(-1))
                         }}

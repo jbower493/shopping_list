@@ -5,6 +5,7 @@ import GuestRouter from 'router/guest'
 import Sidebar from 'components/Sidebar'
 import Loader from 'components/Loader'
 import { useGetUserQuery, useLogoutMutation } from 'utils/api/auth'
+import { toast } from 'react-hot-toast'
 
 function App() {
     const { data, isFetching, isError } = useGetUserQuery()
@@ -14,7 +15,14 @@ function App() {
         isLogoutLoading ? (
             <Loader size='small' />
         ) : (
-            <button type='button' onClick={() => logout()}>
+            <button
+                type='button'
+                onClick={() => {
+                    logout()
+                        .unwrap()
+                        .then((result) => toast.success(result.message))
+                }}
+            >
                 Logout
             </button>
         )

@@ -1,4 +1,5 @@
 import React from 'react'
+import { toast } from 'react-hot-toast'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
@@ -25,10 +26,11 @@ function AddListForm() {
 
     const onSubmit: SubmitHandler<Inputs> = ({ name }) => {
         createList({ name })
-            .then(() => {
-                navigate(-1)
+            .unwrap()
+            .then((result) => {
+                toast.success(result.message)
             })
-            .catch(() => {
+            .finally(() => {
                 navigate(-1)
             })
     }

@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseUrl } from 'config'
 
+export interface MutationResponse {
+    message: string
+}
+
 export const appApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl,
