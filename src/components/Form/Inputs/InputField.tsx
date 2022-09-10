@@ -1,9 +1,9 @@
 import React, { HTMLInputTypeAttribute } from 'react'
-import { UseFormRegister, Path } from 'react-hook-form'
+import { UseFormRegister, Path, FieldValues } from 'react-hook-form'
 import { FieldError } from 'react-hook-form'
 import ErrorMessage from 'components/Form/ErrorMessage'
 
-interface InputFieldProps<T> {
+interface InputFieldProps<T extends FieldValues> {
     label: string
     name: Path<T>
     type: HTMLInputTypeAttribute
@@ -11,10 +11,10 @@ interface InputFieldProps<T> {
     validation: {
         required: string
     }
-    error: FieldError | undefined
+    error: FieldError | undefined | false
 }
 
-function InputField<T>({ label, name, type, register, validation, error }: InputFieldProps<T>) {
+function InputField<T extends FieldValues>({ label, name, type, register, validation, error }: InputFieldProps<T>) {
     return (
         <div>
             <label>{label}</label>

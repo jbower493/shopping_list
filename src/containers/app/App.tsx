@@ -54,7 +54,7 @@ function App() {
         <div>
             <Toaster />
             <header className='fixed z-10 w-full h-14 px-6 flex justify-between items-center bg-white border-b border-b-gray-300'>
-                <h1 className='text-emerald-500'>Shopping List</h1>
+                <h1 className='text-primary'>Shopping List</h1>
                 {!isFetching && !isError && data ? renderLogoutButton() : ''}
             </header>
             {renderApp()}

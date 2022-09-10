@@ -6,7 +6,7 @@ import Loader from 'components/Loader'
 function EditList() {
     const { listId } = useParams()
 
-    const { data, isFetching, isError } = useGetSingleListQuery(Number(listId))
+    const { data, isFetching, isError } = useGetSingleListQuery(listId || '')
 
     if (isFetching) return <Loader fullPage />
     if (isError || !data) return <h1>List error</h1>

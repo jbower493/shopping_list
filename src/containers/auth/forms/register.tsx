@@ -1,11 +1,10 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useRegisterMutation } from 'utils/api/auth'
-import Button from 'components/Button'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
-import Loader from 'components/Loader'
 import { toast } from 'react-hot-toast'
+import SubmitButton from 'components/Form/SubmitButton'
 
 type Inputs = {
     name: string
@@ -16,37 +15,32 @@ type Inputs = {
 function RegisterForm() {
     const navigate = useNavigate()
 
-    const [registerUser, { isLoading }] = useRegisterMutation()
+    const [registerUser] = useRegisterMutation()
 
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors, isSubmitting, isValid, isDirty, touchedFields }
     } = useForm<Inputs>({
-        mode: 'onTouched'
+        mode: 'onChange'
     })
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
-        registerUser(data)
-            .unwrap()
-            .then((result) => {
-                toast.success(result.message)
-                navigate('/login')
-            })
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        const result = await registerUser(data).unwrap()
+        toast.success(result.message)
+        navigate('/login')
     }
-
-    if (isLoading) return <Loader fullPage />
 
     return (
         <div className='flex items-center h-full'>
-            <form className='max-w-xs w-full mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit(onSubmit)}>
+            <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
                 <InputField<Inputs>
                     label='Name'
                     name='name'
                     type='text'
                     register={register}
                     validation={{ required: 'This is required.' }}
-                    error={errors.name}
+                    error={touchedFields.name && errors.name}
                 />
                 <InputField<Inputs>
                     label='Email'
@@ -54,7 +48,7 @@ function RegisterForm() {
                     type='email'
                     register={register}
                     validation={{ required: 'This is required.' }}
-                    error={errors.email}
+                    error={touchedFields.email && errors.email}
                 />
                 <InputField<Inputs>
                     label='Password'
@@ -62,16 +56,12 @@ function RegisterForm() {
                     type='password'
                     register={register}
                     validation={{ required: 'This is required too.' }}
-                    error={errors.password}
+                    error={touchedFields.password && errors.password}
                 />
-                <div>
-                    <Button className='w-full mb-3' type='submit'>
-                        Register
-                    </Button>
-                </div>
-                <div>
-                    <Link to='/login'>Login</Link>
-                </div>
+                <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Register' fullWidth />
+                <Link className='mt-3 inline-block' to='/login'>
+                    Login
+                </Link>
             </form>
         </div>
     )

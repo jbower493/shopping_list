@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react'
 import Loader from 'components/Loader'
 
+export type ButonColors = 'primary' | 'secondary' | 'error'
+
 interface ButtonProps {
     children: ReactNode
     className?: string
@@ -8,26 +10,27 @@ interface ButtonProps {
     onClick?: () => void
     loading?: boolean
     disabled?: boolean
-    color?: 'primary' | 'secondary' | 'error'
+    color?: ButonColors
 }
 
 function Button({ children, className, type, onClick, loading, disabled, color }: ButtonProps) {
     const getColor = () => {
         if (disabled) return 'bg-gray-300 text-white'
-        if (color === 'error') return 'bg-red-500 hover:bg-red-600 text-white'
-        if (color === 'secondary') return 'bg-gray-100 hover:bg-gray-200'
-        return 'bg-emerald-500 hover:bg-emerald-600 text-white'
+        if (color === 'error') return 'bg-error hover:bg-error-hover text-white'
+        if (color === 'secondary') return 'bg-secondary hover:bg-secondary-hover'
+        return 'bg-primary hover:bg-primary-hover text-white'
     }
 
     return (
         <button
-            className={`w-40 ${disabled ? 'cursor-default ' : ' '}${getColor()} h-9 flex justify-center items-center rounded${
+            className={`px-4 ${disabled ? 'cursor-default ' : ' '}${getColor()} h-9 font-medium flex justify-center items-center rounded${
                 className ? ' ' + className : ''
             }`}
             type={type ? 'submit' : 'button'}
             onClick={() => {
                 if (!disabled && onClick) onClick()
             }}
+            disabled={disabled}
         >
             {loading ? <Loader size='small' color={disabled ? 'disabled' : 'primary'} /> : children}
         </button>

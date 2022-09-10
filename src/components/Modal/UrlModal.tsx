@@ -5,11 +5,11 @@ import type { OnClose } from 'components/Modal'
 interface UrlModalProps {
     children: JSX.Element
     onClose: OnClose
-    title?: string
-    description?: string
+    title: string
+    desc?: string
 }
 
-function UrlModal({ children, onClose, title, description }: UrlModalProps) {
+function UrlModal({ children, onClose, title, desc }: UrlModalProps) {
     const [modalOpen, setModalOpen] = useState(false)
 
     useEffect(() => {
@@ -17,7 +17,7 @@ function UrlModal({ children, onClose, title, description }: UrlModalProps) {
     }, [])
 
     return (
-        <Modal open={modalOpen} onClose={onClose} title={title} description={description}>
+        <Modal open={modalOpen} onClose={onClose} title={title} desc={desc}>
             {children}
         </Modal>
     )

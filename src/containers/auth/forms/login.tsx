@@ -1,11 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useLoginMutation } from 'utils/api/auth'
-import Button from 'components/Button'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
-import Loader from 'components/Loader'
 import { toast } from 'react-hot-toast'
+import SubmitButton from 'components/Form/SubmitButton'
 
 type Inputs = {
     email: string
@@ -13,36 +12,32 @@ type Inputs = {
 }
 
 function LoginForm() {
-    const [login, { isLoading }] = useLoginMutation()
+    const [login] = useLoginMutation()
 
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors, isValid, touchedFields, isSubmitting, isDirty }
     } = useForm<Inputs>({
-        mode: 'onTouched'
+        mode: 'onChange'
     })
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
-        login(data)
-            .unwrap()
-            .then((result) => {
-                toast.success(result.message)
-            })
-    }
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        const result = await login(data).unwrap()
 
-    if (isLoading) return <Loader fullPage />
+        toast.success(result.message)
+    }
 
     return (
         <div className='flex items-center h-full'>
-            <form className='max-w-xs w-full mx-auto p-3 border border-emerald-500 rounded' onSubmit={handleSubmit(onSubmit)}>
+            <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
                 <InputField<Inputs>
                     label='Email'
                     name='email'
                     type='email'
                     register={register}
                     validation={{ required: 'This is required.' }}
-                    error={errors.email}
+                    error={touchedFields.email && errors.email}
                 />
                 <InputField<Inputs>
                     label='Password'
@@ -50,16 +45,12 @@ function LoginForm() {
                     type='password'
                     register={register}
                     validation={{ required: 'This is required too.' }}
-                    error={errors.password}
+                    error={touchedFields.password && errors.password}
                 />
-                <div>
-                    <Button className='w-full mb-3' type='submit'>
-                        Login
-                    </Button>
-                </div>
-                <div>
-                    <Link to='/register'>Register</Link>
-                </div>
+                <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Login' fullWidth />
+                <Link className='mt-3 inline-block' to='/register'>
+                    Register
+                </Link>
             </form>
         </div>
     )

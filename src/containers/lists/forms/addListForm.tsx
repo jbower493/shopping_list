@@ -3,9 +3,12 @@ import { toast } from 'react-hot-toast'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
+import ModalBody from 'components/Modal/ModalBody'
+import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
 import { useCreateListMutation } from 'utils/api/lists'
 import InputField from 'components/Form/Inputs/InputField'
+import SubmitButton from 'components/Form/SubmitButton'
 
 type Inputs = {
     name: string
@@ -14,44 +17,48 @@ type Inputs = {
 function AddListForm() {
     const navigate = useNavigate()
 
-    const [createList, { isLoading }] = useCreateListMutation()
+    const [createList] = useCreateListMutation()
 
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
     } = useForm<Inputs>({
-        mode: 'onTouched'
+        mode: 'onChange'
     })
 
-    const onSubmit: SubmitHandler<Inputs> = ({ name }) => {
-        createList({ name })
-            .unwrap()
-            .then((result) => {
-                toast.success(result.message)
-            })
-            .finally(() => {
-                navigate(-1)
-            })
+    const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
+        try {
+            const result = await createList({ name }).unwrap()
+            toast.success(result.message)
+            navigate(-1)
+        } catch (_) {
+            navigate(-1)
+        }
     }
 
     return (
         <div>
-            <UrlModal title='New List' description='Enter a name for your new list.' onClose={() => navigate(-1)}>
-                <form className='w-96' onSubmit={handleSubmit(onSubmit)}>
-                    <InputField<Inputs>
-                        label='Name'
-                        name='name'
-                        type='text'
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={errors.name}
+            <UrlModal title='New List' desc='Enter a name for your new list.' onClose={() => navigate(-1)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <ModalBody>
+                        <InputField<Inputs>
+                            label='Name'
+                            name='name'
+                            type='text'
+                            register={register}
+                            validation={{ required: 'This is required.' }}
+                            error={touchedFields.name && errors.name}
+                        />
+                    </ModalBody>
+                    <ModalFooter
+                        buttons={[
+                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                Back
+                            </Button>,
+                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
+                        ]}
                     />
-                    <div>
-                        <Button className='w-full' type='submit' loading={isLoading} disabled={isLoading}>
-                            Create
-                        </Button>
-                    </div>
                 </form>
             </UrlModal>
         </div>

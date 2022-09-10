@@ -13,8 +13,8 @@ function Loader({ size, fullPage, color }: LoaderProps) {
     }
 
     const getColor = () => {
-        if (color === 'disabled') return 'border-gray-400 gray-t-emerald-300 border-r-gray-300'
-        return 'border-emerald-500 border-t-emerald-100 border-r-emerald-100'
+        if (color === 'disabled') return 'border-gray-400 gray-t-primary-300 border-r-gray-300'
+        return 'border-primary border-t-primary-100 border-r-primary-100'
     }
 
     const renderLoader = () => <div className={`${getSize()} rounded-full ${getColor()} animate-spin`} />

@@ -23,11 +23,11 @@ function Lists() {
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                     <p>{name}</p>
                     <div>
-                        <button type='button' onClick={() => navigate(`/lists/edit/${id}`)}>
-                            <PencilSquareIcon className='w-5 text-emerald-500 hover:text-emerald-700 mr-4' />
+                        <button className='mr-4' type='button' onClick={() => navigate(`/lists/edit/${id}`)}>
+                            <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
                         </button>
                         <button type='button' onClick={() => navigate(`/lists/delete/${id}`)}>
-                            <TrashIcon className='w-5 text-emerald-500 hover:text-emerald-700' />
+                            <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                         </button>
                     </div>
                 </div>
