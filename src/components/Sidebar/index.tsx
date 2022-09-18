@@ -11,6 +11,9 @@ function Sidebar() {
                 <li className='mb-1'>
                     <Link to='/lists'>Lists</Link>
                 </li>
+                <li className='mb-1'>
+                    <Link to='/items'>Items</Link>
+                </li>
                 <li>
                     <Link to='/recipes'>Recipes</Link>
                 </li>

@@ -5,6 +5,9 @@ import Lists from 'containers/lists/lists'
 import AddListForm from 'containers/lists/forms/addListForm'
 import DeleteListForm from 'containers/lists/forms/deleteListForm'
 import EditList from 'containers/lists/editList'
+import Items from 'containers/items/items'
+import AddItemForm from 'containers/items/forms/addItemForm'
+import DeleteItemForm from 'containers/items/forms/deleteItemForm'
 
 function UserRouter() {
     return (
@@ -16,6 +19,10 @@ function UserRouter() {
                 <Route path='delete/:listId' element={<DeleteListForm />} />
             </Route>
             <Route path='/lists/edit/:listId' element={<EditList />} />
+            <Route path='/items' element={<Items />}>
+                <Route path='new' element={<AddItemForm />} />
+                <Route path='delete/:itemId' element={<DeleteItemForm />} />
+            </Route>
             <Route path='/recipes' element={<div>Recipes</div>} />
             <Route path='*' element={<div className='h-full flex justify-center items-center'>No route</div>} />
         </Routes>
