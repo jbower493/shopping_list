@@ -9,10 +9,10 @@ function Sidebar() {
                     <Link to='/'>Dashboard</Link>
                 </li>
                 <li className='mb-1'>
-                    <Link to='/lists'>Lists</Link>
+                    <Link to='/items'>Items</Link>
                 </li>
                 <li className='mb-1'>
-                    <Link to='/items'>Items</Link>
+                    <Link to='/lists'>Lists</Link>
                 </li>
                 <li>
                     <Link to='/recipes'>Recipes</Link>

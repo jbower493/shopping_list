@@ -2,7 +2,7 @@ import { appApi } from 'utils/api'
 import { List, NewList, DetailedList } from 'containers/lists/types'
 import type { MutationResponse } from 'utils/api'
 
-const itemsApi = appApi.injectEndpoints({
+const listsApi = appApi.injectEndpoints({
     endpoints: (builder) => ({
         getLists: builder.query<List[], void>({
             query: () => '/list',
@@ -55,4 +55,4 @@ export const {
     useGetSingleListQuery,
     useAddItemToListMutation,
     useRemoveItemFromListMutation
-} = itemsApi
+} = listsApi

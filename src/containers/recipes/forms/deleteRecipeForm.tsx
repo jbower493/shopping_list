@@ -3,26 +3,24 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { useDeleteItemMutation, useGetItemsQuery } from 'utils/api/items'
+import { useDeleteRecipeMutation, useGetRecipesQuery } from 'utils/api/recipes'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 
-function DeleteItemForm() {
+function DeleteRecipeForm() {
     const navigate = useNavigate()
-    const { itemId } = useParams()
+    const { recipeId } = useParams()
 
-    const { item } = useGetItemsQuery(undefined, {
-        selectFromResult: ({ data }) => ({ item: data?.find((currentItem) => currentItem.id.toString() === itemId) })
+    const { recipe } = useGetRecipesQuery(undefined, {
+        selectFromResult: ({ data }) => ({ recipe: data?.find((currentRecipe) => currentRecipe.id.toString() === recipeId) })
     })
-    const [deleteItem, { isLoading }] = useDeleteItemMutation()
+    const [deleteRecipe, { isLoading }] = useDeleteRecipeMutation()
 
     return (
         <div>
-            <UrlModal title='Delete Item' desc={item?.name} onClose={() => navigate(-1)}>
+            <UrlModal title='Delete Recipe' desc={recipe?.name} onClose={() => navigate(-1)}>
                 <>
-                    <ModalBody>
-                        Are you sure you want to delete this item? Deleting the item will remove it from all lists that it belongs to.
-                    </ModalBody>
+                    <ModalBody>Are you sure you want to delete this recipe?</ModalBody>
                     <ModalFooter
                         buttons={[
                             <Button key={1} color='secondary' onClick={() => navigate(-1)}>
@@ -34,7 +32,7 @@ function DeleteItemForm() {
                                 loading={isLoading}
                                 disabled={isLoading}
                                 onClick={() => {
-                                    deleteItem(itemId || '')
+                                    deleteRecipe(recipeId || '')
                                         .unwrap()
                                         .then((result) => {
                                             toast.success(result.message)
@@ -52,4 +50,4 @@ function DeleteItemForm() {
     )
 }
 
-export default DeleteItemForm
+export default DeleteRecipeForm
