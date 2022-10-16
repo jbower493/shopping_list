@@ -1,8 +1,6 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-import Dashboard from 'containers/dashboard/dashboard'
-
 import Items from 'containers/items/items'
 import AddItemForm from 'containers/items/forms/addItemForm'
 import DeleteItemForm from 'containers/items/forms/deleteItemForm'
@@ -17,11 +15,14 @@ import AddRecipeForm from 'containers/recipes/forms/addRecipeForm'
 import DeleteRecipeForm from 'containers/recipes/forms/deleteRecipeForm'
 import EditRecipe from 'containers/recipes/editRecipe'
 
+import Shop from 'containers/shop/shop'
+import ChooseList from 'containers/shop/chooseList'
+
 function UserRouter() {
     return (
         <Routes>
             <Route path='/login' element={<Navigate to='/' replace />} />
-            <Route path='/' element={<Dashboard />} />
+            <Route path='/' element={<Navigate to='/lists' replace />} />
             <Route path='/items' element={<Items />}>
                 <Route path='new' element={<AddItemForm />} />
                 <Route path='delete/:itemId' element={<DeleteItemForm />} />
@@ -36,6 +37,8 @@ function UserRouter() {
                 <Route path='delete/:recipeId' element={<DeleteRecipeForm />} />
             </Route>
             <Route path='/recipes/edit/:recipeId' element={<EditRecipe />} />
+            <Route path='/shop' element={<ChooseList />} />
+            <Route path='/shop/:listId' element={<Shop />} />
             <Route path='*' element={<div className='h-full flex justify-center items-center'>No route</div>} />
         </Routes>
     )
