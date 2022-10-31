@@ -56,7 +56,7 @@ function App() {
             )
         return (
             <div>
-                <Sidebar showMenu={showMenu} />
+                <Sidebar showMenu={showMenu} setShowMenu={setShowMenu} />
                 <main className='h-screen pt-14 sm:pl-40'>
                     <UserRouter />
                 </main>
