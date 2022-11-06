@@ -30,8 +30,4 @@
     h4 {
         @apply font-semibold text-lg
     }
-
-    svg {
-        @apply h-fit
-    }
 }
