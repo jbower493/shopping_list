@@ -5,35 +5,16 @@ import GuestRouter from 'router/guest'
 import Sidebar from 'components/Sidebar'
 import Loader from 'components/Loader'
 import { Bars3Icon } from '@heroicons/react/24/outline'
-import { useGetUserQuery, useLogoutMutation } from 'utils/api/auth'
-import { toast } from 'react-hot-toast'
+import { useGetUserQuery } from 'utils/api/auth'
 
 function App() {
     const [showMenu, setShowMenu] = useState(false)
 
     const { data, isFetching, isError } = useGetUserQuery()
-    const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation()
-
-    const renderLogoutButton = () =>
-        isLogoutLoading ? (
-            <Loader size='small' />
-        ) : (
-            <button
-                type='button'
-                onClick={() => {
-                    logout()
-                        .unwrap()
-                        .then((result) => toast.success(result.message))
-                }}
-            >
-                Logout
-            </button>
-        )
 
     const renderMenu = () => {
         return (
             <div className='flex items-center'>
-                {renderLogoutButton()}
                 <button onClick={() => setShowMenu(!showMenu)} className='ml-4 sm:hidden'>
                     <Bars3Icon className='w-7 text-primary hover:text-primary-hover' />
                 </button>
