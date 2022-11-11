@@ -29,11 +29,11 @@ const listsApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { list: DetailedList } }) => res.data.list,
             providesTags: ['List']
         }),
-        addItemToList: builder.mutation<MutationResponse, { listId: string; itemId: number }>({
-            query: ({ listId, itemId }) => ({
-                url: `/list/${listId}/add-item`,
+        addItemToList: builder.mutation<MutationResponse, { listId: string; itemName: string }>({
+            query: ({ listId, itemName }) => ({
+                url: `/list/${listId}/add-item-by-name`,
                 method: 'POST',
-                body: { item_id: itemId }
+                body: { item_name: itemName }
             }),
             invalidatesTags: (_, error) => (error ? [] : ['List'])
         }),
