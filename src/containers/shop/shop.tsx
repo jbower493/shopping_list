@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { ClipboardDocumentListIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon } from '@heroicons/react/24/outline'
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { useGetSingleListQuery } from 'utils/api/lists'
 import Loader from 'components/Loader'
 import { useSessionStorage } from 'utils/hooks'
@@ -22,7 +23,7 @@ function Shop() {
 
     return (
         <div className='p-4'>
-            <div className='flex justify-between mb-8'>
+            <div className='flex justify-between mb-7'>
                 <h2>Shop</h2>
                 <div className='flex items-center'>
                     <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />

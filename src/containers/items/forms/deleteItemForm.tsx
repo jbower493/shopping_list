@@ -21,7 +21,7 @@ function DeleteItemForm() {
             <UrlModal title='Delete Item' desc={item?.name} onClose={() => navigate(-1)}>
                 <>
                     <ModalBody>
-                        Are you sure you want to delete this item? Deleting the item will remove it from all lists that it belongs to.
+                        Are you sure you want to delete this item? Deleting the item will remove it from any lists and recipes that it belongs to.
                     </ModalBody>
                     <ModalFooter
                         buttons={[

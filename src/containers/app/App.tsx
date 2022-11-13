@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import UserRouter from 'router/user'
 import GuestRouter from 'router/guest'
@@ -10,12 +11,18 @@ import { useGetUserQuery } from 'utils/api/auth'
 function App() {
     const [showMenu, setShowMenu] = useState(false)
 
+    const menuIconRef = useRef<HTMLButtonElement | null>(null)
+
     const { data, isFetching, isError } = useGetUserQuery()
+
+    const handleCloseMenu = () => {
+        setShowMenu(false)
+    }
 
     const renderMenu = () => {
         return (
             <div className='flex items-center'>
-                <button onClick={() => setShowMenu(!showMenu)} className='ml-4 sm:hidden'>
+                <button ref={menuIconRef} onClick={() => setShowMenu(!showMenu)} className='ml-4 sm:hidden'>
                     <Bars3Icon className='w-7 text-primary hover:text-primary-hover' />
                 </button>
             </div>
@@ -37,7 +44,7 @@ function App() {
             )
         return (
             <div>
-                <Sidebar showMenu={showMenu} setShowMenu={setShowMenu} />
+                <Sidebar showMenu={showMenu} closeMenu={handleCloseMenu} menuIconRef={menuIconRef} />
                 <main className='h-screen pt-14 sm:pl-40'>
                     <UserRouter />
                 </main>
@@ -48,8 +55,10 @@ function App() {
     return (
         <div>
             <Toaster />
-            <header className='fixed z-10 w-full h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
-                <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
+            <header className='fixed z-20 w-full h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
+                <Link to='/lists' className='hover:no-underline'>
+                    <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
+                </Link>
                 {!isFetching && !isError && data ? renderMenu() : ''}
             </header>
             {renderApp()}

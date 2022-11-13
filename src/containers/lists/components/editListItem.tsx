@@ -9,9 +9,10 @@ interface EditListItemProps {
         id: number
     }
     listId: number
+    setAnyChanges: (anyChanges: boolean) => void
 }
 
-function EditListItem({ item: { name, id }, listId }: EditListItemProps) {
+function EditListItem({ item: { name, id }, listId, setAnyChanges }: EditListItemProps) {
     const [removeItemFromList, { isLoading }] = useRemoveItemFromListMutation()
 
     return (
@@ -20,7 +21,14 @@ function EditListItem({ item: { name, id }, listId }: EditListItemProps) {
             {isLoading ? (
                 <Loader size='small' />
             ) : (
-                <button type='button' onClick={() => removeItemFromList({ listId: listId.toString(), itemId: id })}>
+                <button
+                    type='button'
+                    onClick={() => {
+                        removeItemFromList({ listId: listId.toString(), itemId: id })
+                            .unwrap()
+                            .then(() => setAnyChanges(true))
+                    }}
+                >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                 </button>
             )}

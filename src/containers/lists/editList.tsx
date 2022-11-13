@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useGetSingleListQuery, useAddItemToListMutation } from 'utils/api/lists'
 import { useGetItemsQuery } from 'utils/api/items'
 import Loader from 'components/Loader'
-import { PlusIcon } from '@heroicons/react/24/solid'
+import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
+import { CheckIcon } from '@heroicons/react/24/outline'
 import EditListItem from 'containers/lists/components/editListItem'
 import ComboBox from 'components/Form/Inputs/Combobox'
 
 function EditList() {
     const [itemToAdd, setItemToAdd] = useState<string>('')
+    const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     const { listId } = useParams()
 
@@ -28,7 +30,7 @@ function EditList() {
                 <h3 className='mb-2'>Items</h3>
                 <ul>
                     {items.map((item, index) => (
-                        <EditListItem key={index} item={item} listId={id} />
+                        <EditListItem key={index} item={item} listId={id} setAnyChanges={setAnyChanges} />
                     ))}
                 </ul>
             </>
@@ -37,11 +39,22 @@ function EditList() {
 
     return (
         <div className='p-4'>
-            <h2 className='mb-3'>Edit List</h2>
-            <p className='text-secondary-500 mb-7'>Name: {name}</p>
-            <label htmlFor='addItem' className='mt-7'>
-                Add Item
-            </label>
+            <Link to='/lists'>Back to lists</Link>
+            <div className='flex justify-between mb-7 mt-2'>
+                <h2>Edit List</h2>
+                <div className='flex items-center'>
+                    {anyChanges ? (
+                        <small className='opacity-40 flex text-sm mr-2'>
+                            <CheckIcon className='w-4 mr-1' /> Saved
+                        </small>
+                    ) : (
+                        ''
+                    )}
+                    <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
+                    <p>{name}</p>
+                </div>
+            </div>
+            <label htmlFor='addItem'>Add Item</label>
             <div className='flex items-center mb-7'>
                 <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
                 {isAddItemLoading ? (

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useGetSingleRecipeQuery, useAddItemToRecipeMutation } from 'utils/api/recipes'
 import { useGetItemsQuery } from 'utils/api/items'
 import Loader from 'components/Loader'
-import { PlusIcon } from '@heroicons/react/24/solid'
+import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import ComboBox from 'components/Form/Inputs/Combobox'
 
@@ -37,8 +37,14 @@ function EditRecipe() {
 
     return (
         <div className='p-4'>
-            <h2 className='mb-3'>Edit Recipe</h2>
-            <p className='text-secondary-500 mb-7'>Name: {name}</p>
+            <Link to='/recipes'>Back to recipes</Link>
+            <div className='flex justify-between mb-7 mt-2'>
+                <h2>Edit Recipe</h2>
+                <div className='flex items-center'>
+                    <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
+                    <p>{name}</p>
+                </div>
+            </div>
             <label htmlFor='addItem' className='mt-7'>
                 Add Item
             </label>

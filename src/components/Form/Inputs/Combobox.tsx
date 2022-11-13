@@ -1,5 +1,5 @@
 import React from 'react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid'
+import { ChevronUpDownIcon } from '@heroicons/react/24/solid'
 import { Combobox } from '@headlessui/react'
 
 interface ComboBoxProps {
@@ -32,24 +32,11 @@ function ComboBox({ options, value, setValue }: ComboBoxProps) {
                             <Combobox.Option
                                 key={option}
                                 className={({ active }) =>
-                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-teal-600 text-white' : 'text-gray-900'}`
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-primary text-white' : 'text-gray-900'}`
                                 }
                                 value={option}
                             >
-                                {({ selected, active }) => (
-                                    <>
-                                        <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{option}</span>
-                                        {selected ? (
-                                            <span
-                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                                    active ? 'text-white' : 'text-teal-600'
-                                                }`}
-                                            >
-                                                <CheckIcon className='h-5 w-5' aria-hidden='true' />
-                                            </span>
-                                        ) : null}
-                                    </>
-                                )}
+                                <span className={'block truncate'}>{option}</span>
                             </Combobox.Option>
                         ))
                     )}
