@@ -41,7 +41,7 @@ function Shop() {
                         }}
                         className='flex justify-between w-full max-w-md mb-2'
                     >
-                        <p className={`${isChecked ? 'line-through' : ''}`}>{name}</p>
+                        <p className={`${isChecked ? 'line-through opacity-30' : ''}`}>{name}</p>
                         {isChecked ? (
                             <CheckCircleIcon className='w-6 text-primary' />
                         ) : (
