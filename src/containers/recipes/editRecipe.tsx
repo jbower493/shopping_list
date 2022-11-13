@@ -5,6 +5,7 @@ import { useGetItemsQuery } from 'utils/api/items'
 import Loader from 'components/Loader'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
+import ComboBox from 'components/Form/Inputs/Combobox'
 
 function EditRecipe() {
     const [itemToAdd, setItemToAdd] = useState<string>('')
@@ -36,31 +37,22 @@ function EditRecipe() {
 
     return (
         <div className='p-4'>
-            <h2 className='mb-4'>Edit Recipe</h2>
-            <p className='text-secondary-500 mb-8'>Name: {name}</p>
-            {renderCurrentItems()}
-            <label htmlFor='addItem' className='mt-8'>
+            <h2 className='mb-3'>Edit Recipe</h2>
+            <p className='text-secondary-500 mb-7'>Name: {name}</p>
+            <label htmlFor='addItem' className='mt-7'>
                 Add Item
             </label>
-            <div className='flex items-center'>
-                <select id='addItem' name='addItem' value={itemToAdd} onChange={(e) => setItemToAdd(e.target.value)} className='w-80 mb-0 mr-4'>
-                    <option value='' disabled>
-                        Select an item...
-                    </option>
-                    {itemsData.map(({ name, id }) => (
-                        <option key={id} value={id.toString()}>
-                            {name}
-                        </option>
-                    ))}
-                </select>
+            <div className='flex items-center mb-7'>
+                <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
                 {isAddItemLoading ? (
                     <Loader size={'small'} />
                 ) : (
-                    <button onClick={() => addItemToRecipe({ recipeId: id.toString(), itemId: Number(itemToAdd) })}>
+                    <button onClick={() => addItemToRecipe({ recipeId: id.toString(), itemName: itemToAdd })}>
                         <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
                     </button>
                 )}
             </div>
+            {renderCurrentItems()}
         </div>
     )
 }

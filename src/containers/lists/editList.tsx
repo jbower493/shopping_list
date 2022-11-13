@@ -7,17 +7,6 @@ import { PlusIcon } from '@heroicons/react/24/solid'
 import EditListItem from 'containers/lists/components/editListItem'
 import ComboBox from 'components/Form/Inputs/Combobox'
 
-const people = [
-    { value: '1', label: 'Wade Cooper' },
-    { value: '2', label: 'Arlene Mccoy' },
-    { value: '3', label: 'Devon Webb' },
-    { value: '4', label: 'Tom Cook' },
-    { value: '5', label: 'Tanya Fox' },
-    { value: '6', label: 'Hellen Schmidt' },
-    { value: '7', label: 'Mate Smith' },
-    { value: '8', label: 'Jonny English' }
-]
-
 function EditList() {
     const [itemToAdd, setItemToAdd] = useState<string>('')
 
@@ -48,27 +37,13 @@ function EditList() {
 
     return (
         <div className='p-4'>
-            <h2 className='mb-4'>Edit List</h2>
-            <p className='text-secondary-500 mb-8'>Name: {name}</p>
-            {renderCurrentItems()}
-            <label htmlFor='addItem' className='mt-8'>
+            <h2 className='mb-3'>Edit List</h2>
+            <p className='text-secondary-500 mb-7'>Name: {name}</p>
+            <label htmlFor='addItem' className='mt-7'>
                 Add Item
             </label>
-            <div className='flex items-center'>
-                {/* <select id='addItem' name='addItem' value={itemToAdd} onChange={(e) => setItemToAdd(e.target.value)} className='w-80 mb-0 mr-4'>
-                    <option value='' disabled>
-                        Select an item...
-                    </option>
-                    {itemsData.map(({ name, id }) => (
-                        <option key={id} value={id.toString()}>
-                            {name}
-                        </option>
-                    ))}
-                </select> */}
-                {/* <input id='addItem' name='addItem' value={itemToAdd} onChange={(e) => setItemToAdd(e.target.value)} className='w-80 mb-0 mr-4' /> */}
-
-                <ComboBox options={people} />
-
+            <div className='flex items-center mb-7'>
+                <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
                 {isAddItemLoading ? (
                     <Loader size={'small'} />
                 ) : (
@@ -77,6 +52,7 @@ function EditList() {
                     </button>
                 )}
             </div>
+            {renderCurrentItems()}
         </div>
     )
 }

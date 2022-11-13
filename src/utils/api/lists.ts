@@ -31,7 +31,7 @@ const listsApi = appApi.injectEndpoints({
         }),
         addItemToList: builder.mutation<MutationResponse, { listId: string; itemName: string }>({
             query: ({ listId, itemName }) => ({
-                url: `/list/${listId}/add-item-by-name`,
+                url: `/list/${listId}/add-item`,
                 method: 'POST',
                 body: { item_name: itemName }
             }),

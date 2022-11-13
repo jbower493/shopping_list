@@ -29,11 +29,11 @@ const recipesApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { recipe: DetailedRecipe } }) => res.data.recipe,
             providesTags: ['Recipe']
         }),
-        addItemToRecipe: builder.mutation<MutationResponse, { recipeId: string; itemId: number }>({
-            query: ({ recipeId, itemId }) => ({
+        addItemToRecipe: builder.mutation<MutationResponse, { recipeId: string; itemName: string }>({
+            query: ({ recipeId, itemName }) => ({
                 url: `/recipe/${recipeId}/add-item`,
                 method: 'POST',
-                body: { item_id: itemId }
+                body: { item_name: itemName }
             }),
             invalidatesTags: (_, error) => (error ? [] : ['Recipe'])
         }),
