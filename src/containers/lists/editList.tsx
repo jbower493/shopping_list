@@ -60,7 +60,13 @@ function EditList() {
                 {isAddItemLoading ? (
                     <Loader size={'small'} />
                 ) : (
-                    <button onClick={() => addItemToList({ listId: id.toString(), itemName: itemToAdd })}>
+                    <button
+                        onClick={() => {
+                            addItemToList({ listId: id.toString(), itemName: itemToAdd })
+                                .unwrap()
+                                .then(() => setAnyChanges(true))
+                        }}
+                    >
                         <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
                     </button>
                 )}
