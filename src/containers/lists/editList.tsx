@@ -44,8 +44,9 @@ function EditList() {
                 <h2>Edit List</h2>
                 <div className='flex items-center'>
                     {anyChanges ? (
-                        <small className='opacity-40 flex text-sm mr-2'>
-                            <CheckIcon className='w-4 mr-1' /> Saved
+                        <small className='opacity-40 flex items-center text-sm mr-2'>
+                            <CheckIcon className='w-4 h-4 mr-1' />
+                            Saved
                         </small>
                     ) : (
                         ''
