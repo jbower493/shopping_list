@@ -23,10 +23,10 @@ function UserRouter() {
         <Routes>
             <Route path='/login' element={<Navigate to='/' replace />} />
             <Route path='/' element={<Navigate to='/lists' replace />} />
-            <Route path='/items' element={<Items />}>
+            {/* <Route path='/items' element={<Items />}>
                 <Route path='new' element={<AddItemForm />} />
                 <Route path='delete/:itemId' element={<DeleteItemForm />} />
-            </Route>
+            </Route> */}
             <Route path='/lists' element={<Lists />}>
                 <Route path='new' element={<AddListForm />} />
                 <Route path='delete/:listId' element={<DeleteListForm />} />

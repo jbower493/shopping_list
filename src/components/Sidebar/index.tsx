@@ -35,11 +35,11 @@ function Sidebar({ showMenu, setShowMenu }: { showMenu: boolean; setShowMenu: (s
                         Lists
                     </Link>
                 </li>
-                <li className='mb-1'>
+                {/* <li className='mb-1'>
                     <Link to='/items' onClick={() => setShowMenu(false)}>
                         Items
                     </Link>
-                </li>
+                </li> */}
                 <li className='mb-1'>
                     <Link to='/recipes' onClick={() => setShowMenu(false)}>
                         Recipes
