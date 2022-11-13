@@ -57,7 +57,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                 </li>
             </ul>
             {!isFetching && !isError && data ? (
-                <div className='flex justify-center items p-4'>
+                <div className='flex justify-center items p-4 mb-14'>
                     <Button
                         className='w-full'
                         color='secondary'
