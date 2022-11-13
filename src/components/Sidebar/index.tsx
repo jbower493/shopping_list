@@ -9,7 +9,11 @@ function Sidebar({ showMenu, setShowMenu }: { showMenu: boolean; setShowMenu: (s
     const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation()
 
     return (
-        <nav className={`fixed w-40 h-screen pt-14 bg-gray-100 flex${showMenu ? '' : ' hidden'} sm:flex flex-col justify-between`}>
+        <nav
+            className={`fixed w-40 h-screen pt-14 bg-gray-100 flex${
+                showMenu ? ' translate-x-0' : ' -translate-x-full'
+            } transition-transform sm:translate-x-0 flex-col justify-between`}
+        >
             <ul className='p-4'>
                 <li className='mb-1'>
                     <Link to='/lists' onClick={() => setShowMenu(false)}>
