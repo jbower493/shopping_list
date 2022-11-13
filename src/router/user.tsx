@@ -1,9 +1,9 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-import Items from 'containers/items/items'
-import AddItemForm from 'containers/items/forms/addItemForm'
-import DeleteItemForm from 'containers/items/forms/deleteItemForm'
+// import Items from 'containers/items/items'
+// import AddItemForm from 'containers/items/forms/addItemForm'
+// import DeleteItemForm from 'containers/items/forms/deleteItemForm'
 
 import Lists from 'containers/lists/lists'
 import AddListForm from 'containers/lists/forms/addListForm'
