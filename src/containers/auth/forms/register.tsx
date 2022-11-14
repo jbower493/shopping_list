@@ -32,7 +32,7 @@ function RegisterForm() {
     }
 
     return (
-        <div className='flex items-center h-full p-4'>
+        <div className='flex items-center h-full h-[-webkit-fill-available] p-4'>
             <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
                 <InputField<Inputs>
                     label='Name'

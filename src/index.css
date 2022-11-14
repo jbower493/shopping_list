@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root, .h-full {
+html, body, #root {
     height: 100%;
     height: -webkit-fill-available;
 }

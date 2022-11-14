@@ -19,7 +19,7 @@ function Loader({ size, fullPage, color }: LoaderProps) {
 
     const renderLoader = () => <div className={`${getSize()} rounded-full ${getColor()} animate-spin`} />
 
-    if (fullPage) return <div className='w-full h-full flex justify-center items-center'>{renderLoader()}</div>
+    if (fullPage) return <div className='w-full h-full h-[-webkit-fill-available] flex justify-center items-center'>{renderLoader()}</div>
 
     return renderLoader()
 }
