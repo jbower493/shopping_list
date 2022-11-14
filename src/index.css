@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+    html, body, #root {
+        @apply h-full
+    }
+
     label {
         @apply block mb-1
     }

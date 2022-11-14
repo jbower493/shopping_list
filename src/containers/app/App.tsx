@@ -30,38 +30,28 @@ function App() {
     }
 
     const renderApp = () => {
-        if (isFetching)
-            return (
-                <div className='h-screen pt-14'>
-                    <Loader fullPage />
-                </div>
-            )
-        if (isError || !data)
-            return (
-                <div className='h-screen pt-14'>
-                    <GuestRouter />
-                </div>
-            )
+        if (isFetching) return <Loader fullPage />
+        if (isError || !data) return <GuestRouter />
         return (
-            <div>
+            <>
                 <Sidebar showMenu={showMenu} closeMenu={handleCloseMenu} menuIconRef={menuIconRef} />
-                <main className='h-screen pt-14 sm:pl-40'>
+                <main className='h-full sm:pl-40'>
                     <UserRouter />
                 </main>
-            </div>
+            </>
         )
     }
 
     return (
-        <div>
+        <div className='h-full flex flex-col'>
             <Toaster />
-            <header className='fixed z-20 w-full h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
+            <header className='relative w-full z-20 h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
                 <Link to='/lists' className='hover:no-underline'>
                     <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
                 </Link>
                 {!isFetching && !isError && data ? renderMenu() : ''}
             </header>
-            {renderApp()}
+            <div className='flex-1'>{renderApp()}</div>
         </div>
     )
 }

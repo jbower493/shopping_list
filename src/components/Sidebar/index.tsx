@@ -30,7 +30,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
     return (
         <nav
             ref={sidebarRef}
-            className={`fixed w-40 h-screen pt-14 bg-gray-100 flex${
+            className={`fixed top-0 h-full pt-14 w-40 bg-gray-100 flex${
                 showMenu ? ' translate-x-0' : ' -translate-x-full'
             } transition-transform sm:translate-x-0 flex-col justify-between z-10`}
         >
@@ -57,7 +57,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                 </li>
             </ul>
             {!isFetching && !isError && data ? (
-                <div className='flex justify-center items p-4 mb-14'>
+                <div className='flex justify-center items p-4'>
                     <Button
                         className='w-full'
                         color='secondary'
