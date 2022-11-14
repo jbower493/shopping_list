@@ -43,15 +43,15 @@ function App() {
     }
 
     return (
-        <div className='h-full flex flex-col'>
+        <div className='h-full'>
             <Toaster />
-            <header className='relative w-full z-20 h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
+            <header className='fixed top-0 w-full z-20 h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
                 <Link to='/lists' className='hover:no-underline'>
                     <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
                 </Link>
                 {!isFetching && !isError && data ? renderMenu() : ''}
             </header>
-            <div className='flex-1'>{renderApp()}</div>
+            <div className='h-full pt-14'>{renderApp()}</div>
         </div>
     )
 }
