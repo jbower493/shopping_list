@@ -31,6 +31,7 @@ function LoginForm() {
     return (
         <div className='flex items-center h-full h-[-webkit-fill-available] p-4'>
             <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
+                <h2 className='text-center mb-2'>Login</h2>
                 <InputField<Inputs>
                     label='Email'
                     name='email'
