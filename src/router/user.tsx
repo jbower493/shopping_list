@@ -9,6 +9,7 @@ import Lists from 'containers/lists/lists'
 import AddListForm from 'containers/lists/forms/addListForm'
 import DeleteListForm from 'containers/lists/forms/deleteListForm'
 import EditList from 'containers/lists/editList'
+import AddFromRecipeForm from 'containers/lists/forms/addFromRecipeForm'
 
 import Recipes from 'containers/recipes/recipes'
 import AddRecipeForm from 'containers/recipes/forms/addRecipeForm'
@@ -31,7 +32,9 @@ function UserRouter() {
                 <Route path='new' element={<AddListForm />} />
                 <Route path='delete/:listId' element={<DeleteListForm />} />
             </Route>
-            <Route path='/lists/edit/:listId' element={<EditList />} />
+            <Route path='/lists/edit/:listId' element={<EditList />}>
+                <Route path='add-from-recipe' element={<AddFromRecipeForm />} />
+            </Route>
             <Route path='/recipes' element={<Recipes />}>
                 <Route path='new' element={<AddRecipeForm />} />
                 <Route path='delete/:recipeId' element={<DeleteRecipeForm />} />

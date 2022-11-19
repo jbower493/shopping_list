@@ -44,6 +44,14 @@ const listsApi = appApi.injectEndpoints({
                 body: { item_id: itemId }
             }),
             invalidatesTags: (_, error) => (error ? [] : ['List'])
+        }),
+        addItemsFromRecipe: builder.mutation<MutationResponse, { listId: string; recipeId: string }>({
+            query: ({ listId, recipeId }) => ({
+                url: `/list/${listId}/add-from-recipe`,
+                method: 'POST',
+                body: { recipe_id: recipeId }
+            }),
+            invalidatesTags: (_, error) => (error ? [] : ['List'])
         })
     })
 })
@@ -54,5 +62,6 @@ export const {
     useDeleteListMutation,
     useGetSingleListQuery,
     useAddItemToListMutation,
-    useRemoveItemFromListMutation
+    useRemoveItemFromListMutation,
+    useAddItemsFromRecipeMutation
 } = listsApi

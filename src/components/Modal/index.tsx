@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import ModalHeader from 'components/Modal/ModalHeader'
+import Loader from 'components/Loader'
 
 export type OnClose = () => void
 
@@ -11,9 +12,10 @@ interface ModalProps {
     desc?: string
     open: boolean
     onClose: OnClose
+    loading?: boolean
 }
 
-function Modal({ children, title, desc, open, onClose }: ModalProps) {
+function Modal({ children, title, desc, open, onClose, loading }: ModalProps) {
     return (
         <Transition show={open} as={Fragment}>
             <Dialog className='relative z-50' onClose={onClose}>
@@ -26,7 +28,13 @@ function Modal({ children, title, desc, open, onClose }: ModalProps) {
                         <Dialog.Panel className='relative w-full sm:w-auto sm:max-w-2xl sm:min-w-120 max-h-96 rounded-xl bg-white overflow-hidden'>
                             <>
                                 <ModalHeader title={title} desc={desc} />
-                                {children}
+                                {loading ? (
+                                    <div className='w-full h-40 flex justify-center items-center'>
+                                        <Loader />
+                                    </div>
+                                ) : (
+                                    children
+                                )}
                                 <button className='absolute top-4 right-4' type='button' onClick={onClose}>
                                     <XMarkIcon className='text-black w-6' />
                                 </button>

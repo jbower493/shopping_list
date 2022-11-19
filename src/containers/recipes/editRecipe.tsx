@@ -55,9 +55,7 @@ function EditRecipe() {
                     <p>{name}</p>
                 </div>
             </div>
-            <label htmlFor='addItem' className='mt-7'>
-                Add Item
-            </label>
+            <p>Add Item</p>
             <div className='flex items-center mb-7'>
                 <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
                 {isAddItemLoading ? (

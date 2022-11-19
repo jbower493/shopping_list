@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, Outlet } from 'react-router-dom'
 import { useGetSingleListQuery, useAddItemToListMutation } from 'utils/api/lists'
 import { useGetItemsQuery } from 'utils/api/items'
 import Loader from 'components/Loader'
+import Button from 'components/Button'
 import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditListItem from 'containers/lists/components/editListItem'
@@ -55,8 +56,8 @@ function EditList() {
                     <p>{name}</p>
                 </div>
             </div>
-            <label htmlFor='addItem'>Add Item</label>
-            <div className='flex items-center mb-7'>
+            <p>Add Item</p>
+            <div className='flex items-center mb-2'>
                 <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
                 {isAddItemLoading ? (
                     <Loader size={'small'} />
@@ -75,7 +76,11 @@ function EditList() {
                     </button>
                 )}
             </div>
+            <Button to={`/lists/edit/${listId}/add-from-recipe`} className='text-sm h-7 px-3 mb-4'>
+                Add From Recipe
+            </Button>
             {renderCurrentItems()}
+            <Outlet />
         </div>
     )
 }

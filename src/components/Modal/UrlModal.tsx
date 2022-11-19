@@ -7,9 +7,10 @@ interface UrlModalProps {
     onClose: OnClose
     title: string
     desc?: string
+    loading?: boolean
 }
 
-function UrlModal({ children, onClose, title, desc }: UrlModalProps) {
+function UrlModal({ children, onClose, title, desc, loading }: UrlModalProps) {
     const [modalOpen, setModalOpen] = useState(false)
 
     useEffect(() => {
@@ -17,7 +18,7 @@ function UrlModal({ children, onClose, title, desc }: UrlModalProps) {
     }, [])
 
     return (
-        <Modal open={modalOpen} onClose={onClose} title={title} desc={desc}>
+        <Modal open={modalOpen} onClose={onClose} title={title} desc={desc} loading={loading || false}>
             {children}
         </Modal>
     )
