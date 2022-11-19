@@ -9,9 +9,10 @@ interface EditRecipeItemProps {
         id: number
     }
     recipeId: number
+    setAnyChanges: (anyChanges: boolean) => void
 }
 
-function EditRecipeItem({ item: { name, id }, recipeId }: EditRecipeItemProps) {
+function EditRecipeItem({ item: { name, id }, recipeId, setAnyChanges }: EditRecipeItemProps) {
     const [removeItemFromRecipe, { isLoading }] = useRemoveItemFromRecipeMutation()
 
     return (
@@ -20,7 +21,14 @@ function EditRecipeItem({ item: { name, id }, recipeId }: EditRecipeItemProps) {
             {isLoading ? (
                 <Loader size='small' />
             ) : (
-                <button type='button' onClick={() => removeItemFromRecipe({ recipeId: recipeId.toString(), itemId: id })}>
+                <button
+                    type='button'
+                    onClick={() => {
+                        removeItemFromRecipe({ recipeId: recipeId.toString(), itemId: id })
+                            .unwrap()
+                            .then(() => setAnyChanges(true))
+                    }}
+                >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                 </button>
             )}
