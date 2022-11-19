@@ -16,9 +16,13 @@ function ComboBox({ options, value, setValue }: ComboBoxProps) {
 
     return (
         <Combobox value={value} onChange={setValue}>
-            <div className='ComboBox relative w-80 mb-0 mr-4'>
+            <div className='ComboBox relative w-60 mb-0 mr-4'>
                 <div>
-                    <Combobox.Input className='mb-0' displayValue={(option: string) => option} onChange={(event) => setValue(event.target.value)} />
+                    <Combobox.Input
+                        className='mb-0 pr-9'
+                        displayValue={(option: string) => option}
+                        onChange={(event) => setValue(event.target.value)}
+                    />
                     <Combobox.Button className='absolute inset-y-0 right-0 flex items-center pr-2'>
                         <ChevronUpDownIcon className='h-6 w-6 text-gray-400' aria-hidden='true' />
                     </Combobox.Button>

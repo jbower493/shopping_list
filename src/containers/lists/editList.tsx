@@ -65,7 +65,10 @@ function EditList() {
                         onClick={() => {
                             addItemToList({ listId: id.toString(), itemName: itemToAdd })
                                 .unwrap()
-                                .then(() => setAnyChanges(true))
+                                .then(() => {
+                                    setAnyChanges(true)
+                                    setItemToAdd('')
+                                })
                         }}
                     >
                         <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
