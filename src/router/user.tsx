@@ -5,6 +5,10 @@ import Items from 'containers/items/items'
 import AddItemForm from 'containers/items/forms/addItemForm'
 import DeleteItemForm from 'containers/items/forms/deleteItemForm'
 
+import Categories from 'containers/categories/categories'
+import AddCategoryForm from 'containers/categories/forms/addCategoryForm'
+import DeleteCategoryForm from 'containers/categories/forms/deleteCategoryForm'
+
 import Lists from 'containers/lists/lists'
 import AddListForm from 'containers/lists/forms/addListForm'
 import DeleteListForm from 'containers/lists/forms/deleteListForm'
@@ -27,6 +31,10 @@ function UserRouter() {
             <Route path='/items' element={<Items />}>
                 <Route path='new' element={<AddItemForm />} />
                 <Route path='delete/:itemId' element={<DeleteItemForm />} />
+            </Route>
+            <Route path='/categories' element={<Categories />}>
+                <Route path='new' element={<AddCategoryForm />} />
+                <Route path='delete/:categoryId' element={<DeleteCategoryForm />} />
             </Route>
             <Route path='/lists' element={<Lists />}>
                 <Route path='new' element={<AddListForm />} />

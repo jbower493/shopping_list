@@ -50,6 +50,11 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                         Items
                     </Link>
                 </li>
+                <li className='mb-1'>
+                    <Link to='/categories' onClick={() => closeMenu()}>
+                        Categories
+                    </Link>
+                </li>
                 <li>
                     <Link to='/shop' onClick={() => closeMenu()}>
                         Shop

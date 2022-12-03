@@ -5,4 +5,5 @@ export interface Item {
 
 export interface NewItem {
     name: string
+    category_id?: number | null
 }
