@@ -30,7 +30,7 @@ const itemsApi = appApi.injectEndpoints({
                 method: 'PUT',
                 body: payload
             }),
-            invalidatesTags: (_, error) => (error ? [] : ['Items'])
+            invalidatesTags: (_, error) => (error ? [] : ['Items', 'List'])
         })
     })
 })

@@ -75,7 +75,7 @@ function Items() {
             <div className='mt-8'>
                 {itemsData.map(({ name, id, category }) => (
                     <div key={id} className='flex justify-between w-full max-w-md mb-2'>
-                        <div className='flex items-center'>
+                        <div className='flex items-center flex-wrap'>
                             {isAssigningCategories ? (
                                 <Checkbox className='mr-2' isChecked={idsToAssign.includes(id)} onClick={() => toggleItemForAssignment(id)} />
                             ) : (

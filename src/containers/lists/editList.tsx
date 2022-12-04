@@ -9,7 +9,6 @@ import { CheckIcon } from '@heroicons/react/24/outline'
 import EditListItem from 'containers/lists/components/editListItem'
 import ComboBox from 'components/Form/Inputs/Combobox'
 import CategoryTag from 'components/CategoryTag'
-import type { Category } from 'containers/categories/types'
 import { getExistingCategories } from 'utils/functions'
 
 function EditList() {
@@ -39,7 +38,14 @@ function EditList() {
 
             return (
                 <>
-                    <CategoryTag key={id} className='mb-2' categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
+                    <div className='mb-2'>
+                        <CategoryTag key={id} categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
+                        {id === -1 ? (
+                            <p className='text-[13px] opacity-40 mt-1'>Go to the &quot;Items&quot; page to assign your items to categories</p>
+                        ) : (
+                            ''
+                        )}
+                    </div>
                     <ul className='mb-6'>
                         {list.map((item, index) => (
                             <EditListItem key={index} item={item} listId={listIdSafe} setAnyChanges={setAnyChanges} />
