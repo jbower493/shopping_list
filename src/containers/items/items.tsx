@@ -110,7 +110,7 @@ function Items() {
                     </select>
                     <div className='flex'>
                         <Button
-                            disabled={idsToAssign.length <= 0}
+                            disabled={idsToAssign.length <= 0 || isConfirmCategoryAssignmentLoading}
                             loading={isConfirmCategoryAssignmentLoading}
                             onClick={() =>
                                 confirmCategoryAssignment({
