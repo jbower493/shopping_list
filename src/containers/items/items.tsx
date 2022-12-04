@@ -6,7 +6,7 @@ import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Checkbox from 'components/Checkbox'
-import { getCategoryOptions, getCategoryColor } from 'utils/functions'
+import { getCategoryOptions } from 'utils/functions'
 import { toast } from 'react-hot-toast'
 import CategoryTag from 'components/CategoryTag'
 
@@ -38,19 +38,6 @@ function Items() {
     if (isItemsFetching || isCategoriesFetching) return <Loader fullPage />
     if (isItemsError || !itemsData || !categoriesData || isCategoriesError) return <h1>Items error</h1>
 
-    // const renderCategoriesLegend = () => {
-    //     return (
-    //         <div className='mt-8'>
-    //             {/* <h4>Categories</h4> */}
-    //             <div className='flex flex-wrap gap-2'>
-    //                 {categoriesData.map(({ name, id }) => {
-    //                     return <CategoryTag key={id} categoriesData={categoriesData} categoryName={name} />
-    //                 })}
-    //             </div>
-    //         </div>
-    //     )
-    // }
-
     return (
         <div className='p-4'>
             <h2>Items</h2>
@@ -71,7 +58,6 @@ function Items() {
             ) : (
                 ''
             )}
-            {/* {renderCategoriesLegend()} */}
             <div className='mt-8'>
                 {itemsData.map(({ name, id, category }) => (
                     <div key={id} className='flex justify-between w-full max-w-md mb-2'>
@@ -89,7 +75,6 @@ function Items() {
                                 categoryName={category?.name || 'Uncategorized'}
                                 size='sm'
                             />
-                            {/* <small className={`${getCategoryColor(categoriesData, category?.name || 'Uncategorized')} w-4 h-4 rounded-full ml-2`} /> */}
                         </div>
                         <div>
                             <button type='button' onClick={() => navigate(`/items/delete/${id}`)}>
