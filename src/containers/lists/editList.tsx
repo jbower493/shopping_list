@@ -10,6 +10,7 @@ import EditListItem from 'containers/lists/components/editListItem'
 import ComboBox from 'components/Form/Inputs/Combobox'
 import CategoryTag from 'components/CategoryTag'
 import type { Category } from 'containers/categories/types'
+import { getExistingCategories } from 'utils/functions'
 
 function EditList() {
     const [itemToAdd, setItemToAdd] = useState<string>('')
@@ -28,23 +29,17 @@ function EditList() {
     const { name, id: listIdSafe, items } = listData
 
     // Get a unique list of all the categories present in the list
-    const categoriesInList: Category[] = []
-
-    items.forEach(({ category }) => {
-        if (category && !categoriesInList.find(({ id }) => id === category.id)) {
-            categoriesInList.push(category)
-        }
-    })
+    const categoriesInList = getExistingCategories(items)
 
     const renderCurrentItems = () => {
-        const renderCategory = (id?: number, name?: string) => {
+        const renderCategory = (id: number, name: string) => {
             let list = items.filter(({ category }) => !category)
 
-            if (id && name) list = items.filter(({ category }) => category?.id === id)
+            if (id !== -1) list = items.filter(({ category }) => category?.id === id)
 
             return (
                 <>
-                    <CategoryTag key={id} className='mb-2' categoriesData={categoriesInList} categoryName={name || 'Uncategorized'} />
+                    <CategoryTag key={id} className='mb-2' categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
                     <ul className='mb-6'>
                         {list.map((item, index) => (
                             <EditListItem key={index} item={item} listId={listIdSafe} setAnyChanges={setAnyChanges} />
@@ -58,7 +53,6 @@ function EditList() {
             <>
                 <h3 className='mb-2'>Items</h3>
                 {categoriesInList.map(({ id, name }) => renderCategory(id, name))}
-                {items.filter(({ category }) => !category).map(() => renderCategory())}
             </>
         )
     }

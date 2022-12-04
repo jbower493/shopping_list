@@ -1,4 +1,5 @@
 import type { Category } from 'containers/categories/types'
+import type { Item } from 'containers/items/types'
 
 export const getCategoryOptions = (categories: Category[] = []) => {
     const options = categories.map(({ id, name }) => ({
@@ -30,3 +31,9 @@ export const getCategoryColor = (categories: Category[], catName: string) => {
             return 'bg-gray-400'
     }
 }
+
+export const getExistingCategories = (itemsList: Item[]) =>
+    itemsList
+        .map(({ category }) => category || { name: 'Uncategorized', id: -1 })
+        .filter((category, index, arr) => arr.findIndex((categoryNested) => category.id === categoryNested.id) === index)
+        .sort((_, b) => (b.id === -1 ? -1 : 0))
