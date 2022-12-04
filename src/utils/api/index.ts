@@ -14,6 +14,6 @@ export const appApi = createApi({
             return headers
         }
     }),
-    tagTypes: ['User', 'Items', 'Lists', 'List', 'Recipes', 'Recipe', 'Categories'],
+    tagTypes: ['User', 'Items', 'Lists', 'List', 'Recipes', 'Recipe', 'Categories', 'Menus', 'Menu'],
     endpoints: () => ({})
 })

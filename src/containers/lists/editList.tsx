@@ -101,9 +101,14 @@ function EditList() {
                     </button>
                 )}
             </div>
-            <Button to={`/lists/edit/${listId}/add-from-recipe`} className='text-sm h-7 px-3 mb-4'>
-                Add From Recipe
-            </Button>
+            <div className='flex mb-4'>
+                <Button to={`/lists/edit/${listId}/add-from-recipe`} className='text-sm h-7 px-3'>
+                    Add From Recipe
+                </Button>
+                <Button to={`/lists/edit/${listId}/add-from-menu`} className='text-sm h-7 px-3 ml-2'>
+                    Add From Menu
+                </Button>
+            </div>
             {renderCurrentItems()}
             <Outlet />
         </div>

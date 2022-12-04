@@ -46,6 +46,11 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                     </Link>
                 </li>
                 <li className='mb-1'>
+                    <Link to='/menus' onClick={() => closeMenu()}>
+                        Menus
+                    </Link>
+                </li>
+                <li className='mb-1'>
                     <Link to='/items' onClick={() => closeMenu()}>
                         Items
                     </Link>
