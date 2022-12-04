@@ -11,6 +11,7 @@ import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { useGetCategoriesQuery } from 'utils/api/categories'
+import { getCategoryOptions } from 'utils/functions'
 
 type Inputs = {
     name: string
@@ -45,17 +46,6 @@ function AddItemForm() {
     const renderForm = () => {
         if (isError || !data) return <h3>Error fetching categories</h3>
 
-        const getOptions = () => {
-            const options = data.map(({ id, name }) => ({
-                label: name,
-                value: id.toString()
-            }))
-
-            options.unshift({ label: 'Uncategorized', value: 'none' })
-
-            return options
-        }
-
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody>
@@ -70,7 +60,7 @@ function AddItemForm() {
                     <SelectField<Inputs>
                         label='Category'
                         name='categoryId'
-                        options={getOptions()}
+                        options={getCategoryOptions(data)}
                         register={register}
                         validation={{ required: 'This is required.' }}
                         error={touchedFields.categoryId && errors.categoryId}

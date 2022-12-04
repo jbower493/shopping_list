@@ -1,5 +1,5 @@
 import { appApi } from 'utils/api'
-import { Item, NewItem } from 'containers/items/types'
+import type { Item, NewItem, BulkAssignCategoryPayload } from 'containers/items/types'
 import type { MutationResponse } from 'utils/api'
 
 const itemsApi = appApi.injectEndpoints({
@@ -23,8 +23,16 @@ const itemsApi = appApi.injectEndpoints({
                 method: 'DELETE'
             }),
             invalidatesTags: (_, error) => (error ? [] : ['Items'])
+        }),
+        bulkAssignCategory: builder.mutation<MutationResponse, BulkAssignCategoryPayload>({
+            query: (payload) => ({
+                url: '/item/category/bulk',
+                method: 'PUT',
+                body: payload
+            }),
+            invalidatesTags: (_, error) => (error ? [] : ['Items'])
         })
     })
 })
 
-export const { useGetItemsQuery, useCreateItemMutation, useDeleteItemMutation } = itemsApi
+export const { useGetItemsQuery, useCreateItemMutation, useDeleteItemMutation, useBulkAssignCategoryMutation } = itemsApi

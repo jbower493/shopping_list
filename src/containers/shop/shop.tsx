@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { useGetSingleListQuery } from 'utils/api/lists'
 import Loader from 'components/Loader'
 import { useSessionStorage } from 'utils/hooks'
+import Checkbox from 'components/Checkbox'
 
 function Shop() {
     const { listId } = useParams()
@@ -43,11 +43,7 @@ function Shop() {
                         className='flex justify-between w-full max-w-md mb-2'
                     >
                         <p className={`${isChecked ? 'line-through opacity-30' : ''}`}>{name}</p>
-                        {isChecked ? (
-                            <CheckCircleIcon className='w-6 text-primary' />
-                        ) : (
-                            <div className='w-5 h-5 rounded-full border-2 border-primary hover:border-primary-hover' />
-                        )}
+                        <Checkbox isChecked={isChecked} />
                     </button>
                 )
             })}
