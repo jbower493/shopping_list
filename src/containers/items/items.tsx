@@ -13,7 +13,7 @@ import CategoryTag from 'components/CategoryTag'
 function Items() {
     const [isAssigningCategories, setIsAssigningCategories] = useState(false)
     const [idsToAssign, setIdsToAssign] = useState<number[]>([])
-    const [categoryToAssign, setCategoryToAssign] = useState<string | null>(null)
+    const [categoryToAssign, setCategoryToAssign] = useState<string>('none')
 
     const navigate = useNavigate()
 
@@ -86,9 +86,9 @@ function Items() {
             </div>
             {isAssigningCategories ? (
                 <div className='mt-6'>
-                    <select className='w-60' onChange={(e) => setCategoryToAssign(e.target.value)}>
+                    <select className='w-60' value={categoryToAssign} onChange={(e) => setCategoryToAssign(e.target.value)}>
                         {getCategoryOptions(categoriesData).map(({ label, value }) => (
-                            <option key={value} value={value} selected={categoryToAssign === value}>
+                            <option key={value} value={value}>
                                 {label}
                             </option>
                         ))}
@@ -99,7 +99,7 @@ function Items() {
                             loading={isConfirmCategoryAssignmentLoading}
                             onClick={() =>
                                 confirmCategoryAssignment({
-                                    category_id: categoryToAssign === null ? null : Number(categoryToAssign),
+                                    category_id: categoryToAssign === 'none' ? -1 : Number(categoryToAssign),
                                     item_ids: idsToAssign
                                 })
                                     .unwrap()

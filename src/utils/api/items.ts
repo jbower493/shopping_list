@@ -25,10 +25,10 @@ const itemsApi = appApi.injectEndpoints({
             invalidatesTags: (_, error) => (error ? [] : ['Items'])
         }),
         bulkAssignCategory: builder.mutation<MutationResponse, BulkAssignCategoryPayload>({
-            query: (payload) => ({
-                url: '/item/category/bulk',
+            query: ({ category_id, item_ids }) => ({
+                url: `/item/category/${category_id}/bulk`,
                 method: 'PUT',
-                body: payload
+                body: { item_ids }
             }),
             invalidatesTags: (_, error) => (error ? [] : ['Items', 'List'])
         })

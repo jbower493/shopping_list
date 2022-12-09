@@ -47,17 +47,15 @@ const listsApi = appApi.injectEndpoints({
         }),
         addItemsFromRecipe: builder.mutation<MutationResponse, { listId: string; recipeId: string }>({
             query: ({ listId, recipeId }) => ({
-                url: `/list/${listId}/add-from-recipe`,
-                method: 'POST',
-                body: { recipe_id: recipeId }
+                url: `/list/${listId}/add-from-recipe/${recipeId}`,
+                method: 'POST'
             }),
             invalidatesTags: (_, error) => (error ? [] : ['List'])
         }),
         addItemsFromMenu: builder.mutation<MutationResponse, { listId: string; menuId: string }>({
             query: ({ listId, menuId }) => ({
-                url: `/list/${listId}/add-from-menu`,
-                method: 'POST',
-                body: { menu_id: menuId }
+                url: `/list/${listId}/add-from-menu/${menuId}`,
+                method: 'POST'
             }),
             invalidatesTags: (_, error) => (error ? [] : ['List'])
         })
