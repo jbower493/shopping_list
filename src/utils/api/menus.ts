@@ -31,9 +31,8 @@ const menusApi = appApi.injectEndpoints({
         }),
         addRecipeToMenu: builder.mutation<MutationResponse, { menuId: string; recipeId: number }>({
             query: ({ menuId, recipeId }) => ({
-                url: `/menu/${menuId}/add-recipe`,
-                method: 'POST',
-                body: { recipe_id: recipeId }
+                url: `/menu/${menuId}/add-recipe/${recipeId}`,
+                method: 'POST'
             }),
             invalidatesTags: (_, error) => (error ? [] : ['Menu'])
         }),
