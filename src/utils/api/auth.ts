@@ -1,5 +1,5 @@
 import { appApi } from 'utils/api'
-import { User, Credentials, RegisterCredentials } from 'containers/auth/types'
+import { User, Credentials, RegisterCredentials, RequestPasswordResetPayload, ResetPasswordPayload } from 'containers/auth/types'
 import type { MutationResponse } from 'utils/api'
 
 const authApi = appApi.injectEndpoints({
@@ -30,8 +30,29 @@ const authApi = appApi.injectEndpoints({
                 method: 'GET'
             }),
             invalidatesTags: (_, error) => (error ? [] : ['User'])
+        }),
+        requestPasswordReset: builder.mutation<MutationResponse, RequestPasswordResetPayload>({
+            query: (payload) => ({
+                url: '/forgot-password',
+                method: 'POST',
+                body: payload
+            })
+        }),
+        resetPassword: builder.mutation<MutationResponse, ResetPasswordPayload>({
+            query: (payload) => ({
+                url: '/reset-password',
+                method: 'POST',
+                body: payload
+            })
         })
     })
 })
 
-export const { useGetUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi
+export const {
+    useGetUserQuery,
+    useLoginMutation,
+    useRegisterMutation,
+    useLogoutMutation,
+    useRequestPasswordResetMutation,
+    useResetPasswordMutation
+} = authApi

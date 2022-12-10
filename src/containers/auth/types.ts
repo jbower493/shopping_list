@@ -12,3 +12,14 @@ export interface Credentials {
 export interface RegisterCredentials extends Credentials {
     name: string
 }
+
+export interface RequestPasswordResetPayload {
+    email: string
+}
+
+export interface ResetPasswordPayload {
+    token: string
+    email: string
+    password: string
+    password_confirmation: string
+}
