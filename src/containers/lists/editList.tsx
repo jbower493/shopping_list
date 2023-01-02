@@ -4,15 +4,14 @@ import { useGetSingleListQuery, useAddItemToListMutation } from 'utils/api/lists
 import { useGetItemsQuery } from 'utils/api/items'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
-import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditListItem from 'containers/lists/components/editListItem'
-import ComboBox from 'components/Form/Inputs/Combobox'
 import CategoryTag from 'components/CategoryTag'
 import { getExistingCategories } from 'utils/functions'
+import AddItem from 'containers/lists/components/addItem'
 
 function EditList() {
-    const [itemToAdd, setItemToAdd] = useState<string>('')
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     const { listId } = useParams()
@@ -37,21 +36,21 @@ function EditList() {
             if (id !== -1) list = items.filter(({ category }) => category?.id === id)
 
             return (
-                <>
+                <div key={id} className='mb-6'>
                     <div className='mb-2'>
-                        <CategoryTag key={id} categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
+                        <CategoryTag categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
                         {id === -1 ? (
                             <p className='text-[13px] opacity-40 mt-1'>Go to the &quot;Items&quot; page to assign your items to categories</p>
                         ) : (
                             ''
                         )}
                     </div>
-                    <ul className='mb-6'>
+                    <ul>
                         {list.map((item, index) => (
                             <EditListItem key={index} item={item} listId={listIdSafe} setAnyChanges={setAnyChanges} />
                         ))}
                     </ul>
-                </>
+                </div>
             )
         }
 
@@ -81,26 +80,20 @@ function EditList() {
                     <p>{name}</p>
                 </div>
             </div>
-            <p>Add Item</p>
-            <div className='flex items-center mb-2'>
-                <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
-                {isAddItemLoading ? (
-                    <Loader size={'small'} />
-                ) : (
-                    <button
-                        onClick={() => {
-                            addItemToList({ listId: listIdSafe.toString(), itemName: itemToAdd })
-                                .unwrap()
-                                .then(() => {
-                                    setAnyChanges(true)
-                                    setItemToAdd('')
-                                })
-                        }}
-                    >
-                        <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
-                    </button>
-                )}
-            </div>
+
+            <AddItem
+                className='mb-2'
+                onAdd={(itemToAdd) => {
+                    addItemToList({ listId: listIdSafe.toString(), itemName: itemToAdd })
+                        .unwrap()
+                        .then(() => {
+                            setAnyChanges(true)
+                        })
+                }}
+                itemsList={itemsData}
+                isAddItemLoading={isAddItemLoading}
+            />
+
             <div className='flex mb-4'>
                 <Button to={`/lists/edit/${listId}/add-from-recipe`} className='text-sm h-7 px-3'>
                     Add From Recipe

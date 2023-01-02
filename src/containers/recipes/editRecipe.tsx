@@ -3,13 +3,12 @@ import { useParams, Link } from 'react-router-dom'
 import { useGetSingleRecipeQuery, useAddItemToRecipeMutation } from 'utils/api/recipes'
 import { useGetItemsQuery } from 'utils/api/items'
 import Loader from 'components/Loader'
-import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
-import ComboBox from 'components/Form/Inputs/Combobox'
+import AddItem from 'containers/lists/components/addItem'
 
 function EditRecipe() {
-    const [itemToAdd, setItemToAdd] = useState<string>('')
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     const { recipeId } = useParams()
@@ -55,26 +54,20 @@ function EditRecipe() {
                     <p>{name}</p>
                 </div>
             </div>
-            <p>Add Item</p>
-            <div className='flex items-center mb-7'>
-                <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsData.map(({ name }) => name)} />
-                {isAddItemLoading ? (
-                    <Loader size={'small'} />
-                ) : (
-                    <button
-                        onClick={() => {
-                            addItemToRecipe({ recipeId: id.toString(), itemName: itemToAdd })
-                                .unwrap()
-                                .then(() => {
-                                    setAnyChanges(true)
-                                    setItemToAdd('')
-                                })
-                        }}
-                    >
-                        <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
-                    </button>
-                )}
-            </div>
+
+            <AddItem
+                className='mb-7'
+                onAdd={(itemToAdd) => {
+                    addItemToRecipe({ recipeId: id.toString(), itemName: itemToAdd })
+                        .unwrap()
+                        .then(() => {
+                            setAnyChanges(true)
+                        })
+                }}
+                itemsList={itemsData}
+                isAddItemLoading={isAddItemLoading}
+            />
+
             {renderCurrentItems()}
         </div>
     )
