@@ -61,7 +61,7 @@ function EditRecipe() {
                 onAdd={(itemToAdd, categoryId) => {
                     const payload: AddItemToRecipePayload = { recipeId: id.toString(), itemName: itemToAdd }
 
-                    if (categoryId) payload.categoryId = categoryId
+                    if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
 
                     addItemToRecipe(payload)
                         .unwrap()

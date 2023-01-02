@@ -87,7 +87,7 @@ function EditList() {
                 onAdd={(itemToAdd, categoryId) => {
                     const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd }
 
-                    if (categoryId) payload.categoryId = categoryId
+                    if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
 
                     addItemToList(payload)
                         .unwrap()
