@@ -10,6 +10,7 @@ import EditListItem from 'containers/lists/components/editListItem'
 import CategoryTag from 'components/CategoryTag'
 import { getExistingCategories } from 'utils/functions'
 import AddItem from 'containers/lists/components/addItem'
+import type { AddItemToListPayload } from 'containers/lists/types'
 
 function EditList() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
@@ -83,8 +84,12 @@ function EditList() {
 
             <AddItem
                 className='mb-2'
-                onAdd={(itemToAdd) => {
-                    addItemToList({ listId: listIdSafe.toString(), itemName: itemToAdd })
+                onAdd={(itemToAdd, categoryId) => {
+                    const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd }
+
+                    if (categoryId) payload.categoryId = categoryId
+
+                    addItemToList(payload)
                         .unwrap()
                         .then(() => {
                             setAnyChanges(true)

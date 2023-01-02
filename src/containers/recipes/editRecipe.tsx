@@ -7,6 +7,7 @@ import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
+import type { AddItemToRecipePayload } from 'containers/recipes/types'
 
 function EditRecipe() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
@@ -57,8 +58,12 @@ function EditRecipe() {
 
             <AddItem
                 className='mb-7'
-                onAdd={(itemToAdd) => {
-                    addItemToRecipe({ recipeId: id.toString(), itemName: itemToAdd })
+                onAdd={(itemToAdd, categoryId) => {
+                    const payload: AddItemToRecipePayload = { recipeId: id.toString(), itemName: itemToAdd }
+
+                    if (categoryId) payload.categoryId = categoryId
+
+                    addItemToRecipe(payload)
                         .unwrap()
                         .then(() => {
                             setAnyChanges(true)

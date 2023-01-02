@@ -1,5 +1,5 @@
 import { appApi } from 'utils/api'
-import { Recipe, NewRecipe, DetailedRecipe } from 'containers/recipes/types'
+import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload } from 'containers/recipes/types'
 import type { MutationResponse } from 'utils/api'
 
 const recipesApi = appApi.injectEndpoints({
@@ -29,12 +29,18 @@ const recipesApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { recipe: DetailedRecipe } }) => res.data.recipe,
             providesTags: ['Recipe']
         }),
-        addItemToRecipe: builder.mutation<MutationResponse, { recipeId: string; itemName: string }>({
-            query: ({ recipeId, itemName }) => ({
-                url: `/recipe/${recipeId}/add-item`,
-                method: 'POST',
-                body: { item_name: itemName }
-            }),
+        addItemToRecipe: builder.mutation<MutationResponse, AddItemToRecipePayload>({
+            query: ({ recipeId, itemName, categoryId }) => {
+                const body: { item_name: string; category_id?: string } = { item_name: itemName }
+
+                if (categoryId) body.category_id = categoryId
+
+                return {
+                    url: `/recipe/${recipeId}/add-item`,
+                    method: 'POST',
+                    body
+                }
+            },
             invalidatesTags: (_, error) => (error ? [] : ['Recipe', 'Items'])
         }),
         removeItemFromRecipe: builder.mutation<MutationResponse, { recipeId: string; itemId: number }>({

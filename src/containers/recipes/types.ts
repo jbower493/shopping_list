@@ -14,3 +14,9 @@ export interface DetailedRecipe {
     name: string
     items: Item[]
 }
+
+export interface AddItemToRecipePayload {
+    recipeId: string
+    itemName: string
+    categoryId?: string
+}

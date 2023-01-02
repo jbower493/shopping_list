@@ -1,5 +1,5 @@
 import { appApi } from 'utils/api'
-import { List, NewList, DetailedList } from 'containers/lists/types'
+import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/lists/types'
 import type { MutationResponse } from 'utils/api'
 
 const listsApi = appApi.injectEndpoints({
@@ -29,12 +29,18 @@ const listsApi = appApi.injectEndpoints({
             transformResponse: (res: { data: { list: DetailedList } }) => res.data.list,
             providesTags: ['List']
         }),
-        addItemToList: builder.mutation<MutationResponse, { listId: string; itemName: string }>({
-            query: ({ listId, itemName }) => ({
-                url: `/list/${listId}/add-item`,
-                method: 'POST',
-                body: { item_name: itemName }
-            }),
+        addItemToList: builder.mutation<MutationResponse, AddItemToListPayload>({
+            query: ({ listId, itemName, categoryId }) => {
+                const body: { item_name: string; category_id?: string } = { item_name: itemName }
+
+                if (categoryId) body.category_id = categoryId
+
+                return {
+                    url: `/list/${listId}/add-item`,
+                    method: 'POST',
+                    body
+                }
+            },
             invalidatesTags: (_, error) => (error ? [] : ['List', 'Items'])
         }),
         removeItemFromList: builder.mutation<MutationResponse, { listId: string; itemId: number }>({

@@ -14,3 +14,9 @@ export interface DetailedList {
     name: string
     items: Item[]
 }
+
+export interface AddItemToListPayload {
+    listId: string
+    itemName: string
+    categoryId?: string
+}
