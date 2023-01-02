@@ -35,7 +35,7 @@ const listsApi = appApi.injectEndpoints({
                 method: 'POST',
                 body: { item_name: itemName }
             }),
-            invalidatesTags: (_, error) => (error ? [] : ['List'])
+            invalidatesTags: (_, error) => (error ? [] : ['List', 'Items'])
         }),
         removeItemFromList: builder.mutation<MutationResponse, { listId: string; itemId: number }>({
             query: ({ listId, itemId }) => ({

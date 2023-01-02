@@ -35,7 +35,7 @@ const recipesApi = appApi.injectEndpoints({
                 method: 'POST',
                 body: { item_name: itemName }
             }),
-            invalidatesTags: (_, error) => (error ? [] : ['Recipe'])
+            invalidatesTags: (_, error) => (error ? [] : ['Recipe', 'Items'])
         }),
         removeItemFromRecipe: builder.mutation<MutationResponse, { recipeId: string; itemId: number }>({
             query: ({ recipeId, itemId }) => ({
