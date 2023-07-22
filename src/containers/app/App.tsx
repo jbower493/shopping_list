@@ -6,7 +6,7 @@ import GuestRouter from 'router/guest'
 import Sidebar from 'components/Sidebar'
 import Loader from 'components/Loader'
 import { Bars3Icon } from '@heroicons/react/24/outline'
-import { useGetUserQuery } from 'utils/api/auth'
+import { useGetUserQuery } from 'containers/auth/queries'
 
 function App() {
     const [showMenu, setShowMenu] = useState(false)
