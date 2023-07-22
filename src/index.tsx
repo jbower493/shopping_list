@@ -1,18 +1,36 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Provider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
-import { store } from 'store/store'
 import App from 'containers/app/app'
 import reportWebVitals from './reportWebVitals'
+import axios from 'axios'
+import { baseUrl } from 'config'
+import { Provider } from 'react-redux'
+import { store } from 'store/store'
+
+axios.defaults.baseURL = baseUrl
+axios.defaults.withCredentials = true
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            retry: false
+        }
+    }
+})
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </QueryClientProvider>
     </Provider>
 )
 
