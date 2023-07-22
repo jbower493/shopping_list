@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useGetUserQuery, useLogoutMutation } from 'utils/api/auth'
+import { useLogoutMutation } from 'utils/api/auth'
+import { useGetUserQuery } from 'containers/auth/queries'
 import { toast } from 'react-hot-toast'
 import Button from 'components/Button'
 
@@ -12,8 +13,10 @@ interface SidebarProps {
 
 function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
     const sidebarRef = useRef<HTMLElement | null>(null)
-
-    const { data, isFetching, isError } = useGetUserQuery()
+    useEffect(() => {
+        console.log('sidebar mounted')
+    }, [])
+    const { data: getUserData, isFetching: isGetUserFetching, isError: isGetUserError } = useGetUserQuery()
     const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation()
 
     const handleClickAway = (e: MouseEvent) => {
@@ -66,7 +69,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                     </Link>
                 </li>
             </ul>
-            {!isFetching && !isError && data ? (
+            {!isGetUserFetching && !isGetUserError && getUserData ? (
                 <div className='flex justify-center items p-4'>
                     <Button
                         className='w-full'

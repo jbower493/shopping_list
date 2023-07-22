@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useRegisterMutation } from 'utils/api/auth'
+import { useRegisterMutation } from 'containers/auth/queries'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
 import { toast } from 'react-hot-toast'
@@ -15,7 +15,7 @@ type Inputs = {
 function RegisterForm() {
     const navigate = useNavigate()
 
-    const [registerUser] = useRegisterMutation()
+    const { mutateAsync: registerUser } = useRegisterMutation()
 
     const {
         register,
@@ -26,9 +26,12 @@ function RegisterForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        const result = await registerUser(data).unwrap()
-        toast.success(result.message)
-        navigate('/login')
+        await registerUser(data, {
+            onSuccess: (res) => {
+                toast.success(res.data.message)
+                navigate('/login')
+            }
+        })
     }
 
     return (

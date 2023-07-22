@@ -6,7 +6,3 @@ export interface QueryResponse<T> {
 export interface MutationResponse {
     message: string
 }
-
-export interface ErrorResponse {
-    errors: string[]
-}

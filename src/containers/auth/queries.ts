@@ -4,17 +4,27 @@ import { User, Credentials, RegisterCredentials, RequestPasswordResetPayload, Re
 import type { QueryResponse, MutationResponse } from 'utils/api/types'
 
 /***** Get user *****/
-// const getUser = () => axios.get<void, AxiosResponse<QueryResponse<{ user: User }>>>('/user')
-
 const getUser = () => axios.get<QueryResponse<{ user: User }>>('/user')
+export const getUserKey = ['User']
 
 export function useGetUserQuery() {
-    return useQuery({ queryKey: ['User'], queryFn: getUser, select: (response) => response.data.data.user })
+    return useQuery({ queryKey: getUserKey, queryFn: getUser, select: (response) => response.data.data.user })
 }
 
 /***** Login *****/
-const login = (credentials: Credentials) => axios.post<Credentials, AxiosResponse<MutationResponse>>('/login', credentials)
+const login = (credentials: Credentials) => axios.post<MutationResponse>('/login', credentials)
 
 export function useLoginMutation() {
-    return useMutation({ mutationFn: login })
+    return useMutation({
+        mutationFn: login
+    })
+}
+
+/***** Register *****/
+const register = (credentials: RegisterCredentials) => axios.post<MutationResponse>('/register', credentials)
+
+export function useRegisterMutation() {
+    return useMutation({
+        mutationFn: register
+    })
 }

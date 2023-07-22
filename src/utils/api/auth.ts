@@ -4,26 +4,26 @@ import type { MutationResponse } from 'utils/api'
 
 const authApi = appApi.injectEndpoints({
     endpoints: (builder) => ({
-        getUser: builder.query<User, void>({
-            query: () => '/user',
-            transformResponse: (res: { data: { user: User } }) => res.data.user,
-            providesTags: ['User']
-        }),
-        login: builder.mutation<MutationResponse, Credentials>({
-            query: (credentials) => ({
-                url: '/login',
-                method: 'POST',
-                body: credentials
-            }),
-            invalidatesTags: (_, error) => (error ? [] : ['User'])
-        }),
-        register: builder.mutation<MutationResponse, RegisterCredentials>({
-            query: (credentials) => ({
-                url: '/register',
-                method: 'POST',
-                body: credentials
-            })
-        }),
+        // getUser: builder.query<User, void>({
+        //     query: () => '/user',
+        //     transformResponse: (res: { data: { user: User } }) => res.data.user,
+        //     providesTags: ['User']
+        // }),
+        // login: builder.mutation<MutationResponse, Credentials>({
+        //     query: (credentials) => ({
+        //         url: '/login',
+        //         method: 'POST',
+        //         body: credentials
+        //     }),
+        //     invalidatesTags: (_, error) => (error ? [] : ['User'])
+        // }),
+        // register: builder.mutation<MutationResponse, RegisterCredentials>({
+        //     query: (credentials) => ({
+        //         url: '/register',
+        //         method: 'POST',
+        //         body: credentials
+        //     })
+        // }),
         logout: builder.mutation<MutationResponse, void>({
             query: () => ({
                 url: '/logout',
@@ -48,11 +48,4 @@ const authApi = appApi.injectEndpoints({
     })
 })
 
-export const {
-    useGetUserQuery,
-    useLoginMutation,
-    useRegisterMutation,
-    useLogoutMutation,
-    useRequestPasswordResetMutation,
-    useResetPasswordMutation
-} = authApi
+export const { useLogoutMutation, useRequestPasswordResetMutation, useResetPasswordMutation } = authApi

@@ -13,8 +13,8 @@ function App() {
 
     const menuIconRef = useRef<HTMLButtonElement | null>(null)
 
-    const { data, isFetching, isError } = useGetUserQuery()
-
+    const { data: getUserData, isFetching: isGetUserFetching, isError: isGetUserError } = useGetUserQuery()
+    console.log(isGetUserFetching)
     const handleCloseMenu = () => {
         setShowMenu(false)
     }
@@ -30,8 +30,8 @@ function App() {
     }
 
     const renderApp = () => {
-        if (isFetching) return <Loader fullPage />
-        if (isError || !data) return <GuestRouter />
+        if (isGetUserFetching) return <Loader fullPage />
+        if (isGetUserError || !getUserData) return <GuestRouter />
         return (
             <>
                 <Sidebar showMenu={showMenu} closeMenu={handleCloseMenu} menuIconRef={menuIconRef} />
@@ -49,7 +49,7 @@ function App() {
                 <Link to='/lists' className='hover:no-underline'>
                     <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
                 </Link>
-                {!isFetching && !isError && data ? renderMenu() : ''}
+                {!isGetUserFetching && !isGetUserError && getUserData ? renderMenu() : ''}
             </header>
             <div className='h-full h-[-webkit-fill-available] pt-14'>{renderApp()}</div>
         </div>

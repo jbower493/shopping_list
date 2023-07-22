@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useLoginMutation } from 'utils/api/auth'
+import { useLoginMutation, getUserKey } from 'containers/auth/queries'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
-import { toast } from 'react-hot-toast'
 import SubmitButton from 'components/Form/SubmitButton'
+import { toast } from 'react-hot-toast'
+import { queryClient } from 'utils/api/queryClient'
 
 type Inputs = {
     email: string
@@ -12,7 +13,7 @@ type Inputs = {
 }
 
 function LoginForm() {
-    const [login] = useLoginMutation()
+    const { mutateAsync: login } = useLoginMutation()
 
     const {
         register,
@@ -23,9 +24,12 @@ function LoginForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        const result = await login(data).unwrap()
-
-        toast.success(result.message)
+        await login(data, {
+            onSuccess: (res) => {
+                toast.success(res.data.message)
+                queryClient.invalidateQueries(getUserKey)
+            }
+        })
     }
 
     return (
