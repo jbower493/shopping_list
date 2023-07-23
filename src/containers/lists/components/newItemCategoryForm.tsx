@@ -6,7 +6,7 @@ import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
 import SubmitButton from 'components/Form/SubmitButton'
 import SelectField from 'components/Form/Inputs/SelectField'
-import { useGetCategoriesQuery } from 'utils/api/categories'
+import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { getCategoryOptions } from 'utils/functions'
 
 type Inputs = {
@@ -21,7 +21,7 @@ interface NewItemCategoryFormProps {
 }
 
 function NewItemCategoryForm({ onSubmitFunc, isOpen, close, itemName }: NewItemCategoryFormProps) {
-    const { data, isFetching, isError } = useGetCategoriesQuery()
+    const { data: getCategoriesData, isFetching: isGetCategoriesFetching, isError: isGetCategoriesError } = useGetCategoriesQuery()
 
     const {
         register,
@@ -36,7 +36,7 @@ function NewItemCategoryForm({ onSubmitFunc, isOpen, close, itemName }: NewItemC
     }
 
     const renderForm = () => {
-        if (isError || !data) return <h3>Error fetching categories</h3>
+        if (isGetCategoriesError || !getCategoriesData) return <h3>Error fetching categories</h3>
 
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -44,7 +44,7 @@ function NewItemCategoryForm({ onSubmitFunc, isOpen, close, itemName }: NewItemC
                     <SelectField<Inputs>
                         label='Category'
                         name='categoryId'
-                        options={getCategoryOptions(data)}
+                        options={getCategoryOptions(getCategoriesData)}
                         register={register}
                         validation={{ required: 'This is required.' }}
                         error={touchedFields.categoryId && errors.categoryId}
@@ -69,7 +69,7 @@ function NewItemCategoryForm({ onSubmitFunc, isOpen, close, itemName }: NewItemC
                 title='Categorize New Item'
                 desc={`This is a new item. Please choose a category for "${itemName}".`}
                 onClose={() => close()}
-                loading={isFetching}
+                loading={isGetCategoriesFetching}
             >
                 {renderForm()}
             </Modal>

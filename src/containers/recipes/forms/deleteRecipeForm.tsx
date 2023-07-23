@@ -3,18 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { useDeleteRecipeMutation, useGetRecipesQuery } from 'utils/api/recipes'
+import { getRecipesKey, useDeleteRecipeMutation } from 'containers/recipes/queries'
+import { useGetRecipesQuery } from 'containers/recipes/queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
+import { queryClient } from 'utils/queryClient'
 
 function DeleteRecipeForm() {
     const navigate = useNavigate()
     const { recipeId } = useParams()
 
-    const { recipe } = useGetRecipesQuery(undefined, {
-        selectFromResult: ({ data }) => ({ recipe: data?.find((currentRecipe) => currentRecipe.id.toString() === recipeId) })
-    })
-    const [deleteRecipe, { isLoading }] = useDeleteRecipeMutation()
+    const { data: getRecipesData } = useGetRecipesQuery()
+
+    const recipe = getRecipesData?.find((currentRecipe) => currentRecipe.id.toString() === recipeId)
+
+    const { mutate: deleteRecipe, isLoading: isDeleteRecipeLoading } = useDeleteRecipeMutation()
 
     return (
         <div>
@@ -29,15 +32,16 @@ function DeleteRecipeForm() {
                             <Button
                                 key={2}
                                 color='error'
-                                loading={isLoading}
-                                disabled={isLoading}
+                                loading={isDeleteRecipeLoading}
+                                disabled={isDeleteRecipeLoading}
                                 onClick={() => {
-                                    deleteRecipe(recipeId || '')
-                                        .unwrap()
-                                        .then((result) => {
-                                            toast.success(result.message)
-                                        })
-                                        .finally(() => navigate(-1))
+                                    deleteRecipe(recipeId || '', {
+                                        onSuccess: (res) => {
+                                            toast.success(res.data.message)
+                                            queryClient.invalidateQueries(getRecipesKey)
+                                        },
+                                        onSettled: () => navigate(-1)
+                                    })
                                 }}
                             >
                                 Delete

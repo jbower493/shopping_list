@@ -1,18 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useGetListsQuery } from 'utils/api/lists'
+import { useGetListsQuery } from 'containers/lists/queries'
 import Loader from 'components/Loader'
 
 function ChooseList() {
-    const { data, isFetching, isError } = useGetListsQuery()
+    const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useGetListsQuery()
 
-    if (isFetching) return <Loader fullPage />
-    if (isError || !data) return <h1>Lists error</h1>
+    if (isGetListsFetching) return <Loader fullPage />
+    if (isGetListsError || !getListsData) return <h1>Lists error</h1>
 
     return (
         <div className='p-4'>
             <h2 className='mb-4'>Choose A List</h2>
-            {data.map(({ id, name }) => (
+            {getListsData.map(({ id, name }) => (
                 <Link
                     className='mb-2 text-primary text-xl font-semibold hover:text-primary-hover hover:no-underline block'
                     key={id}

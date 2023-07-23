@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useGetMenusQuery } from 'utils/api/menus'
+import { useGetMenusQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
@@ -8,10 +8,10 @@ import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
 function Menus() {
     const navigate = useNavigate()
 
-    const { data, isFetching, isError } = useGetMenusQuery()
+    const { data: getMenusData, isFetching: isGetMenusFetching, isError: isGetMenusError } = useGetMenusQuery()
 
-    if (isFetching) return <Loader fullPage />
-    if (isError || !data) return <h1>Menus error</h1>
+    if (isGetMenusFetching) return <Loader fullPage />
+    if (isGetMenusError || !getMenusData) return <h1>Menus error</h1>
 
     return (
         <div className='p-4'>
@@ -19,7 +19,7 @@ function Menus() {
             <Button className='mb-8' onClick={() => navigate('/menus/new')}>
                 Add New
             </Button>
-            {data.map(({ name, id }) => (
+            {getMenusData.map(({ name, id }) => (
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                     <p>{name}</p>
                     <div>

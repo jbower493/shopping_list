@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useGetSingleMenuQuery, useAddRecipeToMenuMutation } from 'utils/api/menus'
-import { useGetRecipesQuery } from 'utils/api/recipes'
+import { getSingleMenuKey, useAddRecipeToMenuMutation } from './queries'
+import { useGetSingleMenuQuery } from './queries'
+import { useGetRecipesQuery } from 'containers/recipes/queries'
 import Loader from 'components/Loader'
 import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
+import { queryClient } from 'utils/queryClient'
 
 function EditMenu() {
     // The recipe id as a string
@@ -14,19 +16,19 @@ function EditMenu() {
 
     const { menuId } = useParams()
 
-    const { data: menuData, isFetching: isGetMenuFetching, isError: isGetMenuError } = useGetSingleMenuQuery(menuId || '')
-    const { data: recipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
+    const { data: getSingleMenuData, isFetching: isGetSingleMenuFetching, isError: isGetSingleMenuError } = useGetSingleMenuQuery(menuId || '')
+    const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
 
-    const [addRecipeToMenu, { isLoading: isAddRecipeLoading }] = useAddRecipeToMenuMutation()
+    const { mutate: addRecipeToMenu, isLoading: isAddRecipeToMenuLoading } = useAddRecipeToMenuMutation()
 
     useEffect(() => {
-        if (recipesData && recipesData.length > 0) setRecipeToAdd(recipesData[0].id.toString())
-    }, [recipesData])
+        if (getRecipesData && getRecipesData.length > 0) setRecipeToAdd(getRecipesData[0].id.toString())
+    }, [getRecipesData])
 
-    if (isGetMenuFetching || isGetRecipesFetching) return <Loader fullPage />
-    if (isGetMenuError || !menuData || isGetRecipesError || !recipesData) return <h1>Menu error</h1>
+    if (isGetSingleMenuFetching || isGetRecipesFetching) return <Loader fullPage />
+    if (isGetSingleMenuError || !getSingleMenuData || isGetRecipesError || !getRecipesData) return <h1>Menu error</h1>
 
-    const { name, id, recipes } = menuData
+    const { name, id, recipes } = getSingleMenuData
 
     const renderCurrentRecipes = () => {
         return (
@@ -42,7 +44,7 @@ function EditMenu() {
     }
 
     const renderAddRecipeSelect = () => {
-        const options = recipesData.map(({ name, id }) => (
+        const options = getRecipesData.map(({ name, id }) => (
             <option key={id} value={id} selected={Number(recipeToAdd) === id}>
                 {name}
             </option>
@@ -76,16 +78,20 @@ function EditMenu() {
             <p>Add Recipe</p>
             <div className='flex items-center mb-7'>
                 {renderAddRecipeSelect()}
-                {isAddRecipeLoading ? (
+                {isAddRecipeToMenuLoading ? (
                     <Loader size={'small'} />
                 ) : (
                     <button
                         onClick={() => {
-                            addRecipeToMenu({ menuId: id.toString(), recipeId: Number(recipeToAdd) })
-                                .unwrap()
-                                .then(() => {
-                                    setAnyChanges(true)
-                                })
+                            addRecipeToMenu(
+                                { menuId: id.toString(), recipeId: recipeToAdd },
+                                {
+                                    onSuccess: () => {
+                                        setAnyChanges(true)
+                                        queryClient.invalidateQueries(getSingleMenuKey)
+                                    }
+                                }
+                            )
                         }}
                     >
                         <PlusIcon className='w-8 text-primary hover:text-primary-hover' />

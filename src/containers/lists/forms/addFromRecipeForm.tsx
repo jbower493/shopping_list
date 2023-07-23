@@ -6,10 +6,11 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useAddItemsFromRecipeMutation } from 'utils/api/lists'
+import { getSingleListKey, useAddItemsFromRecipeMutation } from '../queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
-import { useGetRecipesQuery } from 'utils/api/recipes'
+import { useGetRecipesQuery } from 'containers/recipes/queries'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     recipeId: string
@@ -19,8 +20,8 @@ function AddFromRecipeForm() {
     const navigate = useNavigate()
     const { listId } = useParams()
 
-    const { data, isFetching, isError } = useGetRecipesQuery()
-    const [addFromRecipe] = useAddItemsFromRecipeMutation()
+    const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
+    const { mutateAsync: addItemsFromRecipe } = useAddItemsFromRecipeMutation()
 
     const {
         register,
@@ -31,18 +32,21 @@ function AddFromRecipeForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ recipeId }) => {
-        try {
-            const result = await addFromRecipe({ listId: listId || '', recipeId }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await addItemsFromRecipe(
+            { listId: listId || '', recipeId },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getSingleListKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     const renderForm = () => {
-        if (isError) return <h2>Error fetching recipes!</h2>
-        if (!data) return ''
+        if (isGetRecipesError) return <h2>Error fetching recipes!</h2>
+        if (!getRecipesData) return ''
 
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,7 +54,7 @@ function AddFromRecipeForm() {
                     <SelectField<Inputs>
                         label='Recipe'
                         name='recipeId'
-                        options={data.map(({ id, name }) => ({
+                        options={getRecipesData.map(({ id, name }) => ({
                             label: name,
                             value: id.toString()
                         }))}
@@ -77,7 +81,7 @@ function AddFromRecipeForm() {
                 title='Add From Recipe'
                 desc='Choose a recipe to add items from. This will add every item in your recipe to the current list.'
                 onClose={() => navigate(-1)}
-                loading={isFetching}
+                loading={isGetRecipesFetching}
             >
                 <>{renderForm()}</>
             </UrlModal>

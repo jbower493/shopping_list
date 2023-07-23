@@ -6,9 +6,10 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useCreateMenuMutation } from 'utils/api/menus'
+import { getMenusKey, useCreateMenuMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     name: string
@@ -17,7 +18,7 @@ type Inputs = {
 function AddMenuForm() {
     const navigate = useNavigate()
 
-    const [createMenu] = useCreateMenuMutation()
+    const { mutateAsync: createMenu } = useCreateMenuMutation()
 
     const {
         register,
@@ -28,13 +29,16 @@ function AddMenuForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
-        try {
-            const result = await createMenu({ name }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await createMenu(
+            { name },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getMenusKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     return (

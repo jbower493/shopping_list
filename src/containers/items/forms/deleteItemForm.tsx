@@ -3,18 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { useDeleteItemMutation, useGetItemsQuery } from 'utils/api/items'
+import { getItemsKey, useDeleteItemMutation } from '../queries'
+import { useGetItemsQuery } from '../queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
+import { queryClient } from 'utils/queryClient'
 
 function DeleteItemForm() {
     const navigate = useNavigate()
     const { itemId } = useParams()
 
-    const { item } = useGetItemsQuery(undefined, {
-        selectFromResult: ({ data }) => ({ item: data?.find((currentItem) => currentItem.id.toString() === itemId) })
-    })
-    const [deleteItem, { isLoading }] = useDeleteItemMutation()
+    const { data: getItemsData } = useGetItemsQuery()
+
+    const item = getItemsData?.find((currentItem) => currentItem.id.toString() === itemId)
+
+    const { mutate: deleteItem, isLoading: isDeleteItemLoading } = useDeleteItemMutation()
 
     return (
         <div>
@@ -31,15 +34,16 @@ function DeleteItemForm() {
                             <Button
                                 key={2}
                                 color='error'
-                                loading={isLoading}
-                                disabled={isLoading}
+                                loading={isDeleteItemLoading}
+                                disabled={isDeleteItemLoading}
                                 onClick={() => {
-                                    deleteItem(itemId || '')
-                                        .unwrap()
-                                        .then((result) => {
-                                            toast.success(result.message)
-                                        })
-                                        .finally(() => navigate(-1))
+                                    deleteItem(itemId || '', {
+                                        onSuccess: (res) => {
+                                            toast.success(res.data.message)
+                                            queryClient.invalidateQueries(getItemsKey)
+                                        },
+                                        onSettled: () => navigate(-1)
+                                    })
                                 }}
                             >
                                 Delete
