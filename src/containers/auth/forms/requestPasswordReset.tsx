@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useRequestPasswordResetMutation } from 'utils/api/auth'
+import { useRequestPasswordResetMutation } from '../queries'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
 import { toast } from 'react-hot-toast'
@@ -11,7 +11,7 @@ type Inputs = {
 }
 
 function RequestPasswordReset() {
-    const [requestReset] = useRequestPasswordResetMutation()
+    const { mutateAsync: requestPasswordReset } = useRequestPasswordResetMutation()
 
     const {
         register,
@@ -22,8 +22,7 @@ function RequestPasswordReset() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        const result = await requestReset(data).unwrap()
-        toast.success(result.message)
+        await requestPasswordReset(data, { onSuccess: (res) => toast.success(res.data.message) })
     }
 
     return (

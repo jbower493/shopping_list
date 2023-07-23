@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useLogoutMutation } from 'utils/api/auth'
+import { getUserKey, useLogoutMutation } from 'containers/auth/queries'
 import { useGetUserQuery } from 'containers/auth/queries'
 import { toast } from 'react-hot-toast'
 import Button from 'components/Button'
+import { queryClient } from 'utils/api/queryClient'
 
 interface SidebarProps {
     showMenu: boolean
@@ -13,11 +14,9 @@ interface SidebarProps {
 
 function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
     const sidebarRef = useRef<HTMLElement | null>(null)
-    useEffect(() => {
-        console.log('sidebar mounted')
-    }, [])
+
     const { data: getUserData, isFetching: isGetUserFetching, isError: isGetUserError } = useGetUserQuery()
-    const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation()
+    const { mutate: logout, isLoading: isLogoutLoading } = useLogoutMutation()
 
     const handleClickAway = (e: MouseEvent) => {
         const target = e.target as Node
@@ -77,12 +76,13 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                         loading={isLogoutLoading}
                         disabled={isLogoutLoading}
                         onClick={() => {
-                            logout()
-                                .unwrap()
-                                .then((result) => {
-                                    toast.success(result.message)
+                            logout(undefined, {
+                                onSuccess: (result) => {
+                                    queryClient.invalidateQueries(getUserKey)
+                                    toast.success(result.data.message)
                                     closeMenu()
-                                })
+                                }
+                            })
                         }}
                     >
                         Logout

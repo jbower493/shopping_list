@@ -14,7 +14,7 @@ function App() {
     const menuIconRef = useRef<HTMLButtonElement | null>(null)
 
     const { data: getUserData, isFetching: isGetUserFetching, isError: isGetUserError } = useGetUserQuery()
-    console.log(isGetUserFetching)
+
     const handleCloseMenu = () => {
         setShowMenu(false)
     }
