@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, Link, Outlet } from 'react-router-dom'
 import { useGetSingleListQuery, useAddItemToListMutation } from 'utils/api/lists'
-import { useGetItemsQuery } from 'utils/api/items'
+import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
@@ -18,12 +18,12 @@ function EditList() {
     const { listId } = useParams()
 
     const { data: listData, isFetching: isGetListFetching, isError: isGetListError } = useGetSingleListQuery(listId || '')
-    const { data: itemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
+    const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
 
     const [addItemToList, { isLoading: isAddItemLoading }] = useAddItemToListMutation()
 
     if (isGetListFetching || isGetItemsFetching) return <Loader fullPage />
-    if (isGetListError || !listData || isGetItemsError || !itemsData) return <h1>List error</h1>
+    if (isGetListError || !listData || isGetItemsError || !getItemsData) return <h1>List error</h1>
 
     const { name, id: listIdSafe, items } = listData
 
@@ -95,7 +95,7 @@ function EditList() {
                             setAnyChanges(true)
                         })
                 }}
-                itemsList={itemsData}
+                itemsList={getItemsData}
                 isAddItemLoading={isAddItemLoading}
             />
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useGetSingleRecipeQuery, useAddItemToRecipeMutation } from 'utils/api/recipes'
-import { useGetItemsQuery } from 'utils/api/items'
+import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
@@ -15,12 +15,12 @@ function EditRecipe() {
     const { recipeId } = useParams()
 
     const { data: recipeData, isFetching: isGetRecipeFetching, isError: isGetRecipeError } = useGetSingleRecipeQuery(recipeId || '')
-    const { data: itemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
+    const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
 
     const [addItemToRecipe, { isLoading: isAddItemLoading }] = useAddItemToRecipeMutation()
 
     if (isGetRecipeFetching || isGetItemsFetching) return <Loader fullPage />
-    if (isGetRecipeError || !recipeData || isGetItemsError || !itemsData) return <h1>Recipe error</h1>
+    if (isGetRecipeError || !recipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
     const { name, id, items } = recipeData
 
@@ -69,7 +69,7 @@ function EditRecipe() {
                             setAnyChanges(true)
                         })
                 }}
-                itemsList={itemsData}
+                itemsList={getItemsData}
                 isAddItemLoading={isAddItemLoading}
             />
 

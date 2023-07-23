@@ -6,12 +6,13 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useCreateItemMutation } from 'utils/api/items'
+import { getItemsKey, useCreateItemMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import SelectField from 'components/Form/Inputs/SelectField'
-import { useGetCategoriesQuery } from 'utils/api/categories'
+import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { getCategoryOptions } from 'utils/functions'
+import { queryClient } from 'utils/api/queryClient'
 
 type Inputs = {
     name: string
@@ -21,9 +22,9 @@ type Inputs = {
 function AddItemForm() {
     const navigate = useNavigate()
 
-    const { data, isFetching, isError } = useGetCategoriesQuery()
+    const { data: getCategoriesData, isFetching: isGetCategoriesFetching, isError: isGetCategoriesError } = useGetCategoriesQuery()
 
-    const [createItem] = useCreateItemMutation()
+    const { mutateAsync: createItem } = useCreateItemMutation()
 
     const {
         register,
@@ -34,17 +35,20 @@ function AddItemForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, categoryId }) => {
-        try {
-            const result = await createItem({ name, category_id: categoryId === 'none' ? null : Number(categoryId) }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await createItem(
+            { name, category_id: categoryId === 'none' ? null : Number(categoryId) },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getItemsKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     const renderForm = () => {
-        if (isError || !data) return <h3>Error fetching categories</h3>
+        if (isGetCategoriesError || !getCategoriesData) return <h3>Error fetching categories</h3>
 
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -60,7 +64,7 @@ function AddItemForm() {
                     <SelectField<Inputs>
                         label='Category'
                         name='categoryId'
-                        options={getCategoryOptions(data)}
+                        options={getCategoryOptions(getCategoriesData)}
                         register={register}
                         validation={{ required: 'This is required.' }}
                         error={touchedFields.categoryId && errors.categoryId}
@@ -80,7 +84,7 @@ function AddItemForm() {
 
     return (
         <div>
-            <UrlModal title='New Item' desc='Enter a name for your new item.' onClose={() => navigate(-1)} loading={isFetching}>
+            <UrlModal title='New Item' desc='Enter a name for your new item.' onClose={() => navigate(-1)} loading={isGetCategoriesFetching}>
                 {renderForm()}
             </UrlModal>
         </div>

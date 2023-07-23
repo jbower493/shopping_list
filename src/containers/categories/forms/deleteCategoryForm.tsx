@@ -3,18 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { useDeleteCategoryMutation, useGetCategoriesQuery } from 'utils/api/categories'
+import { getCategoriesKey, useDeleteCategoryMutation } from '../queries'
+import { useGetCategoriesQuery } from '../queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
+import { queryClient } from 'utils/api/queryClient'
 
 function DeleteCategoryForm() {
     const navigate = useNavigate()
     const { categoryId } = useParams()
 
-    const { category } = useGetCategoriesQuery(undefined, {
-        selectFromResult: ({ data }) => ({ category: data?.find((currentCategory) => currentCategory.id.toString() === categoryId) })
-    })
-    const [deleteCategory, { isLoading }] = useDeleteCategoryMutation()
+    const { data: getCategoriesData } = useGetCategoriesQuery()
+
+    const category = getCategoriesData?.find((currentCategory) => currentCategory.id.toString() === categoryId)
+
+    const { mutate: deleteCategory, isLoading: isDeleteCategoryLoading } = useDeleteCategoryMutation()
 
     return (
         <div>
@@ -29,15 +32,16 @@ function DeleteCategoryForm() {
                             <Button
                                 key={2}
                                 color='error'
-                                loading={isLoading}
-                                disabled={isLoading}
+                                loading={isDeleteCategoryLoading}
+                                disabled={isDeleteCategoryLoading}
                                 onClick={() => {
-                                    deleteCategory(categoryId || '')
-                                        .unwrap()
-                                        .then((result) => {
-                                            toast.success(result.message)
-                                        })
-                                        .finally(() => navigate(-1))
+                                    deleteCategory(categoryId || '', {
+                                        onSuccess: (res) => {
+                                            toast.success(res.data.message)
+                                            queryClient.invalidateQueries(getCategoriesKey)
+                                        },
+                                        onSettled: () => navigate(-1)
+                                    })
                                 }}
                             >
                                 Delete

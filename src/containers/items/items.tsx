@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useGetItemsQuery, useBulkAssignCategoryMutation } from 'utils/api/items'
-import { useGetCategoriesQuery } from 'utils/api/categories'
+import { getItemsKey, useBulkAssignCategoryMutation } from './queries'
+import { useGetItemsQuery } from './queries'
+import { useGetCategoriesQuery } from 'containers/categories/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon } from '@heroicons/react/24/solid'
@@ -9,6 +10,7 @@ import Checkbox from 'components/Checkbox'
 import { getCategoryOptions } from 'utils/functions'
 import { toast } from 'react-hot-toast'
 import CategoryTag from 'components/CategoryTag'
+import { queryClient } from 'utils/api/queryClient'
 
 function Items() {
     const [isAssigningCategories, setIsAssigningCategories] = useState(false)
@@ -17,10 +19,10 @@ function Items() {
 
     const navigate = useNavigate()
 
-    const { data: itemsData, isFetching: isItemsFetching, isError: isItemsError } = useGetItemsQuery()
-    const { data: categoriesData, isFetching: isCategoriesFetching, isError: isCategoriesError } = useGetCategoriesQuery()
+    const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
+    const { data: getCategoriesData, isFetching: isGetCategoriesFetching, isError: isGetCategoriesError } = useGetCategoriesQuery()
 
-    const [confirmCategoryAssignment, { isLoading: isConfirmCategoryAssignmentLoading }] = useBulkAssignCategoryMutation()
+    const { mutate: confirmCategoryAssignment, isLoading: isConfirmCategoryAssignmentLoading } = useBulkAssignCategoryMutation()
 
     const toggleItemForAssignment = (idToToggle: number) => {
         if (idsToAssign.includes(idToToggle)) {
@@ -35,8 +37,8 @@ function Items() {
         setIdsToAssign([])
     }
 
-    if (isItemsFetching || isCategoriesFetching) return <Loader fullPage />
-    if (isItemsError || !itemsData || !categoriesData || isCategoriesError) return <h1>Items error</h1>
+    if (isGetItemsFetching || isGetCategoriesFetching) return <Loader fullPage />
+    if (isGetItemsError || !getItemsData || !getCategoriesData || isGetCategoriesError) return <h1>Items error</h1>
 
     return (
         <div className='p-4'>
@@ -59,7 +61,7 @@ function Items() {
                 ''
             )}
             <div className='mt-8'>
-                {itemsData.map(({ name, id, category }) => (
+                {getItemsData.map(({ name, id, category }) => (
                     <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                         <div className='flex items-center flex-wrap'>
                             {isAssigningCategories ? (
@@ -71,7 +73,7 @@ function Items() {
                             <CategoryTag
                                 key={id}
                                 className='ml-2'
-                                categoriesData={categoriesData}
+                                categoriesData={getCategoriesData}
                                 categoryName={category?.name || 'Uncategorized'}
                                 size='sm'
                             />
@@ -87,7 +89,7 @@ function Items() {
             {isAssigningCategories ? (
                 <div className='mt-6'>
                     <select className='w-60' value={categoryToAssign} onChange={(e) => setCategoryToAssign(e.target.value)}>
-                        {getCategoryOptions(categoriesData).map(({ label, value }) => (
+                        {getCategoryOptions(getCategoriesData).map(({ label, value }) => (
                             <option key={value} value={value}>
                                 {label}
                             </option>
@@ -98,15 +100,20 @@ function Items() {
                             disabled={idsToAssign.length <= 0 || isConfirmCategoryAssignmentLoading}
                             loading={isConfirmCategoryAssignmentLoading}
                             onClick={() =>
-                                confirmCategoryAssignment({
-                                    category_id: categoryToAssign === 'none' ? -1 : Number(categoryToAssign),
-                                    item_ids: idsToAssign
-                                })
-                                    .unwrap()
-                                    .then((result) => {
-                                        toast.success(result.message)
-                                        cancelCategoryAssignment()
-                                    })
+                                confirmCategoryAssignment(
+                                    {
+                                        category_id: categoryToAssign === 'none' ? -1 : Number(categoryToAssign),
+                                        item_ids: idsToAssign
+                                    },
+                                    {
+                                        onSuccess: (res) => {
+                                            toast.success(res.data.message)
+                                            cancelCategoryAssignment()
+                                            // TODO: also invalidate "List" query
+                                            queryClient.invalidateQueries(getItemsKey)
+                                        }
+                                    }
+                                )
                             }
                         >
                             Confirm Category

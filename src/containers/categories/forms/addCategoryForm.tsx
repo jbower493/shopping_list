@@ -6,9 +6,10 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useCreateCategoryMutation } from 'utils/api/categories'
+import { getCategoriesKey, useCreateCategoryMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
+import { queryClient } from 'utils/api/queryClient'
 
 type Inputs = {
     name: string
@@ -17,7 +18,7 @@ type Inputs = {
 function AddCategoryForm() {
     const navigate = useNavigate()
 
-    const [createCategory] = useCreateCategoryMutation()
+    const { mutateAsync: createCategory } = useCreateCategoryMutation()
 
     const {
         register,
@@ -28,13 +29,16 @@ function AddCategoryForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
-        try {
-            const result = await createCategory({ name }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await createCategory(
+            { name },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getCategoriesKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     return (
