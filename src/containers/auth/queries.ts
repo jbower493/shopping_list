@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { User, Credentials, RegisterCredentials, RequestPasswordResetPayload, ResetPasswordPayload } from 'containers/auth/types'
-import type { QueryResponse, MutationResponse } from 'utils/api/types'
+import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
 /***** Get user *****/
 const getUser = () => axios.get<QueryResponse<{ user: User }>>('/user')

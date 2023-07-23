@@ -12,7 +12,7 @@ import SubmitButton from 'components/Form/SubmitButton'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { getCategoryOptions } from 'utils/functions'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     name: string

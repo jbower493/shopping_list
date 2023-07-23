@@ -1,25 +1,93 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/lists/types'
-import type { QueryResponse, MutationResponse } from 'utils/api/types'
+import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
-/***** Get items *****/
-const getItems = () => axios.get<QueryResponse<{ items: Item[] }>>('/item')
-export const getItemsKey = ['Items']
+/***** Get lists *****/
+const getLists = () => axios.get<QueryResponse<{ lists: List[] }>>('/list')
+export const getListsKey = ['Lists']
 
-export function useGetItemsQuery() {
+export function useGetListsQuery() {
     return useQuery({
-        queryKey: getItemsKey,
-        queryFn: getItems,
-        select: (res) => res.data.data.items
+        queryKey: getListsKey,
+        queryFn: getLists,
+        select: (res) => res.data.data.lists
     })
 }
 
-/***** Create item *****/
-const createItem = (newItem: NewItem) => axios.post<MutationResponse>('/item', newItem)
+/***** Create list *****/
+const createList = (newList: NewList) => axios.post<MutationResponse>('/list', newList)
 
-export function useCreateItemMutation() {
+export function useCreateListMutation() {
     return useMutation({
-        mutationFn: createItem
+        mutationFn: createList
+    })
+}
+
+/***** Delete list *****/
+const deleteList = (id: string) => axios.delete<MutationResponse>(`/list/${id}`)
+
+export function useDeleteListMutation() {
+    return useMutation({
+        mutationFn: deleteList
+    })
+}
+
+/***** Get single list *****/
+const getSingleList = (id: string) => axios.get<QueryResponse<{ list: DetailedList }>>(`/list/${id}`)
+export const getSingleListKey = ['List']
+
+export function useGetSingleListQuery(id: string) {
+    return useQuery({
+        queryKey: getSingleListKey,
+        queryFn: () => getSingleList(id),
+        select: (res) => res.data.data.list
+    })
+}
+
+/***** Add item to list *****/
+const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload) => {
+    const body: { item_name: string; category_id?: string } = {
+        item_name: itemName
+    }
+
+    if (categoryId) body.category_id = categoryId
+
+    return axios.post<MutationResponse>(`/list/${listId}/add-item`, body)
+}
+
+export function useAddItemToListMutation() {
+    return useMutation({
+        mutationFn: addItemToList
+    })
+}
+
+/***** Remove item from list *****/
+const removeItemFromList = ({ listId, itemId }: { listId: string; itemId: number }) =>
+    axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
+
+export function useRemoveItemFromListMutation() {
+    return useMutation({
+        mutationFn: removeItemFromList
+    })
+}
+
+/***** Add items from recipe *****/
+const addItemsFromRecipe = ({ listId, recipeId }: { listId: string; recipeId: string }) =>
+    axios.post<MutationResponse>(`/list/${listId}/add-from-recipe/${recipeId}`)
+
+export function useAddItemsFromRecipeMutation() {
+    return useMutation({
+        mutationFn: addItemsFromRecipe
+    })
+}
+
+/***** Add items from menu *****/
+const addItemsFromMenu = ({ listId, menuId }: { listId: string; menuId: string }) =>
+    axios.post<MutationResponse>(`/list/${listId}/add-from-menu/${menuId}`)
+
+export function useAddItemsFromMenuMutation() {
+    return useMutation({
+        mutationFn: addItemsFromMenu
     })
 }

@@ -4,7 +4,7 @@ import { getUserKey, useLogoutMutation } from 'containers/auth/queries'
 import { useGetUserQuery } from 'containers/auth/queries'
 import { toast } from 'react-hot-toast'
 import Button from 'components/Button'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 interface SidebarProps {
     showMenu: boolean

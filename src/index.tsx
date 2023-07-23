@@ -7,9 +7,7 @@ import App from 'containers/app/app'
 import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
 import { baseUrl } from 'config'
-import { Provider } from 'react-redux'
-import { store } from 'store/store'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 axios.defaults.baseURL = baseUrl
 axios.defaults.withCredentials = true
@@ -17,13 +15,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
-    <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </QueryClientProvider>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </QueryClientProvider>
 )
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useParams, Link, Outlet } from 'react-router-dom'
-import { useGetSingleListQuery, useAddItemToListMutation } from 'utils/api/lists'
-import { useGetItemsQuery } from 'containers/items/queries'
+import { getSingleListKey, useAddItemToListMutation } from './queries'
+import { useGetSingleListQuery } from './queries'
+import { getItemsKey, useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
@@ -11,21 +12,22 @@ import CategoryTag from 'components/CategoryTag'
 import { getExistingCategories } from 'utils/functions'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToListPayload } from 'containers/lists/types'
+import { queryClient } from 'utils/queryClient'
 
 function EditList() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     const { listId } = useParams()
 
-    const { data: listData, isFetching: isGetListFetching, isError: isGetListError } = useGetSingleListQuery(listId || '')
+    const { data: getSingleListData, isFetching: isGetSingleListFetching, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
     const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
 
-    const [addItemToList, { isLoading: isAddItemLoading }] = useAddItemToListMutation()
+    const { mutate: addItemToList, isLoading: isAddItemToListLoading } = useAddItemToListMutation()
 
-    if (isGetListFetching || isGetItemsFetching) return <Loader fullPage />
-    if (isGetListError || !listData || isGetItemsError || !getItemsData) return <h1>List error</h1>
+    if (isGetSingleListFetching || isGetItemsFetching) return <Loader fullPage />
+    if (isGetSingleListError || !getSingleListData || isGetItemsError || !getItemsData) return <h1>List error</h1>
 
-    const { name, id: listIdSafe, items } = listData
+    const { name, id: listIdSafe, items } = getSingleListData
 
     // Get a unique list of all the categories present in the list
     const categoriesInList = getExistingCategories(items)
@@ -89,14 +91,16 @@ function EditList() {
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
 
-                    addItemToList(payload)
-                        .unwrap()
-                        .then(() => {
+                    addItemToList(payload, {
+                        onSuccess: () => {
                             setAnyChanges(true)
-                        })
+                            queryClient.invalidateQueries(getSingleListKey)
+                            queryClient.invalidateQueries(getItemsKey)
+                        }
+                    })
                 }}
                 itemsList={getItemsData}
-                isAddItemLoading={isAddItemLoading}
+                isAddItemLoading={isAddItemToListLoading}
             />
 
             <div className='flex mb-4'>

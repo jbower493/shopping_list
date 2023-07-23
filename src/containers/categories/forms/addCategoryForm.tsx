@@ -9,7 +9,7 @@ import Button from 'components/Button'
 import { getCategoriesKey, useCreateCategoryMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     name: string

@@ -1,7 +1,8 @@
 import React from 'react'
-import { useRemoveItemFromListMutation } from 'utils/api/lists'
+import { getSingleListKey, useRemoveItemFromListMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
+import { queryClient } from 'utils/queryClient'
 
 interface EditListItemProps {
     item: {
@@ -13,20 +14,26 @@ interface EditListItemProps {
 }
 
 function EditListItem({ item: { name, id }, listId, setAnyChanges }: EditListItemProps) {
-    const [removeItemFromList, { isLoading }] = useRemoveItemFromListMutation()
+    const { mutate: removeItemFromList, isLoading: isRemoveItemFromListLoading } = useRemoveItemFromListMutation()
 
     return (
         <li className='flex justify-between w-full max-w-md mb-2'>
             {name}
-            {isLoading ? (
+            {isRemoveItemFromListLoading ? (
                 <Loader size='small' />
             ) : (
                 <button
                     type='button'
                     onClick={() => {
-                        removeItemFromList({ listId: listId.toString(), itemId: id })
-                            .unwrap()
-                            .then(() => setAnyChanges(true))
+                        removeItemFromList(
+                            { listId: listId.toString(), itemId: id },
+                            {
+                                onSuccess: () => {
+                                    setAnyChanges(true)
+                                    queryClient.invalidateQueries(getSingleListKey)
+                                }
+                            }
+                        )
                     }}
                 >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />

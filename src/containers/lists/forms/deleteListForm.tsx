@@ -3,18 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { useDeleteListMutation, useGetListsQuery } from 'utils/api/lists'
+import { getListsKey, useDeleteListMutation } from 'containers/lists/queries'
+import { useGetListsQuery } from 'containers/lists/queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
+import { queryClient } from 'utils/queryClient'
 
 function DeleteListForm() {
     const navigate = useNavigate()
     const { listId } = useParams()
 
-    const { list } = useGetListsQuery(undefined, {
-        selectFromResult: ({ data }) => ({ list: data?.find((currentList) => currentList.id.toString() === listId) })
-    })
-    const [deleteList, { isLoading }] = useDeleteListMutation()
+    const { data: getListsData } = useGetListsQuery()
+
+    const list = getListsData?.find((currentList) => currentList.id.toString() === listId)
+
+    const { mutate: deleteList, isLoading: isDeleteListLoading } = useDeleteListMutation()
 
     return (
         <div>
@@ -29,15 +32,16 @@ function DeleteListForm() {
                             <Button
                                 key={2}
                                 color='error'
-                                loading={isLoading}
-                                disabled={isLoading}
+                                loading={isDeleteListLoading}
+                                disabled={isDeleteListLoading}
                                 onClick={() => {
-                                    deleteList(listId || '')
-                                        .unwrap()
-                                        .then((result) => {
-                                            toast.success(result.message)
-                                        })
-                                        .finally(() => navigate(-1))
+                                    deleteList(listId || '', {
+                                        onSuccess: (res) => {
+                                            toast.success(res.data.message)
+                                            queryClient.invalidateQueries(getListsKey)
+                                        },
+                                        onSettled: () => navigate(-1)
+                                    })
                                 }}
                             >
                                 Delete

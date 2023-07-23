@@ -6,9 +6,10 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useCreateListMutation } from 'utils/api/lists'
+import { getListsKey, useCreateListMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     name: string
@@ -17,7 +18,7 @@ type Inputs = {
 function AddListForm() {
     const navigate = useNavigate()
 
-    const [createList] = useCreateListMutation()
+    const { mutateAsync: createList } = useCreateListMutation()
 
     const {
         register,
@@ -28,13 +29,16 @@ function AddListForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
-        try {
-            const result = await createList({ name }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await createList(
+            { name },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getListsKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     return (

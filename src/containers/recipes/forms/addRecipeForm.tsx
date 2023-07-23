@@ -6,9 +6,10 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useCreateRecipeMutation } from 'utils/api/recipes'
+import { getRecipesKey, useCreateRecipeMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     name: string
@@ -17,7 +18,7 @@ type Inputs = {
 function AddRecipeForm() {
     const navigate = useNavigate()
 
-    const [createRecipe] = useCreateRecipeMutation()
+    const { mutateAsync: createRecipe } = useCreateRecipeMutation()
 
     const {
         register,
@@ -28,13 +29,16 @@ function AddRecipeForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
-        try {
-            const result = await createRecipe({ name }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await createRecipe(
+            { name },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getRecipesKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     return (

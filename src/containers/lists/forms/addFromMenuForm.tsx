@@ -6,10 +6,11 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useAddItemsFromMenuMutation } from 'utils/api/lists'
+import { getSingleListKey, useAddItemsFromMenuMutation } from '../queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
-import { useGetMenusQuery } from 'utils/api/menus'
+import { useGetMenusQuery } from 'containers/menus/queries'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     menuId: string
@@ -19,8 +20,8 @@ function AddFromMenuForm() {
     const navigate = useNavigate()
     const { listId } = useParams()
 
-    const { data, isFetching, isError } = useGetMenusQuery()
-    const [addFromMenu] = useAddItemsFromMenuMutation()
+    const { data: getMenusData, isFetching: isGetMenusFetching, isError: isGetMenusError } = useGetMenusQuery()
+    const { mutateAsync: addItemsFromMenu } = useAddItemsFromMenuMutation()
 
     const {
         register,
@@ -31,18 +32,21 @@ function AddFromMenuForm() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async ({ menuId }) => {
-        try {
-            const result = await addFromMenu({ listId: listId || '', menuId }).unwrap()
-            toast.success(result.message)
-            navigate(-1)
-        } catch (_) {
-            navigate(-1)
-        }
+        await addItemsFromMenu(
+            { listId: listId || '', menuId },
+            {
+                onSuccess: (res) => {
+                    toast.success(res.data.message)
+                    queryClient.invalidateQueries(getSingleListKey)
+                },
+                onSettled: () => navigate(-1)
+            }
+        )
     }
 
     const renderForm = () => {
-        if (isError) return <h2>Error fetching menus!</h2>
-        if (!data) return ''
+        if (isGetMenusError) return <h2>Error fetching menus!</h2>
+        if (!getMenusData) return ''
 
         return (
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,7 +54,7 @@ function AddFromMenuForm() {
                     <SelectField<Inputs>
                         label='Menu'
                         name='menuId'
-                        options={data.map(({ id, name }) => ({
+                        options={getMenusData.map(({ id, name }) => ({
                             label: name,
                             value: id.toString()
                         }))}
@@ -77,7 +81,7 @@ function AddFromMenuForm() {
                 title='Add From Menu'
                 desc='Choose a menu to add items from. This will add every item from every recipe in your menu to the current list.'
                 onClose={() => navigate(-1)}
-                loading={isFetching}
+                loading={isGetMenusFetching}
             >
                 <>{renderForm()}</>
             </UrlModal>

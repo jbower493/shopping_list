@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useGetListsQuery } from 'utils/api/lists'
+import { useGetListsQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
@@ -8,10 +8,10 @@ import { TrashIcon, PencilSquareIcon, ShoppingCartIcon } from '@heroicons/react/
 function Lists() {
     const navigate = useNavigate()
 
-    const { data, isFetching, isError } = useGetListsQuery()
+    const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useGetListsQuery()
 
-    if (isFetching) return <Loader fullPage />
-    if (isError || !data) return <h1>Lists error</h1>
+    if (isGetListsFetching) return <Loader fullPage />
+    if (isGetListsError || !getListsData) return <h1>Lists error</h1>
 
     return (
         <div className='p-4'>
@@ -19,7 +19,7 @@ function Lists() {
             <Button className='mb-8' onClick={() => navigate('/lists/new')}>
                 Add New
             </Button>
-            {data.map(({ name, id }) => (
+            {getListsData.map(({ name, id }) => (
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                     <p>{name}</p>
                     <div>

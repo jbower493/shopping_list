@@ -1,7 +1,8 @@
 import React from 'react'
-import { useRemoveRecipeFromMenuMutation } from 'utils/api/menus'
+import { getSingleMenuKey, useRemoveRecipeFromMenuMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
+import { queryClient } from 'utils/queryClient'
 
 interface EditMenuRecipeProps {
     recipe: {
@@ -13,20 +14,26 @@ interface EditMenuRecipeProps {
 }
 
 function EditMenuRecipe({ recipe: { name, id }, menuId, setAnyChanges }: EditMenuRecipeProps) {
-    const [removeRecipeFromMenu, { isLoading }] = useRemoveRecipeFromMenuMutation()
+    const { mutate: removeRecipeFromMenu, isLoading: isRemoveRecipeFromMenuLoading } = useRemoveRecipeFromMenuMutation()
 
     return (
         <li className='flex justify-between w-full max-w-md mb-2'>
             {name}
-            {isLoading ? (
+            {isRemoveRecipeFromMenuLoading ? (
                 <Loader size='small' />
             ) : (
                 <button
                     type='button'
                     onClick={() => {
-                        removeRecipeFromMenu({ menuId: menuId.toString(), recipeId: id })
-                            .unwrap()
-                            .then(() => setAnyChanges(true))
+                        removeRecipeFromMenu(
+                            { menuId: menuId.toString(), recipeId: id },
+                            {
+                                onSuccess: () => {
+                                    setAnyChanges(true)
+                                    queryClient.invalidateQueries(getSingleMenuKey)
+                                }
+                            }
+                        )
                     }}
                 >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />

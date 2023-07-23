@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import type { Item, NewItem, BulkAssignCategoryPayload } from 'containers/items/types'
-import type { QueryResponse, MutationResponse } from 'utils/api/types'
+import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
 /***** Get items *****/
 const getItems = () => axios.get<QueryResponse<{ items: Item[] }>>('/item')

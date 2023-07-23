@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useGetRecipesQuery } from 'utils/api/recipes'
+import { useGetRecipesQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
@@ -8,10 +8,10 @@ import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
 function Recipes() {
     const navigate = useNavigate()
 
-    const { data, isFetching, isError } = useGetRecipesQuery()
+    const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
 
-    if (isFetching) return <Loader fullPage />
-    if (isError || !data) return <h1>Recipes error</h1>
+    if (isGetRecipesFetching) return <Loader fullPage />
+    if (isGetRecipesError || !getRecipesData) return <h1>Recipes error</h1>
 
     return (
         <div className='p-4'>
@@ -19,7 +19,7 @@ function Recipes() {
             <Button className='mb-8' onClick={() => navigate('/recipes/new')}>
                 Add New
             </Button>
-            {data.map(({ name, id }) => (
+            {getRecipesData.map(({ name, id }) => (
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                     <p>{name}</p>
                     <div>

@@ -7,7 +7,7 @@ import { getItemsKey, useDeleteItemMutation } from '../queries'
 import { useGetItemsQuery } from '../queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 function DeleteItemForm() {
     const navigate = useNavigate()

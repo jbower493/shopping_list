@@ -10,7 +10,8 @@ import Checkbox from 'components/Checkbox'
 import { getCategoryOptions } from 'utils/functions'
 import { toast } from 'react-hot-toast'
 import CategoryTag from 'components/CategoryTag'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
+import { getSingleListKey } from 'containers/lists/queries'
 
 function Items() {
     const [isAssigningCategories, setIsAssigningCategories] = useState(false)
@@ -109,8 +110,8 @@ function Items() {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
                                             cancelCategoryAssignment()
-                                            // TODO: also invalidate "List" query
                                             queryClient.invalidateQueries(getItemsKey)
+                                            queryClient.invalidateQueries(getSingleListKey)
                                         }
                                     }
                                 )

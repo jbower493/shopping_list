@@ -7,7 +7,7 @@ import { getCategoriesKey, useDeleteCategoryMutation } from '../queries'
 import { useGetCategoriesQuery } from '../queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 function DeleteCategoryForm() {
     const navigate = useNavigate()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
-import { useGetSingleListQuery } from 'utils/api/lists'
+import { useGetSingleListQuery } from 'containers/lists/queries'
 import Loader from 'components/Loader'
 import { useSessionStorage } from 'utils/hooks'
 import Checkbox from 'components/Checkbox'
@@ -13,15 +13,15 @@ function Shop() {
 
     const { value: checked, setValue: setChecked } = useSessionStorage<string[]>(`list${listId?.toString() || ''}`, [])
 
-    const { data, isFetching, isError } = useGetSingleListQuery(listId || '')
+    const { data: getSingleListData, isFetching: isGetSingleListFetching, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
 
     const checkItem = (name: string) => setChecked(checked ? [...checked, name] : [name])
     const uncheckItem = (name: string) => setChecked((prevChecked) => (prevChecked ? prevChecked.filter((item) => item !== name) : []))
 
-    if (isFetching) return <Loader fullPage />
-    if (isError || !data) return <h1>List error</h1>
+    if (isGetSingleListFetching) return <Loader fullPage />
+    if (isGetSingleListError || !getSingleListData) return <h1>List error</h1>
 
-    const { name, items } = data
+    const { name, items } = getSingleListData
 
     // Get a unique list of all the categories present in the list
     const categoriesInList = getExistingCategories(items)

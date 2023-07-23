@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { toast } from 'react-hot-toast'
-import { queryClient } from 'utils/api/queryClient'
+import { queryClient } from 'utils/queryClient'
 
 type Inputs = {
     email: string

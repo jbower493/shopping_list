@@ -1,7 +1,8 @@
 import React from 'react'
-import { useRemoveItemFromRecipeMutation } from 'utils/api/recipes'
+import { getSingleRecipeKey, useRemoveItemFromRecipeMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
+import { queryClient } from 'utils/queryClient'
 
 interface EditRecipeItemProps {
     item: {
@@ -13,20 +14,26 @@ interface EditRecipeItemProps {
 }
 
 function EditRecipeItem({ item: { name, id }, recipeId, setAnyChanges }: EditRecipeItemProps) {
-    const [removeItemFromRecipe, { isLoading }] = useRemoveItemFromRecipeMutation()
+    const { mutate: removeItemFromRecipe, isLoading: isRemoveItemFromRecipeLoading } = useRemoveItemFromRecipeMutation()
 
     return (
         <li className='flex justify-between w-full max-w-md mb-2'>
             {name}
-            {isLoading ? (
+            {isRemoveItemFromRecipeLoading ? (
                 <Loader size='small' />
             ) : (
                 <button
                     type='button'
                     onClick={() => {
-                        removeItemFromRecipe({ recipeId: recipeId.toString(), itemId: id })
-                            .unwrap()
-                            .then(() => setAnyChanges(true))
+                        removeItemFromRecipe(
+                            { recipeId: recipeId.toString(), itemId: id },
+                            {
+                                onSuccess: () => {
+                                    setAnyChanges(true)
+                                    queryClient.invalidateQueries(getSingleRecipeKey)
+                                }
+                            }
+                        )
                     }}
                 >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />

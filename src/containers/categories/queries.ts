@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Category, NewCategory } from 'containers/categories/types'
-import type { QueryResponse, MutationResponse } from 'utils/api/types'
+import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
 /***** Get categories *****/
 const getCategories = () => axios.get<QueryResponse<{ categories: Category[] }>>('/category')

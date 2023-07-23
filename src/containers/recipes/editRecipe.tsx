@@ -1,28 +1,34 @@
 import React, { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useGetSingleRecipeQuery, useAddItemToRecipeMutation } from 'utils/api/recipes'
-import { useGetItemsQuery } from 'containers/items/queries'
+import { getSingleRecipeKey, useAddItemToRecipeMutation } from './queries'
+import { useGetSingleRecipeQuery } from './queries'
+import { getItemsKey, useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToRecipePayload } from 'containers/recipes/types'
+import { queryClient } from 'utils/queryClient'
 
 function EditRecipe() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     const { recipeId } = useParams()
 
-    const { data: recipeData, isFetching: isGetRecipeFetching, isError: isGetRecipeError } = useGetSingleRecipeQuery(recipeId || '')
+    const {
+        data: getSingleRecipeData,
+        isFetching: isGetSingleRecipeFetching,
+        isError: isGetSingleRecipeError
+    } = useGetSingleRecipeQuery(recipeId || '')
     const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
 
-    const [addItemToRecipe, { isLoading: isAddItemLoading }] = useAddItemToRecipeMutation()
+    const { mutate: addItemToRecipe, isLoading: isAddItemToRecipeLoading } = useAddItemToRecipeMutation()
 
-    if (isGetRecipeFetching || isGetItemsFetching) return <Loader fullPage />
-    if (isGetRecipeError || !recipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
+    if (isGetSingleRecipeFetching || isGetItemsFetching) return <Loader fullPage />
+    if (isGetSingleRecipeError || !getSingleRecipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
-    const { name, id, items } = recipeData
+    const { name, id, items } = getSingleRecipeData
 
     const renderCurrentItems = () => {
         return (
@@ -63,14 +69,16 @@ function EditRecipe() {
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
 
-                    addItemToRecipe(payload)
-                        .unwrap()
-                        .then(() => {
+                    addItemToRecipe(payload, {
+                        onSuccess: () => {
                             setAnyChanges(true)
-                        })
+                            queryClient.invalidateQueries(getSingleRecipeKey)
+                            queryClient.invalidateQueries(getItemsKey)
+                        }
+                    })
                 }}
                 itemsList={getItemsData}
-                isAddItemLoading={isAddItemLoading}
+                isAddItemLoading={isAddItemToRecipeLoading}
             />
 
             {renderCurrentItems()}

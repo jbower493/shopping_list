@@ -3,18 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { useDeleteMenuMutation, useGetMenusQuery } from 'utils/api/menus'
+import { getMenusKey, useDeleteMenuMutation } from 'containers/menus/queries'
+import { useGetMenusQuery } from 'containers/menus/queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
+import { queryClient } from 'utils/queryClient'
 
 function DeleteMenuForm() {
     const navigate = useNavigate()
     const { menuId } = useParams()
 
-    const { menu } = useGetMenusQuery(undefined, {
-        selectFromResult: ({ data }) => ({ menu: data?.find((currentMenu) => currentMenu.id.toString() === menuId) })
-    })
-    const [deleteMenu, { isLoading }] = useDeleteMenuMutation()
+    const { data: getMenusData } = useGetMenusQuery()
+
+    const menu = getMenusData?.find((currentMenu) => currentMenu.id.toString() === menuId)
+
+    const { mutate: deleteMenu, isLoading: isDeleteMenuLoading } = useDeleteMenuMutation()
 
     return (
         <div>
@@ -29,15 +32,16 @@ function DeleteMenuForm() {
                             <Button
                                 key={2}
                                 color='error'
-                                loading={isLoading}
-                                disabled={isLoading}
+                                loading={isDeleteMenuLoading}
+                                disabled={isDeleteMenuLoading}
                                 onClick={() => {
-                                    deleteMenu(menuId || '')
-                                        .unwrap()
-                                        .then((result) => {
-                                            toast.success(result.message)
-                                        })
-                                        .finally(() => navigate(-1))
+                                    deleteMenu(menuId || '', {
+                                        onSuccess: (res) => {
+                                            toast.success(res.data.message)
+                                            queryClient.invalidateQueries(getMenusKey)
+                                        },
+                                        onSettled: () => navigate(-1)
+                                    })
                                 }}
                             >
                                 Delete
