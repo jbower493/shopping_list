@@ -2,14 +2,17 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload } from 'containers/recipes/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
+import { QueryKeySet } from 'utils/queryClient/keyFactory'
+
+const recipesKeySet = new QueryKeySet('Recipe')
 
 /***** Get recipes *****/
 const getRecipes = () => axios.get<QueryResponse<{ recipes: Recipe[] }>>('/recipe')
-export const getRecipesKey = ['Recipes']
+export const recipesQueryKey = recipesKeySet.many
 
 export function useGetRecipesQuery() {
     return useQuery({
-        queryKey: getRecipesKey,
+        queryKey: recipesQueryKey(),
         queryFn: getRecipes,
         select: (res) => res.data.data.recipes
     })
@@ -35,11 +38,11 @@ export function useDeleteRecipeMutation() {
 
 /***** Get single recipe *****/
 const getSingleRecipe = (id: string) => axios.get<QueryResponse<{ recipe: DetailedRecipe }>>(`/recipe/${id}`)
-export const getSingleRecipeKey = ['Recipe']
+export const singleRecipeQueryKey = recipesKeySet.one
 
 export function useGetSingleRecipeQuery(id: string) {
     return useQuery({
-        queryKey: getSingleRecipeKey,
+        queryKey: singleRecipeQueryKey(id),
         queryFn: () => getSingleRecipe(id),
         select: (res) => res.data.data.recipe
     })

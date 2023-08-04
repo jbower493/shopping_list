@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getSingleRecipeKey, useAddItemToRecipeMutation } from './queries'
+import { singleRecipeQueryKey, useAddItemToRecipeMutation } from './queries'
 import { useGetSingleRecipeQuery } from './queries'
-import { getItemsKey, useGetItemsQuery } from 'containers/items/queries'
+import { itemsQueryKey, useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
@@ -72,8 +72,8 @@ function EditRecipe() {
                     addItemToRecipe(payload, {
                         onSuccess: () => {
                             setAnyChanges(true)
-                            queryClient.invalidateQueries(getSingleRecipeKey)
-                            queryClient.invalidateQueries(getItemsKey)
+                            queryClient.invalidateQueries(singleRecipeQueryKey(id.toString()))
+                            queryClient.invalidateQueries(itemsQueryKey())
                         }
                     })
                 }}

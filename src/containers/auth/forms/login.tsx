@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useLoginMutation, getUserKey } from 'containers/auth/queries'
+import { useLoginMutation } from 'containers/auth/queries'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { toast } from 'react-hot-toast'
 import { queryClient } from 'utils/queryClient'
+import { userQueryKey } from 'utils/queryClient/keyFactory'
 
 type Inputs = {
     email: string
@@ -27,7 +28,7 @@ function LoginForm() {
         await login(data, {
             onSuccess: (res) => {
                 toast.success(res.data.message)
-                queryClient.invalidateQueries(getUserKey)
+                queryClient.invalidateQueries(userQueryKey)
             }
         })
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getSingleMenuKey, useAddRecipeToMenuMutation } from './queries'
+import { singleMenuQueryKey, useAddRecipeToMenuMutation } from './queries'
 import { useGetSingleMenuQuery } from './queries'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import Loader from 'components/Loader'
@@ -88,7 +88,7 @@ function EditMenu() {
                                 {
                                     onSuccess: () => {
                                         setAnyChanges(true)
-                                        queryClient.invalidateQueries(getSingleMenuKey)
+                                        queryClient.invalidateQueries(singleMenuQueryKey(id.toString()))
                                     }
                                 }
                             )

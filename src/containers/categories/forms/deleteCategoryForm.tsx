@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { getCategoriesKey, useDeleteCategoryMutation } from '../queries'
+import { categoriesQueryKey, useDeleteCategoryMutation } from '../queries'
 import { useGetCategoriesQuery } from '../queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
@@ -38,7 +38,7 @@ function DeleteCategoryForm() {
                                     deleteCategory(categoryId || '', {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
-                                            queryClient.invalidateQueries(getCategoriesKey)
+                                            queryClient.invalidateQueries(categoriesQueryKey())
                                         },
                                         onSettled: () => navigate(-1)
                                     })

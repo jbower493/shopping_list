@@ -6,7 +6,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getRecipesKey, useCreateRecipeMutation } from '../queries'
+import { recipesQueryKey, useCreateRecipeMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
@@ -34,7 +34,7 @@ function AddRecipeForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(getRecipesKey)
+                    queryClient.invalidateQueries(recipesQueryKey())
                 },
                 onSettled: () => navigate(-1)
             }

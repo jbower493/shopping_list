@@ -6,7 +6,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getCategoriesKey, useCreateCategoryMutation } from '../queries'
+import { categoriesQueryKey, useCreateCategoryMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
@@ -34,7 +34,7 @@ function AddCategoryForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(getCategoriesKey)
+                    queryClient.invalidateQueries(categoriesQueryKey())
                 },
                 onSettled: () => navigate(-1)
             }

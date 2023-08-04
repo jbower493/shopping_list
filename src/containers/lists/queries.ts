@@ -4,7 +4,7 @@ import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/li
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
-export const listsKeySet = new QueryKeySet('Lists')
+const listsKeySet = new QueryKeySet('List')
 
 /***** Get lists *****/
 const getLists = () => axios.get<QueryResponse<{ lists: List[] }>>('/list')

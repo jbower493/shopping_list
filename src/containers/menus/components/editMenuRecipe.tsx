@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSingleMenuKey, useRemoveRecipeFromMenuMutation } from '../queries'
+import { singleMenuQueryKey, useRemoveRecipeFromMenuMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
 import { queryClient } from 'utils/queryClient'
@@ -30,7 +30,7 @@ function EditMenuRecipe({ recipe: { name, id }, menuId, setAnyChanges }: EditMen
                             {
                                 onSuccess: () => {
                                     setAnyChanges(true)
-                                    queryClient.invalidateQueries(getSingleMenuKey)
+                                    queryClient.invalidateQueries(singleMenuQueryKey(menuId.toString()))
                                 }
                             }
                         )

@@ -1,15 +1,18 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import type { Item, NewItem, BulkAssignCategoryPayload } from 'containers/items/types'
+import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
+
+const itemsKeySet = new QueryKeySet('Item')
 
 /***** Get items *****/
 const getItems = () => axios.get<QueryResponse<{ items: Item[] }>>('/item')
-export const getItemsKey = ['Items']
+export const itemsQueryKey = itemsKeySet.many
 
 export function useGetItemsQuery() {
     return useQuery({
-        queryKey: getItemsKey,
+        queryKey: itemsQueryKey(),
         queryFn: getItems,
         select: (res) => res.data.data.items
     })

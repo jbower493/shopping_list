@@ -6,7 +6,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getItemsKey, useCreateItemMutation } from '../queries'
+import { itemsQueryKey, useCreateItemMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import SelectField from 'components/Form/Inputs/SelectField'
@@ -40,7 +40,7 @@ function AddItemForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(getItemsKey)
+                    queryClient.invalidateQueries(itemsQueryKey())
                 },
                 onSettled: () => navigate(-1)
             }

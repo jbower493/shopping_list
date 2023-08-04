@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getUserKey, useLogoutMutation } from 'containers/auth/queries'
+import { useLogoutMutation } from 'containers/auth/queries'
 import { useGetUserQuery } from 'containers/auth/queries'
 import { toast } from 'react-hot-toast'
 import Button from 'components/Button'
 import { queryClient } from 'utils/queryClient'
+import { userQueryKey } from 'utils/queryClient/keyFactory'
 
 interface SidebarProps {
     showMenu: boolean
@@ -78,7 +79,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                         onClick={() => {
                             logout(undefined, {
                                 onSuccess: (result) => {
-                                    queryClient.invalidateQueries(getUserKey)
+                                    queryClient.invalidateQueries(userQueryKey)
                                     toast.success(result.data.message)
                                     closeMenu()
                                 }

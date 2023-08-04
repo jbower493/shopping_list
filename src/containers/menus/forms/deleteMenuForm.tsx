@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { getMenusKey, useDeleteMenuMutation } from 'containers/menus/queries'
+import { menusQueryKey, useDeleteMenuMutation } from 'containers/menus/queries'
 import { useGetMenusQuery } from 'containers/menus/queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
@@ -38,7 +38,7 @@ function DeleteMenuForm() {
                                     deleteMenu(menuId || '', {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
-                                            queryClient.invalidateQueries(getMenusKey)
+                                            queryClient.invalidateQueries(menusQueryKey())
                                         },
                                         onSettled: () => navigate(-1)
                                     })

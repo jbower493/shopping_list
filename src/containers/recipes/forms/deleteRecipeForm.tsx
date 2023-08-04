@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { getRecipesKey, useDeleteRecipeMutation } from 'containers/recipes/queries'
+import { recipesQueryKey, useDeleteRecipeMutation } from 'containers/recipes/queries'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
@@ -38,7 +38,7 @@ function DeleteRecipeForm() {
                                     deleteRecipe(recipeId || '', {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
-                                            queryClient.invalidateQueries(getRecipesKey)
+                                            queryClient.invalidateQueries(recipesQueryKey())
                                         },
                                         onSettled: () => navigate(-1)
                                     })

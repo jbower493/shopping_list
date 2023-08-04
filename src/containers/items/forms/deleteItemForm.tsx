@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { getItemsKey, useDeleteItemMutation } from '../queries'
+import { itemsQueryKey, useDeleteItemMutation } from '../queries'
 import { useGetItemsQuery } from '../queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
@@ -40,7 +40,7 @@ function DeleteItemForm() {
                                     deleteItem(itemId || '', {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
-                                            queryClient.invalidateQueries(getItemsKey)
+                                            queryClient.invalidateQueries(itemsQueryKey())
                                         },
                                         onSettled: () => navigate(-1)
                                     })

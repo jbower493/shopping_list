@@ -2,14 +2,17 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Menu, NewMenu, DetailedMenu } from 'containers/menus/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
+import { QueryKeySet } from 'utils/queryClient/keyFactory'
+
+const menusKeySet = new QueryKeySet('Menu')
 
 /***** Get menus *****/
 const getMenus = () => axios.get<QueryResponse<{ menus: Menu[] }>>('/menu')
-export const getMenusKey = ['Menus']
+export const menusQueryKey = menusKeySet.many
 
 export function useGetMenusQuery() {
     return useQuery({
-        queryKey: getMenusKey,
+        queryKey: menusQueryKey(),
         queryFn: getMenus,
         select: (res) => res.data.data.menus
     })
@@ -35,11 +38,11 @@ export function useDeleteMenuMutation() {
 
 /***** Get single menu *****/
 const getSingleMenu = (id: string) => axios.get<QueryResponse<{ menu: DetailedMenu }>>(`/menu/${id}`)
-export const getSingleMenuKey = ['Menu']
+export const singleMenuQueryKey = menusKeySet.one
 
 export function useGetSingleMenuQuery(id: string) {
     return useQuery({
-        queryKey: getSingleMenuKey,
+        queryKey: singleMenuQueryKey(id),
         queryFn: () => getSingleMenu(id),
         select: (res) => res.data.data.menu
     })

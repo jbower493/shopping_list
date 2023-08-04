@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSingleRecipeKey, useRemoveItemFromRecipeMutation } from '../queries'
+import { singleRecipeQueryKey, useRemoveItemFromRecipeMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
 import { queryClient } from 'utils/queryClient'
@@ -30,7 +30,7 @@ function EditRecipeItem({ item: { name, id }, recipeId, setAnyChanges }: EditRec
                             {
                                 onSuccess: () => {
                                     setAnyChanges(true)
-                                    queryClient.invalidateQueries(getSingleRecipeKey)
+                                    queryClient.invalidateQueries(singleRecipeQueryKey(recipeId.toString()))
                                 }
                             }
                         )

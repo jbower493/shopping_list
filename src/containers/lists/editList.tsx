@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useParams, Link, Outlet } from 'react-router-dom'
 import { singleListQueryKey, useAddItemToListMutation } from './queries'
 import { useGetSingleListQuery } from './queries'
-import { getItemsKey, useGetItemsQuery } from 'containers/items/queries'
+import { itemsQueryKey, useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
@@ -95,7 +95,7 @@ function EditList() {
                         onSuccess: () => {
                             setAnyChanges(true)
                             queryClient.invalidateQueries(singleListQueryKey(listIdSafe.toString()))
-                            queryClient.invalidateQueries(getItemsKey)
+                            queryClient.invalidateQueries(itemsQueryKey())
                         }
                     })
                 }}

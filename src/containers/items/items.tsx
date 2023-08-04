@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { getItemsKey, useBulkAssignCategoryMutation } from './queries'
+import { itemsQueryKey, useBulkAssignCategoryMutation } from './queries'
 import { useGetItemsQuery } from './queries'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import Loader from 'components/Loader'
@@ -110,7 +110,7 @@ function Items() {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
                                             cancelCategoryAssignment()
-                                            queryClient.invalidateQueries(getItemsKey)
+                                            queryClient.invalidateQueries(itemsQueryKey())
                                             queryClient.invalidateQueries(listsQueryKey())
                                         }
                                     }
