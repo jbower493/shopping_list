@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useParams, Link, Outlet } from 'react-router-dom'
-import { getSingleListKey, useAddItemToListMutation } from './queries'
+import { singleListQueryKey, useAddItemToListMutation } from './queries'
 import { useGetSingleListQuery } from './queries'
 import { getItemsKey, useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
@@ -94,7 +94,7 @@ function EditList() {
                     addItemToList(payload, {
                         onSuccess: () => {
                             setAnyChanges(true)
-                            queryClient.invalidateQueries(getSingleListKey)
+                            queryClient.invalidateQueries(singleListQueryKey(listIdSafe.toString()))
                             queryClient.invalidateQueries(getItemsKey)
                         }
                     })

@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useGetListsQuery } from 'containers/lists/queries'
+import { useListsQuery } from 'containers/lists/queries'
 import Loader from 'components/Loader'
 
 function ChooseList() {
-    const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useGetListsQuery()
+    const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useListsQuery()
 
     if (isGetListsFetching) return <Loader fullPage />
     if (isGetListsError || !getListsData) return <h1>Lists error</h1>

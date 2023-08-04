@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useGetListsQuery } from './queries'
+import { useListsQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
@@ -8,7 +8,7 @@ import { TrashIcon, PencilSquareIcon, ShoppingCartIcon } from '@heroicons/react/
 function Lists() {
     const navigate = useNavigate()
 
-    const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useGetListsQuery()
+    const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useListsQuery()
 
     if (isGetListsFetching) return <Loader fullPage />
     if (isGetListsError || !getListsData) return <h1>Lists error</h1>

@@ -6,7 +6,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getListsKey, useCreateListMutation } from '../queries'
+import { listsQueryKey, useCreateListMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
@@ -34,7 +34,7 @@ function AddListForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(getListsKey)
+                    queryClient.invalidateQueries(listsQueryKey())
                 },
                 onSettled: () => navigate(-1)
             }

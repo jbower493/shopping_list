@@ -6,7 +6,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getSingleListKey, useAddItemsFromRecipeMutation } from '../queries'
+import { singleListQueryKey, useAddItemsFromRecipeMutation } from '../queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
@@ -37,7 +37,7 @@ function AddFromRecipeForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(getSingleListKey)
+                    queryClient.invalidateQueries(singleListQueryKey(listId || ''))
                 },
                 onSettled: () => navigate(-1)
             }

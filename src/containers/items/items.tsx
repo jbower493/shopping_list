@@ -11,7 +11,7 @@ import { getCategoryOptions } from 'utils/functions'
 import { toast } from 'react-hot-toast'
 import CategoryTag from 'components/CategoryTag'
 import { queryClient } from 'utils/queryClient'
-import { getSingleListKey } from 'containers/lists/queries'
+import { listsQueryKey } from 'containers/lists/queries'
 
 function Items() {
     const [isAssigningCategories, setIsAssigningCategories] = useState(false)
@@ -111,7 +111,7 @@ function Items() {
                                             toast.success(res.data.message)
                                             cancelCategoryAssignment()
                                             queryClient.invalidateQueries(getItemsKey)
-                                            queryClient.invalidateQueries(getSingleListKey)
+                                            queryClient.invalidateQueries(listsQueryKey())
                                         }
                                     }
                                 )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSingleListKey, useRemoveItemFromListMutation } from '../queries'
+import { singleListQueryKey, useRemoveItemFromListMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
 import { queryClient } from 'utils/queryClient'
@@ -30,7 +30,7 @@ function EditListItem({ item: { name, id }, listId, setAnyChanges }: EditListIte
                             {
                                 onSuccess: () => {
                                     setAnyChanges(true)
-                                    queryClient.invalidateQueries(getSingleListKey)
+                                    queryClient.invalidateQueries(singleListQueryKey(listId.toString()))
                                 }
                             }
                         )

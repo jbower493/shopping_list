@@ -1,15 +1,18 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/lists/types'
+import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
+
+export const listsKeySet = new QueryKeySet('Lists')
 
 /***** Get lists *****/
 const getLists = () => axios.get<QueryResponse<{ lists: List[] }>>('/list')
-export const getListsKey = ['Lists']
+export const listsQueryKey = listsKeySet.many
 
-export function useGetListsQuery() {
+export function useListsQuery() {
     return useQuery({
-        queryKey: getListsKey,
+        queryKey: listsQueryKey(),
         queryFn: getLists,
         select: (res) => res.data.data.lists
     })
@@ -35,11 +38,11 @@ export function useDeleteListMutation() {
 
 /***** Get single list *****/
 const getSingleList = (id: string) => axios.get<QueryResponse<{ list: DetailedList }>>(`/list/${id}`)
-export const getSingleListKey = ['List']
+export const singleListQueryKey = listsKeySet.one
 
 export function useGetSingleListQuery(id: string) {
     return useQuery({
-        queryKey: getSingleListKey,
+        queryKey: singleListQueryKey(id),
         queryFn: () => getSingleList(id),
         select: (res) => res.data.data.list
     })

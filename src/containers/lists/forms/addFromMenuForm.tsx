@@ -6,7 +6,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getSingleListKey, useAddItemsFromMenuMutation } from '../queries'
+import { singleListQueryKey, useAddItemsFromMenuMutation } from '../queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { useGetMenusQuery } from 'containers/menus/queries'
@@ -37,7 +37,7 @@ function AddFromMenuForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(getSingleListKey)
+                    queryClient.invalidateQueries(singleListQueryKey(listId || ''))
                 },
                 onSettled: () => navigate(-1)
             }

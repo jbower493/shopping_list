@@ -3,8 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import UrlModal from 'components/Modal/UrlModal'
 import Button from 'components/Button'
-import { getListsKey, useDeleteListMutation } from 'containers/lists/queries'
-import { useGetListsQuery } from 'containers/lists/queries'
+import { useDeleteListMutation, listsQueryKey, useListsQuery } from 'containers/lists/queries'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import { queryClient } from 'utils/queryClient'
@@ -13,7 +12,7 @@ function DeleteListForm() {
     const navigate = useNavigate()
     const { listId } = useParams()
 
-    const { data: getListsData } = useGetListsQuery()
+    const { data: getListsData } = useListsQuery()
 
     const list = getListsData?.find((currentList) => currentList.id.toString() === listId)
 
@@ -38,7 +37,7 @@ function DeleteListForm() {
                                     deleteList(listId || '', {
                                         onSuccess: (res) => {
                                             toast.success(res.data.message)
-                                            queryClient.invalidateQueries(getListsKey)
+                                            queryClient.invalidateQueries(listsQueryKey())
                                         },
                                         onSettled: () => navigate(-1)
                                     })
