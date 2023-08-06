@@ -64,13 +64,14 @@ function EditRecipe() {
 
             <AddItem
                 className='mb-7'
-                onAdd={(itemToAdd, categoryId) => {
+                onAdd={(itemToAdd, categoryId, clearInput) => {
                     const payload: AddItemToRecipePayload = { recipeId: id.toString(), itemName: itemToAdd }
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
 
                     addItemToRecipe(payload, {
                         onSuccess: () => {
+                            clearInput()
                             setAnyChanges(true)
                             queryClient.invalidateQueries(singleRecipeQueryKey(id.toString()))
                             queryClient.invalidateQueries(itemsQueryKey())

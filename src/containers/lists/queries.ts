@@ -3,9 +3,10 @@ import axios from 'axios'
 import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/lists/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
-import { queryClient } from 'utils/queryClient'
-import { itemsQueryKey, getItems } from 'containers/items/queries'
+import { fireErrorNotification, queryClient } from 'utils/queryClient'
+import { itemsQueryKey } from 'containers/items/queries'
 import { request } from 'utils/queryClient/request'
+import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
 
 const listsKeySet = new QueryKeySet('List')
 
@@ -68,28 +69,35 @@ export function useAddItemToListMutation() {
         onMutate: async (payload) => {
             // Cancel any outgoing refetches so they don't overwrite our optimistic update
             queryClient.cancelQueries(singleListQueryKey(payload.listId))
-            queryClient.cancelQueries(itemsQueryKey())
 
             // Snapshot the data of the current queries
             type SingleListQueryData = Awaited<ReturnType<typeof getSingleList>> | undefined
             const singleListQueryData: SingleListQueryData = queryClient.getQueryData(singleListQueryKey(payload.listId))
 
-            type ItemsQueryData = Awaited<ReturnType<typeof getItems>> | undefined
-            const itemsQueryData: ItemsQueryData = queryClient.getQueryData(itemsQueryKey())
+            type CategoriesQueryData = Awaited<ReturnType<typeof getCategories>> | undefined
+            const categoriesQueryData: CategoriesQueryData = queryClient.getQueryData(categoriesQueryKey())
 
             // Optimistically update to new value
             queryClient.setQueryData(singleListQueryKey(payload.listId), (old: SingleListQueryData) => {
                 if (!old) return undefined
-                // TODO: make sure the list order is correct, currently it adds it in the wrong place and then it changes once the refetch is finished
+
+                const getNewItemCategory = () => {
+                    if (!payload.categoryId) return null
+                    return {
+                        id: Number(payload.categoryId),
+                        name: categoriesQueryData?.categories.find(({ id }) => id.toString() === payload.categoryId)?.name || ''
+                    }
+                }
+
                 const newData: SingleListQueryData = {
                     list: {
                         ...old.list,
                         items: [
                             ...old.list.items,
                             {
-                                id: 1,
+                                id: 0,
                                 name: payload.itemName,
-                                category: null
+                                category: getNewItemCategory()
                             }
                         ]
                     }
@@ -97,32 +105,67 @@ export function useAddItemToListMutation() {
 
                 return newData
             })
-            // queryClient.setQueryData(['todos'], (old) => {
-
-            // })
 
             // Return context object with the current data
             return {
-                singleListQueryData: singleListQueryData?.list,
-                itemsQueryData: itemsQueryData?.data.data.items
+                singleListQueryData: singleListQueryData
             }
+        },
+        onSuccess: (data, variables) => {
+            // Invalidate affected queries on success
+            queryClient.invalidateQueries(singleListQueryKey(variables.listId))
+            queryClient.invalidateQueries(itemsQueryKey())
+        },
+        onError: (err, variables, context) => {
+            // Roll back to old data on error
+            queryClient.setQueryData(singleListQueryKey(variables.listId), context?.singleListQueryData)
+            fireErrorNotification(err)
         }
-        // onSuccess: () => {
-        //     setAnyChanges(true)
-        //     clearInput()
-        //     queryClient.invalidateQueries(singleListQueryKey(listIdSafe.toString()))
-        //     queryClient.invalidateQueries(itemsQueryKey())
-        // }
     })
 }
 
+// TODO: when you delete multiple in quick succession, the "old data" is wrong, so things jump in and out of the list. This needs fixing
 /***** Remove item from list *****/
 const removeItemFromList = ({ listId, itemId }: { listId: string; itemId: number }) =>
     axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
 
 export function useRemoveItemFromListMutation() {
     return useMutation({
-        mutationFn: removeItemFromList
+        mutationFn: removeItemFromList,
+        onMutate: async (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleListQueryKey(payload.listId))
+
+            // Snapshot the data of the current queries
+            type SingleListQueryData = Awaited<ReturnType<typeof getSingleList>> | undefined
+            const singleListQueryData: SingleListQueryData = queryClient.getQueryData(singleListQueryKey(payload.listId))
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleListQueryKey(payload.listId), (old: SingleListQueryData) => {
+                if (!old) return undefined
+
+                const newData: SingleListQueryData = {
+                    list: {
+                        ...old.list,
+                        items: old.list.items.filter((item) => item.id !== payload.itemId)
+                    }
+                }
+
+                return newData
+            })
+
+            // Return context object with the current data
+            return {
+                singleListQueryData: singleListQueryData
+            }
+        },
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries(singleListQueryKey(variables.listId))
+        },
+        onError: (err, variables, context) => {
+            queryClient.setQueryData(singleListQueryKey(variables.listId), context?.singleListQueryData)
+            fireErrorNotification(err)
+        }
     })
 }
 

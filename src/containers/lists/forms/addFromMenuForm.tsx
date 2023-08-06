@@ -37,7 +37,7 @@ function AddFromMenuForm() {
             {
                 onSuccess: (res) => {
                     toast.success(res.data.message)
-                    queryClient.invalidateQueries(singleListQueryKey(listId || ''))
+                    queryClient.removeQueries(singleListQueryKey(listId || ''))
                 },
                 onSettled: () => navigate(-1)
             }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useParams, Link, Outlet } from 'react-router-dom'
-import { singleListQueryKey, useAddItemToListMutation } from './queries'
+import { useAddItemToListMutation } from './queries'
 import { useGetSingleListQuery } from './queries'
-import { itemsQueryKey, useGetItemsQuery } from 'containers/items/queries'
+import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
@@ -12,7 +12,6 @@ import CategoryTag from 'components/CategoryTag'
 import { getExistingCategories } from 'utils/functions'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToListPayload } from 'containers/lists/types'
-import { queryClient } from 'utils/queryClient'
 
 function EditList() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
@@ -67,6 +66,8 @@ function EditList() {
 
     return (
         <div className='p-4'>
+            {/* TEMP */}
+            {/* {isGetSingleListFetching ? <h4>Is refetching list</h4> : ''} */}
             <Link to='/lists'>Back to lists</Link>
             <div className='flex justify-between mb-7 mt-2'>
                 <h2>Edit List</h2>
@@ -94,11 +95,10 @@ function EditList() {
                     addItemToList(payload, {
                         onSuccess: () => {
                             setAnyChanges(true)
-                            clearInput()
-                            queryClient.invalidateQueries(singleListQueryKey(listIdSafe.toString()))
-                            queryClient.invalidateQueries(itemsQueryKey())
                         }
                     })
+
+                    clearInput()
                 }}
                 itemsList={getItemsData}
                 isAddItemLoading={false}
