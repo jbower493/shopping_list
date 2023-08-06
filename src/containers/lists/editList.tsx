@@ -19,12 +19,12 @@ function EditList() {
 
     const { listId } = useParams()
 
-    const { data: getSingleListData, isFetching: isGetSingleListFetching, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
-    const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
+    const { data: getSingleListData, isLoading: isGetSingleListLoading, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
+    const { data: getItemsData, isLoading: isGetItemsLoading, isError: isGetItemsError } = useGetItemsQuery()
 
-    const { mutate: addItemToList, isLoading: isAddItemToListLoading } = useAddItemToListMutation()
+    const { mutate: addItemToList } = useAddItemToListMutation()
 
-    if (isGetSingleListFetching || isGetItemsFetching) return <Loader fullPage />
+    if (isGetSingleListLoading || isGetItemsLoading) return <Loader fullPage />
     if (isGetSingleListError || !getSingleListData || isGetItemsError || !getItemsData) return <h1>List error</h1>
 
     const { name, id: listIdSafe, items } = getSingleListData
@@ -101,7 +101,7 @@ function EditList() {
                     })
                 }}
                 itemsList={getItemsData}
-                isAddItemLoading={isAddItemToListLoading}
+                isAddItemLoading={false}
             />
 
             <div className='flex mb-4'>

@@ -3,6 +3,9 @@ import axios from 'axios'
 import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/lists/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
+import { queryClient } from 'utils/queryClient'
+import { itemsQueryKey, getItems } from 'containers/items/queries'
+import { request } from 'utils/queryClient/request'
 
 const listsKeySet = new QueryKeySet('List')
 
@@ -19,7 +22,7 @@ export function useListsQuery() {
 }
 
 /***** Create list *****/
-const createList = (newList: NewList) => axios.post<MutationResponse>('/list', newList)
+const createList = (newList: NewList) => request.post<NewList>('/list', newList)
 
 export function useCreateListMutation() {
     return useMutation({
@@ -37,14 +40,14 @@ export function useDeleteListMutation() {
 }
 
 /***** Get single list *****/
-const getSingleList = (id: string) => axios.get<QueryResponse<{ list: DetailedList }>>(`/list/${id}`)
+const getSingleList = (id: string) => request.get<{ list: DetailedList }>(`/list/${id}`)
 export const singleListQueryKey = listsKeySet.one
 
 export function useGetSingleListQuery(id: string) {
     return useQuery({
         queryKey: singleListQueryKey(id),
         queryFn: () => getSingleList(id),
-        select: (res) => res.data.data.list
+        select: (res) => res.list
     })
 }
 
@@ -61,7 +64,55 @@ const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload) =
 
 export function useAddItemToListMutation() {
     return useMutation({
-        mutationFn: addItemToList
+        mutationFn: addItemToList,
+        onMutate: async (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleListQueryKey(payload.listId))
+            queryClient.cancelQueries(itemsQueryKey())
+
+            // Snapshot the data of the current queries
+            type SingleListQueryData = Awaited<ReturnType<typeof getSingleList>> | undefined
+            const singleListQueryData: SingleListQueryData = queryClient.getQueryData(singleListQueryKey(payload.listId))
+
+            type ItemsQueryData = Awaited<ReturnType<typeof getItems>> | undefined
+            const itemsQueryData: ItemsQueryData = queryClient.getQueryData(itemsQueryKey())
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleListQueryKey(payload.listId), (old: SingleListQueryData) => {
+                if (!old) return undefined
+                // TODO: make sure the list order is correct, currently it adds it in the wrong place and then it changes once the refetch is finished
+                const newData: SingleListQueryData = {
+                    list: {
+                        ...old.list,
+                        items: [
+                            ...old.list.items,
+                            {
+                                id: 1,
+                                name: payload.itemName,
+                                category: null
+                            }
+                        ]
+                    }
+                }
+
+                return newData
+            })
+            // queryClient.setQueryData(['todos'], (old) => {
+
+            // })
+
+            // Return context object with the current data
+            return {
+                singleListQueryData: singleListQueryData?.list,
+                itemsQueryData: itemsQueryData?.data.data.items
+            }
+        }
+        // onSuccess: () => {
+        //     setAnyChanges(true)
+        //     clearInput()
+        //     queryClient.invalidateQueries(singleListQueryKey(listIdSafe.toString()))
+        //     queryClient.invalidateQueries(itemsQueryKey())
+        // }
     })
 }
 

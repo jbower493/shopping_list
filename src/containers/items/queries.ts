@@ -7,7 +7,7 @@ import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 const itemsKeySet = new QueryKeySet('Item')
 
 /***** Get items *****/
-const getItems = () => axios.get<QueryResponse<{ items: Item[] }>>('/item')
+export const getItems = () => axios.get<QueryResponse<{ items: Item[] }>>('/item')
 export const itemsQueryKey = itemsKeySet.many
 
 export function useGetItemsQuery() {

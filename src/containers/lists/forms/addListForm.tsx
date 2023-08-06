@@ -33,7 +33,7 @@ function AddListForm() {
             { name },
             {
                 onSuccess: (res) => {
-                    toast.success(res.data.message)
+                    toast.success(res.message)
                     queryClient.invalidateQueries(listsQueryKey())
                 },
                 onSettled: () => navigate(-1)
