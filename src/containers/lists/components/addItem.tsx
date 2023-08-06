@@ -6,7 +6,7 @@ import { Item } from 'containers/items/types'
 import NewItemCategoryForm from 'containers/lists/components/newItemCategoryForm'
 
 interface AddItemProps {
-    onAdd: (itemToAdd: string, categoryId: string | null) => void
+    onAdd: (itemToAdd: string, categoryId: string | null, clearInput: () => void) => void
     itemsList: Item[]
     isAddItemLoading: boolean
     className?: string
@@ -19,8 +19,7 @@ function AddItem({ onAdd, itemsList, isAddItemLoading, className }: AddItemProps
     const isNewItem = !itemsList.find(({ name }) => name === itemToAdd)
 
     const addItem = (categoryId: string | null = null) => {
-        onAdd(itemToAdd, categoryId)
-        setItemToAdd('')
+        onAdd(itemToAdd, categoryId, () => setItemToAdd(''))
     }
 
     return (

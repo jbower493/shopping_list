@@ -86,7 +86,7 @@ function EditList() {
 
             <AddItem
                 className='mb-2'
-                onAdd={(itemToAdd, categoryId) => {
+                onAdd={(itemToAdd, categoryId, clearInput) => {
                     const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd }
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
@@ -94,6 +94,7 @@ function EditList() {
                     addItemToList(payload, {
                         onSuccess: () => {
                             setAnyChanges(true)
+                            clearInput()
                             queryClient.invalidateQueries(singleListQueryKey(listIdSafe.toString()))
                             queryClient.invalidateQueries(itemsQueryKey())
                         }

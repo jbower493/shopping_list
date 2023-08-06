@@ -28,7 +28,7 @@ function ComboBox({ options, value, setValue }: ComboBoxProps) {
                     </Combobox.Button>
                 </div>
 
-                <Combobox.Options className='absolute mt-2 max-h-60 w-full overflow-auto rounded border bg-white'>
+                <Combobox.Options className='z-10 absolute mt-2 max-h-60 w-full overflow-auto rounded border bg-white'>
                     {filteredValues.length === 0 && value !== '' ? (
                         <div className='relative cursor-default select-none py-2 px-4 text-gray-700'>Nothing found.</div>
                     ) : (
