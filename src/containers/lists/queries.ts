@@ -51,7 +51,8 @@ export function useGetSingleListQuery(id: string) {
         select: (res) => res.list
     })
 }
-
+// Use axios interceptors instead of "request.". Then pass the react query abort signal to axios request for query cancellation
+// TODO: make sure list order is correct with both optimistic updates. Set an explicit order on the backend and the sort in the same order when adding a new item
 /***** Add item to list *****/
 const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload) => {
     const body: { item_name: string; category_id?: string } = {
@@ -112,6 +113,7 @@ export function useAddItemToListMutation() {
             }
         },
         onSuccess: (data, variables) => {
+            queryClient.cancelQueries(singleListQueryKey(variables.listId))
             // Invalidate affected queries on success
             queryClient.invalidateQueries(singleListQueryKey(variables.listId))
             queryClient.invalidateQueries(itemsQueryKey())
@@ -124,15 +126,15 @@ export function useAddItemToListMutation() {
     })
 }
 
-// TODO: when you delete multiple in quick succession, the "old data" is wrong, so things jump in and out of the list. This needs fixing
 /***** Remove item from list *****/
-const removeItemFromList = ({ listId, itemId }: { listId: string; itemId: number }) =>
-    axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
+const removeItemFromList = async ({ listId, itemId }: { listId: string; itemId: number }) => {
+    return axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
+}
 
 export function useRemoveItemFromListMutation() {
     return useMutation({
         mutationFn: removeItemFromList,
-        onMutate: async (payload) => {
+        onMutate: (payload) => {
             // Cancel any outgoing refetches so they don't overwrite our optimistic update
             queryClient.cancelQueries(singleListQueryKey(payload.listId))
 
@@ -160,6 +162,9 @@ export function useRemoveItemFromListMutation() {
             }
         },
         onSuccess: (data, variables) => {
+            // Also cancel any outgoing refetches on success, otherwise the cache gets into a weird state due to race conditions
+            // This way, the cache will always reflect the optimistic updates, and only the last refetch will count
+            queryClient.cancelQueries(singleListQueryKey(variables.listId))
             queryClient.invalidateQueries(singleListQueryKey(variables.listId))
         },
         onError: (err, variables, context) => {
