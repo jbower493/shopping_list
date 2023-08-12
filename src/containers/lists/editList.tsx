@@ -20,8 +20,7 @@ function EditList() {
 
     const { data: getSingleListData, isLoading: isGetSingleListLoading, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
     const { data: getItemsData, isLoading: isGetItemsLoading, isError: isGetItemsError } = useGetItemsQuery()
-    const simpleList = getSingleListData?.items.map(({ name }) => name)
-    console.log(simpleList)
+
     const { mutate: addItemToList } = useAddItemToListMutation()
 
     if (isGetSingleListLoading || isGetItemsLoading) return <Loader fullPage />

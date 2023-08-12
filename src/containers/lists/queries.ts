@@ -41,17 +41,17 @@ export function useDeleteListMutation() {
 }
 
 /***** Get single list *****/
-const getSingleList = (id: string) => request.get<{ list: DetailedList }>(`/list/${id}`)
+const getSingleList = (id: string, signal: AbortSignal | undefined) => request.get<{ list: DetailedList }>(`/list/${id}`, { signal })
 export const singleListQueryKey = listsKeySet.one
 
 export function useGetSingleListQuery(id: string) {
     return useQuery({
         queryKey: singleListQueryKey(id),
-        queryFn: () => getSingleList(id),
+        queryFn: ({ signal }) => getSingleList(id, signal),
         select: (res) => res.list
     })
 }
-// Use axios interceptors instead of "request.". Then pass the react query abort signal to axios request for query cancellation
+
 // TODO: make sure list order is correct with both optimistic updates. Set an explicit order on the backend and the sort in the same order when adding a new item
 /***** Add item to list *****/
 const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload) => {
@@ -113,7 +113,6 @@ export function useAddItemToListMutation() {
             }
         },
         onSuccess: (data, variables) => {
-            queryClient.cancelQueries(singleListQueryKey(variables.listId))
             // Invalidate affected queries on success
             queryClient.invalidateQueries(singleListQueryKey(variables.listId))
             queryClient.invalidateQueries(itemsQueryKey())
@@ -127,9 +126,8 @@ export function useAddItemToListMutation() {
 }
 
 /***** Remove item from list *****/
-const removeItemFromList = async ({ listId, itemId }: { listId: string; itemId: number }) => {
-    return axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
-}
+const removeItemFromList = async ({ listId, itemId }: { listId: string; itemId: number }) =>
+    axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
 
 export function useRemoveItemFromListMutation() {
     return useMutation({
@@ -162,10 +160,10 @@ export function useRemoveItemFromListMutation() {
             }
         },
         onSuccess: (data, variables) => {
-            // Also cancel any outgoing refetches on success, otherwise the cache gets into a weird state due to race conditions
-            // This way, the cache will always reflect the optimistic updates, and only the last refetch will count
-            queryClient.cancelQueries(singleListQueryKey(variables.listId))
-            queryClient.invalidateQueries(singleListQueryKey(variables.listId))
+            // "isMutating" seems to return 1 for the current mutation even in the on success handler. If "isMutating" is greater than 1, that means that previous deletions are still happening. So we only want to invalidate the cache if its the last deletion
+            if (queryClient.isMutating() < 2) {
+                queryClient.invalidateQueries(singleListQueryKey(variables.listId))
+            }
         },
         onError: (err, variables, context) => {
             queryClient.setQueryData(singleListQueryKey(variables.listId), context?.singleListQueryData)
