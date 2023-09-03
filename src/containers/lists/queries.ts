@@ -5,25 +5,24 @@ import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
 import { itemsQueryKey } from 'containers/items/queries'
-import { request } from 'utils/queryClient/request'
 import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
 
 const listsKeySet = new QueryKeySet('List')
 
 /***** Get lists *****/
-const getLists = () => axios.get<QueryResponse<{ lists: List[] }>>('/list')
+const getLists = (): Promise<QueryResponse<{ lists: List[] }>> => axios.get('/list')
 export const listsQueryKey = listsKeySet.many
 
 export function useListsQuery() {
     return useQuery({
         queryKey: listsQueryKey(),
         queryFn: getLists,
-        select: (res) => res.data.data.lists
+        select: (res) => res.data.lists
     })
 }
 
 /***** Create list *****/
-const createList = (newList: NewList) => request.post<NewList>('/list', newList)
+const createList = (newList: NewList): Promise<MutationResponse> => axios.post('/list', newList)
 
 export function useCreateListMutation() {
     return useMutation({
@@ -32,7 +31,7 @@ export function useCreateListMutation() {
 }
 
 /***** Delete list *****/
-const deleteList = (id: string) => axios.delete<MutationResponse>(`/list/${id}`)
+const deleteList = (id: string): Promise<MutationResponse> => axios.delete(`/list/${id}`)
 
 export function useDeleteListMutation() {
     return useMutation({
@@ -41,7 +40,7 @@ export function useDeleteListMutation() {
 }
 
 /***** Get single list *****/
-const getSingleList = (id: string, signal: AbortSignal | undefined) => request.get<{ list: DetailedList }>(`/list/${id}`, { signal })
+const getSingleList = (id: string, signal: AbortSignal | undefined): Promise<{ list: DetailedList }> => axios.get(`/list/${id}`, { signal })
 export const singleListQueryKey = listsKeySet.one
 
 export function useGetSingleListQuery(id: string) {
@@ -54,14 +53,14 @@ export function useGetSingleListQuery(id: string) {
 
 // TODO: make sure list order is correct with both optimistic updates. Set an explicit order on the backend and the sort in the same order when adding a new item
 /***** Add item to list *****/
-const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload) => {
+const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload): Promise<MutationResponse> => {
     const body: { item_name: string; category_id?: string } = {
         item_name: itemName
     }
 
     if (categoryId) body.category_id = categoryId
 
-    return axios.post<MutationResponse>(`/list/${listId}/add-item`, body)
+    return axios.post(`/list/${listId}/add-item`, body)
 }
 
 export function useAddItemToListMutation() {
@@ -126,8 +125,8 @@ export function useAddItemToListMutation() {
 }
 
 /***** Remove item from list *****/
-const removeItemFromList = async ({ listId, itemId }: { listId: string; itemId: number }) =>
-    axios.post<MutationResponse>(`/list/${listId}/remove-item`, { item_id: itemId })
+const removeItemFromList = async ({ listId, itemId }: { listId: string; itemId: number }): Promise<MutationResponse> =>
+    axios.post(`/list/${listId}/remove-item`, { item_id: itemId })
 
 export function useRemoveItemFromListMutation() {
     return useMutation({
@@ -173,8 +172,8 @@ export function useRemoveItemFromListMutation() {
 }
 
 /***** Add items from recipe *****/
-const addItemsFromRecipe = ({ listId, recipeId }: { listId: string; recipeId: string }) =>
-    axios.post<MutationResponse>(`/list/${listId}/add-from-recipe/${recipeId}`)
+const addItemsFromRecipe = ({ listId, recipeId }: { listId: string; recipeId: string }): Promise<MutationResponse> =>
+    axios.post(`/list/${listId}/add-from-recipe/${recipeId}`)
 
 export function useAddItemsFromRecipeMutation() {
     return useMutation({
@@ -183,8 +182,8 @@ export function useAddItemsFromRecipeMutation() {
 }
 
 /***** Add items from menu *****/
-const addItemsFromMenu = ({ listId, menuId }: { listId: string; menuId: string }) =>
-    axios.post<MutationResponse>(`/list/${listId}/add-from-menu/${menuId}`)
+const addItemsFromMenu = ({ listId, menuId }: { listId: string; menuId: string }): Promise<MutationResponse> =>
+    axios.post(`/list/${listId}/add-from-menu/${menuId}`)
 
 export function useAddItemsFromMenuMutation() {
     return useMutation({

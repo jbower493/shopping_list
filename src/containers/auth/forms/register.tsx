@@ -28,7 +28,7 @@ function RegisterForm() {
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         await registerUser(data, {
             onSuccess: (res) => {
-                toast.success(res.data.message)
+                toast.success(res.message)
                 navigate('/login')
             }
         })

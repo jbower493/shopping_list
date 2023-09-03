@@ -39,7 +39,7 @@ function AddItemForm() {
             { name, category_id: categoryId === 'none' ? null : Number(categoryId) },
             {
                 onSuccess: (res) => {
-                    toast.success(res.data.message)
+                    toast.success(res.message)
                     queryClient.invalidateQueries(itemsQueryKey())
                 },
                 onSettled: () => navigate(-1)

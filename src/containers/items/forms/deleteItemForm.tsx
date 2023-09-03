@@ -39,7 +39,7 @@ function DeleteItemForm() {
                                 onClick={() => {
                                     deleteItem(itemId || '', {
                                         onSuccess: (res) => {
-                                            toast.success(res.data.message)
+                                            toast.success(res.message)
                                             queryClient.invalidateQueries(itemsQueryKey())
                                         },
                                         onSettled: () => navigate(-1)

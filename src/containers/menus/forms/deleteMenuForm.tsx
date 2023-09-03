@@ -37,7 +37,7 @@ function DeleteMenuForm() {
                                 onClick={() => {
                                     deleteMenu(menuId || '', {
                                         onSuccess: (res) => {
-                                            toast.success(res.data.message)
+                                            toast.success(res.message)
                                             queryClient.invalidateQueries(menusQueryKey())
                                         },
                                         onSettled: () => navigate(-1)

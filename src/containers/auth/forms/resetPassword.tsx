@@ -35,7 +35,7 @@ function RequestPasswordReset() {
             { ...data, token: token || '' },
             {
                 onSuccess: (res) => {
-                    toast.success(res.data.message)
+                    toast.success(res.message)
                     navigate('/login')
                 }
             }

@@ -27,7 +27,7 @@ function LoginForm() {
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         await login(data, {
             onSuccess: (res) => {
-                toast.success(res.data.message)
+                toast.success(res.message)
                 queryClient.invalidateQueries(userQueryKey)
             }
         })

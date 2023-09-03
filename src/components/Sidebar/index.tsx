@@ -80,7 +80,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                             logout(undefined, {
                                 onSuccess: (result) => {
                                     queryClient.invalidateQueries(userQueryKey)
-                                    toast.success(result.data.message)
+                                    toast.success(result.message)
                                     closeMenu()
                                 }
                             })

@@ -33,7 +33,7 @@ function AddCategoryForm() {
             { name },
             {
                 onSuccess: (res) => {
-                    toast.success(res.data.message)
+                    toast.success(res.message)
                     queryClient.invalidateQueries(categoriesQueryKey())
                 },
                 onSettled: () => navigate(-1)

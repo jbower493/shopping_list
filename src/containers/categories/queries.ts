@@ -2,13 +2,12 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Category, NewCategory } from 'containers/categories/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
-import { request } from 'utils/queryClient/request'
 import type { MutationResponse } from 'utils/queryClient/types'
 
 const categoriesKeySet = new QueryKeySet('Category')
 
 /***** Get categories *****/
-export const getCategories = () => request.get<{ categories: Category[] }>('/category')
+export const getCategories = (): Promise<{ categories: Category[] }> => axios.get('/category')
 export const categoriesQueryKey = categoriesKeySet.many
 
 export function useGetCategoriesQuery() {
@@ -20,7 +19,7 @@ export function useGetCategoriesQuery() {
 }
 
 /***** Create category *****/
-const createCategory = (newCategory: NewCategory) => axios.post<MutationResponse>('/category', newCategory)
+const createCategory = (newCategory: NewCategory): Promise<MutationResponse> => axios.post('/category', newCategory)
 
 export function useCreateCategoryMutation() {
     return useMutation({
@@ -29,7 +28,7 @@ export function useCreateCategoryMutation() {
 }
 
 /***** Delete category *****/
-const deleteCategory = (id: string) => axios.delete<MutationResponse>(`/category/${id}`)
+const deleteCategory = (id: string): Promise<MutationResponse> => axios.delete(`/category/${id}`)
 
 export function useDeleteCategoryMutation() {
     return useMutation({

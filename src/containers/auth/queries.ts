@@ -5,14 +5,14 @@ import { userQueryKey } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
 /***** Get user *****/
-const getUser = () => axios.get<QueryResponse<{ user: User }>>('/user')
+const getUser = (): Promise<QueryResponse<{ user: User }>> => axios.get('/user')
 
 export function useGetUserQuery() {
-    return useQuery({ queryKey: userQueryKey, queryFn: getUser, select: (response) => response.data.data.user })
+    return useQuery({ queryKey: userQueryKey, queryFn: getUser, select: (response) => response.data.user })
 }
 
 /***** Login *****/
-const login = (credentials: Credentials) => axios.post<MutationResponse>('/login', credentials)
+const login = (credentials: Credentials): Promise<MutationResponse> => axios.post('/login', credentials)
 
 export function useLoginMutation() {
     return useMutation({
@@ -21,7 +21,7 @@ export function useLoginMutation() {
 }
 
 /***** Register *****/
-const register = (credentials: RegisterCredentials) => axios.post<MutationResponse>('/register', credentials)
+const register = (credentials: RegisterCredentials): Promise<MutationResponse> => axios.post('/register', credentials)
 
 export function useRegisterMutation() {
     return useMutation({
@@ -30,7 +30,7 @@ export function useRegisterMutation() {
 }
 
 /***** Logout *****/
-const logout = () => axios.get<MutationResponse>('/logout')
+const logout = (): Promise<MutationResponse> => axios.get('/logout')
 
 export function useLogoutMutation() {
     return useMutation({
@@ -39,7 +39,7 @@ export function useLogoutMutation() {
 }
 
 /***** Request password reset *****/
-const requestPaswordReset = (payload: RequestPasswordResetPayload) => axios.post<MutationResponse>('/forgot-password', payload)
+const requestPaswordReset = (payload: RequestPasswordResetPayload): Promise<MutationResponse> => axios.post('/forgot-password', payload)
 
 export function useRequestPasswordResetMutation() {
     return useMutation({
@@ -48,7 +48,7 @@ export function useRequestPasswordResetMutation() {
 }
 
 /***** Reset password *****/
-const resetPassword = (payload: ResetPasswordPayload) => axios.post<MutationResponse>('/reset-password', payload)
+const resetPassword = (payload: ResetPasswordPayload): Promise<MutationResponse> => axios.post('/reset-password', payload)
 
 export function useResetPasswordMutation() {
     return useMutation({

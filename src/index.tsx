@@ -14,6 +14,10 @@ axios.defaults.baseURL = baseUrl
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
+axios.interceptors.response.use((response) => {
+    return response.data
+})
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
     <QueryClientProvider client={queryClient}>

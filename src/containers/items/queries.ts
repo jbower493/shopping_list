@@ -7,19 +7,19 @@ import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 const itemsKeySet = new QueryKeySet('Item')
 
 /***** Get items *****/
-export const getItems = () => axios.get<QueryResponse<{ items: Item[] }>>('/item')
+export const getItems = (): Promise<QueryResponse<{ items: Item[] }>> => axios.get('/item')
 export const itemsQueryKey = itemsKeySet.many
 
 export function useGetItemsQuery() {
     return useQuery({
         queryKey: itemsQueryKey(),
         queryFn: getItems,
-        select: (res) => res.data.data.items
+        select: (res) => res.data.items
     })
 }
 
 /***** Create item *****/
-const createItem = (newItem: NewItem) => axios.post<MutationResponse>('/item', newItem)
+const createItem = (newItem: NewItem): Promise<MutationResponse> => axios.post('/item', newItem)
 
 export function useCreateItemMutation() {
     return useMutation({
@@ -28,7 +28,7 @@ export function useCreateItemMutation() {
 }
 
 /***** Delete item *****/
-const deleteItem = (id: string) => axios.delete<MutationResponse>(`/item/${id}`)
+const deleteItem = (id: string): Promise<MutationResponse> => axios.delete(`/item/${id}`)
 
 export function useDeleteItemMutation() {
     return useMutation({
@@ -37,8 +37,8 @@ export function useDeleteItemMutation() {
 }
 
 /***** Bulk assign category *****/
-const bulkAssignCategory = ({ category_id, item_ids }: BulkAssignCategoryPayload) =>
-    axios.put<MutationResponse>(`/item/category/${category_id}/bulk`, { item_ids })
+const bulkAssignCategory = ({ category_id, item_ids }: BulkAssignCategoryPayload): Promise<MutationResponse> =>
+    axios.put(`/item/category/${category_id}/bulk`, { item_ids })
 
 export function useBulkAssignCategoryMutation() {
     return useMutation({

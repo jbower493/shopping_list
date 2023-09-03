@@ -37,7 +37,7 @@ function DeleteRecipeForm() {
                                 onClick={() => {
                                     deleteRecipe(recipeId || '', {
                                         onSuccess: (res) => {
-                                            toast.success(res.data.message)
+                                            toast.success(res.message)
                                             queryClient.invalidateQueries(recipesQueryKey())
                                         },
                                         onSettled: () => navigate(-1)

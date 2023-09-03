@@ -36,7 +36,7 @@ function AddFromMenuForm() {
             { listId: listId || '', menuId },
             {
                 onSuccess: (res) => {
-                    toast.success(res.data.message)
+                    toast.success(res.message)
                     queryClient.removeQueries(singleListQueryKey(listId || ''))
                 },
                 onSettled: () => navigate(-1)

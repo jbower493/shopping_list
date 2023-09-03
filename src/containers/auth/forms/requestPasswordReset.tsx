@@ -22,7 +22,7 @@ function RequestPasswordReset() {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        await requestPasswordReset(data, { onSuccess: (res) => toast.success(res.data.message) })
+        await requestPasswordReset(data, { onSuccess: (res) => toast.success(res.message) })
     }
 
     return (

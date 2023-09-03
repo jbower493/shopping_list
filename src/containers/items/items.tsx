@@ -108,7 +108,7 @@ function Items() {
                                     },
                                     {
                                         onSuccess: (res) => {
-                                            toast.success(res.data.message)
+                                            toast.success(res.message)
                                             cancelCategoryAssignment()
                                             queryClient.invalidateQueries(itemsQueryKey())
                                             queryClient.invalidateQueries(listsQueryKey())
