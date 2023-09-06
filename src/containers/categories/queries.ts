@@ -2,19 +2,19 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Category, NewCategory } from 'containers/categories/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
-import type { MutationResponse } from 'utils/queryClient/types'
+import type { MutationResponse, QueryResponse } from 'utils/queryClient/types'
 
 const categoriesKeySet = new QueryKeySet('Category')
 
 /***** Get categories *****/
-export const getCategories = (): Promise<{ categories: Category[] }> => axios.get('/category')
+export const getCategories = (): Promise<QueryResponse<{ categories: Category[] }>> => axios.get('/category')
 export const categoriesQueryKey = categoriesKeySet.many
 
 export function useGetCategoriesQuery() {
     return useQuery({
         queryKey: categoriesQueryKey(),
         queryFn: getCategories,
-        select: (res) => res.categories
+        select: (res) => res.data.categories
     })
 }
 

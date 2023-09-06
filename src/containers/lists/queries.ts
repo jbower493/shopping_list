@@ -40,14 +40,15 @@ export function useDeleteListMutation() {
 }
 
 /***** Get single list *****/
-const getSingleList = (id: string, signal: AbortSignal | undefined): Promise<{ list: DetailedList }> => axios.get(`/list/${id}`, { signal })
+const getSingleList = (id: string, signal: AbortSignal | undefined): Promise<QueryResponse<{ list: DetailedList }>> =>
+    axios.get(`/list/${id}`, { signal })
 export const singleListQueryKey = listsKeySet.one
 
 export function useGetSingleListQuery(id: string) {
     return useQuery({
         queryKey: singleListQueryKey(id),
         queryFn: ({ signal }) => getSingleList(id, signal),
-        select: (res) => res.list
+        select: (res) => res.data.list
     })
 }
 
@@ -85,22 +86,25 @@ export function useAddItemToListMutation() {
                     if (!payload.categoryId) return null
                     return {
                         id: Number(payload.categoryId),
-                        name: categoriesQueryData?.categories.find(({ id }) => id.toString() === payload.categoryId)?.name || ''
+                        name: categoriesQueryData?.data.categories.find(({ id }) => id.toString() === payload.categoryId)?.name || ''
                     }
                 }
 
                 const newData: SingleListQueryData = {
-                    list: {
-                        ...old.list,
-                        items: [
-                            ...old.list.items,
-                            {
-                                id: 0,
-                                name: payload.itemName,
-                                category: getNewItemCategory()
-                            }
-                        ]
-                    }
+                    data: {
+                        list: {
+                            ...old.data.list,
+                            items: [
+                                ...old.data.list.items,
+                                {
+                                    id: 0,
+                                    name: payload.itemName,
+                                    category: getNewItemCategory()
+                                }
+                            ]
+                        }
+                    },
+                    message: old.message
                 }
 
                 return newData
@@ -144,10 +148,13 @@ export function useRemoveItemFromListMutation() {
                 if (!old) return undefined
 
                 const newData: SingleListQueryData = {
-                    list: {
-                        ...old.list,
-                        items: old.list.items.filter((item) => item.id !== payload.itemId)
-                    }
+                    data: {
+                        list: {
+                            ...old.data.list,
+                            items: old.data.list.items.filter((item) => item.id !== payload.itemId)
+                        }
+                    },
+                    message: old.message
                 }
 
                 return newData
