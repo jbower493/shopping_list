@@ -4,7 +4,7 @@ import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/li
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
-import { itemsQueryKey } from 'containers/items/queries'
+import { getItems, itemsQueryKey } from 'containers/items/queries'
 import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
 
 const listsKeySet = new QueryKeySet('List')
@@ -78,30 +78,47 @@ export function useAddItemToListMutation() {
             type CategoriesQueryData = Awaited<ReturnType<typeof getCategories>> | undefined
             const categoriesQueryData: CategoriesQueryData = queryClient.getQueryData(categoriesQueryKey())
 
+            type ItemsQueryData = Awaited<ReturnType<typeof getItems>> | undefined
+            const itemsQueryData: ItemsQueryData = queryClient.getQueryData(itemsQueryKey())
+
             // Optimistically update to new value
             queryClient.setQueryData(singleListQueryKey(payload.listId), (old: SingleListQueryData) => {
                 if (!old) return undefined
 
-                const getNewItemCategory = () => {
-                    if (!payload.categoryId) return null
+                const getAddedItemCategory = () => {
+                    function getCategoryId() {
+                        // If its a new item and therefore it is getting assigned a category on creation
+                        if (payload.categoryId) return Number(payload.categoryId)
+
+                        // If its an existing item, check the items list to see what it's category is (if it has a category)
+                        const matchingItemCategory = itemsQueryData?.data.items.find(({ name }) => name === payload.itemName)?.category
+
+                        return matchingItemCategory?.id || null
+                    }
+
+                    const categoryId = getCategoryId()
+
+                    if (!categoryId) return null
                     return {
-                        id: Number(payload.categoryId),
-                        name: categoriesQueryData?.data.categories.find(({ id }) => id.toString() === payload.categoryId)?.name || ''
+                        id: categoryId,
+                        name: categoriesQueryData?.data.categories.find(({ id }) => id === categoryId)?.name || ''
                     }
                 }
+
+                const newItems = [
+                    ...old.data.list.items,
+                    {
+                        id: 0,
+                        name: payload.itemName,
+                        category: getAddedItemCategory()
+                    }
+                ]
 
                 const newData: SingleListQueryData = {
                     data: {
                         list: {
                             ...old.data.list,
-                            items: [
-                                ...old.data.list.items,
-                                {
-                                    id: 0,
-                                    name: payload.itemName,
-                                    category: getNewItemCategory()
-                                }
-                            ]
+                            items: newItems.sort((a, b) => (a.name > b.name ? 1 : -1))
                         }
                     },
                     message: old.message
