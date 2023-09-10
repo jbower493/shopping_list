@@ -16,8 +16,8 @@ export class QueryKeySet {
 
     // Add the user id to every query key except the user query itself. If not authed just add 'NO_USER' instead
     private getUserIdKeySegment(): string {
-        const userData = queryClient.getQueryData<{ data: QueryResponse<{ user: User }> }>(userQueryKey)
-        const userId = userData?.data?.data?.user?.id
+        const userData = queryClient.getQueryData<QueryResponse<{ user: User }>>(userQueryKey)
+        const userId = userData?.data?.user?.id
 
         return userId ? `USER_${userId}` : 'NO_USER'
     }
