@@ -25,7 +25,7 @@ function Modal({ children, title, desc, open, onClose, loading }: ModalProps) {
 
                 <div className='fixed inset-0 flex items-center justify-center p-4'>
                     <Transition.Child as={Fragment} enter='ease-out duration-300' enterFrom='opacity-0' enterTo='opacity-100'>
-                        <Dialog.Panel className='relative w-full sm:w-auto sm:max-w-2xl sm:min-w-120 max-h-96 rounded-xl bg-white overflow-hidden'>
+                        <Dialog.Panel className='relative w-full sm:w-auto sm:max-w-2xl sm:min-w-120 max-h-full rounded-xl bg-white overflow-auto'>
                             <>
                                 <ModalHeader title={title} desc={desc} />
                                 {loading ? (

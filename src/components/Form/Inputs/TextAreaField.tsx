@@ -1,12 +1,11 @@
-import React, { HTMLInputTypeAttribute } from 'react'
+import React from 'react'
 import { UseFormRegister, Path, FieldValues } from 'react-hook-form'
 import { FieldError } from 'react-hook-form'
 import ErrorMessage from 'components/Form/ErrorMessage'
 
-interface InputFieldProps<T extends FieldValues> {
+interface TextAreaFieldProps<T extends FieldValues> {
     label: string
     name: Path<T>
-    type: HTMLInputTypeAttribute
     register: UseFormRegister<T>
     validation?: {
         required?: string
@@ -14,15 +13,15 @@ interface InputFieldProps<T extends FieldValues> {
     error: FieldError | undefined | false
 }
 
-function InputField<T extends FieldValues>({ label, name, type, register, validation = {}, error }: InputFieldProps<T>) {
+function TextAreaField<T extends FieldValues>({ label, name, register, validation = {}, error }: TextAreaFieldProps<T>) {
     return (
         <div>
             <label>{label}</label>
             {/* Calling "register" method gives us "onChange", "onBlur", "ref" and "name", which we then spread to the underlying input */}
-            <input type={type} {...register(name, validation)} />
+            <textarea {...register(name, validation)} className='h-40' />
             <ErrorMessage error={error} />
         </div>
     )
 }
 
-export default InputField
+export default TextAreaField

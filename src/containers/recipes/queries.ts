@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload } from 'containers/recipes/types'
+import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload, EditRecipePayload } from 'containers/recipes/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 
@@ -70,5 +70,15 @@ const removeItemFromRecipe = ({ recipeId, itemId }: { recipeId: string; itemId: 
 export function useRemoveItemFromRecipeMutation() {
     return useMutation({
         mutationFn: removeItemFromRecipe
+    })
+}
+
+/***** Edit recipe *****/
+const editRecipe = ({ recipeId, attributes }: { recipeId: string; attributes: EditRecipePayload }): Promise<MutationResponse> =>
+    axios.put(`/recipe/${recipeId}`, attributes)
+
+export function useEditRecipeMutation() {
+    return useMutation({
+        mutationFn: editRecipe
     })
 }
