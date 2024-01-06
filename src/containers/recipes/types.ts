@@ -12,6 +12,7 @@ export interface NewRecipe {
 export interface DetailedRecipe {
     id: number
     name: string
+    instructions: string | null
     items: Item[]
 }
 
@@ -19,4 +20,9 @@ export interface AddItemToRecipePayload {
     recipeId: string
     itemName: string
     categoryId?: string
+}
+
+export interface EditRecipePayload {
+    name: string
+    instructions?: string
 }

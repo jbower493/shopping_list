@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate, Outlet } from 'react-router-dom'
 import { singleRecipeQueryKey, useAddItemToRecipeMutation } from './queries'
 import { useGetSingleRecipeQuery } from './queries'
 import { itemsQueryKey, useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
-import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
@@ -13,8 +13,10 @@ import { queryClient } from 'utils/queryClient'
 
 function EditRecipe() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
+    const [isInstructionsShowing, setIsInstructionsShowing] = useState<boolean>(true)
 
     const { recipeId } = useParams()
+    const navigate = useNavigate()
 
     const {
         data: getSingleRecipeData,
@@ -28,7 +30,27 @@ function EditRecipe() {
     if (isGetSingleRecipeFetching || isGetItemsFetching) return <Loader fullPage />
     if (isGetSingleRecipeError || !getSingleRecipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
-    const { name, id, items } = getSingleRecipeData
+    const { name, id, items, instructions } = getSingleRecipeData
+
+    const renderInstructions = () => {
+        if (!isInstructionsShowing) {
+            return ''
+        }
+
+        if (!instructions) {
+            return <p>None set. Click the &quot;Edit&quot; icon above to add some instructions.</p>
+        }
+
+        const lines = instructions.split('\n')
+
+        return (
+            <div>
+                {lines.map((line, index) => (
+                    <p key={index}>{line}</p>
+                ))}
+            </div>
+        )
+    }
 
     const renderCurrentItems = () => {
         return (
@@ -47,7 +69,12 @@ function EditRecipe() {
         <div className='p-4'>
             <Link to='/recipes'>Back to recipes</Link>
             <div className='flex justify-between mb-7 mt-2'>
-                <h2>Edit Recipe</h2>
+                <div className='flex items-center'>
+                    <h2>{name}</h2>
+                    <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
+                        <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                    </button>
+                </div>
                 <div className='flex items-center'>
                     {anyChanges ? (
                         <small className='opacity-40 flex items-center text-sm mr-2'>
@@ -57,13 +84,28 @@ function EditRecipe() {
                     ) : (
                         ''
                     )}
-                    <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
-                    <p>{name}</p>
                 </div>
             </div>
 
+            <div className='mb-8'>
+                <div className='flex items-center mb-2'>
+                    <h3>Instructions</h3>
+                    <button
+                        type='button'
+                        onClick={() => setIsInstructionsShowing((prev) => !prev)}
+                        className='ml-4 text-sky-500 hover:text-sky-600 hover:underline'
+                    >
+                        {isInstructionsShowing ? 'Hide' : 'Show'}
+                    </button>
+                    <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
+                        <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                    </button>
+                </div>
+                {renderInstructions()}
+            </div>
+
             <AddItem
-                className='mb-7'
+                className='mb-6'
                 onAdd={(itemToAdd, categoryId, clearInput) => {
                     const payload: AddItemToRecipePayload = { recipeId: id.toString(), itemName: itemToAdd }
 
@@ -83,6 +125,8 @@ function EditRecipe() {
             />
 
             {renderCurrentItems()}
+
+            <Outlet />
         </div>
     )
 }

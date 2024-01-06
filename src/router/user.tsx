@@ -28,6 +28,7 @@ import EditMenu from 'containers/menus/editMenu'
 
 import Shop from 'containers/shop/shop'
 import ChooseList from 'containers/shop/chooseList'
+import EditRecipeDetailsForm from 'containers/recipes/forms/editRecipeDetailsForm'
 
 function UserRouter() {
     return (
@@ -54,7 +55,9 @@ function UserRouter() {
                 <Route path='new' element={<AddRecipeForm />} />
                 <Route path='delete/:recipeId' element={<DeleteRecipeForm />} />
             </Route>
-            <Route path='/recipes/edit/:recipeId' element={<EditRecipe />} />
+            <Route path='/recipes/edit/:recipeId' element={<EditRecipe />}>
+                <Route path='details' element={<EditRecipeDetailsForm />} />
+            </Route>
             <Route path='/menus' element={<Menus />}>
                 <Route path='new' element={<AddMenuForm />} />
                 <Route path='delete/:menuId' element={<DeleteMenuForm />} />
