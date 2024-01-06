@@ -1,6 +1,7 @@
 import type { Category } from 'containers/categories/types'
 import type { Item } from 'containers/items/types'
 import { RecipeCategory } from 'containers/recipeCategories/types'
+import { Recipe } from 'containers/recipes/types'
 
 export const getCategoryOptions = (categories: Category[] = []) => {
     const options = categories.map(({ id, name }) => ({
@@ -67,6 +68,20 @@ export const getRecipeCategoryColor = (recipeCategories: RecipeCategory[], catNa
 export const getExistingCategories = (itemsList: Item[]) => {
     const mapped = itemsList.map(({ category }) => category || { name: 'Uncategorized', id: -1 })
     const filtered = mapped.filter((category, index, arr) => arr.findIndex((categoryNested) => category.id === categoryNested.id) === index)
+    const sorted = filtered.sort((a, b) => {
+        if (b.id === -1) return -1
+        if (a.id === -1) return 1
+        return a.name.localeCompare(b.name)
+    })
+
+    return sorted
+}
+
+export const getExistingRecipeCategories = (recipesList: Recipe[]) => {
+    const mapped = recipesList.map(({ recipe_category }) => recipe_category || { name: 'Uncategorized', id: -1 })
+    const filtered = mapped.filter(
+        (recipeCategory, index, arr) => arr.findIndex((recipeCategoryNested) => recipeCategory.id === recipeCategoryNested.id) === index
+    )
     const sorted = filtered.sort((a, b) => {
         if (b.id === -1) return -1
         if (a.id === -1) return 1

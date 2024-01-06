@@ -27,10 +27,10 @@ function EditList() {
 
     const { name, id: listIdSafe, items } = getSingleListData
 
-    // Get a unique list of all the categories present in the list
-    const categoriesInList = getExistingCategories(items)
-
     const renderCurrentItems = () => {
+        // Get a unique list of all the categories present in the list
+        const categoriesInList = getExistingCategories(items)
+
         const renderCategory = (id: number, name: string) => {
             let list = items.filter(({ category }) => !category)
 

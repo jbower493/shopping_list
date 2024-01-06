@@ -6,20 +6,26 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { singleRecipeQueryKey, useEditRecipeMutation, useGetSingleRecipeQuery } from '../queries'
+import { recipesQueryKey, useEditRecipeMutation, useGetSingleRecipeQuery } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
 import TextAreaField from 'components/Form/Inputs/TextAreaField'
+import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
+import SelectField from 'components/Form/Inputs/SelectField'
+import { getRecipeCategoryOptions } from 'utils/functions'
 
 type Inputs = {
     name: string
     instructions?: string
+    recipeCategoryId: string
 }
 
 function EditRecipeDetailsForm() {
     const navigate = useNavigate()
     const { recipeId } = useParams()
+
+    const { data: getRecipeCategoriesData } = useGetRecipeCategoriesQuery()
 
     const { data: getSingleRecipeData } = useGetSingleRecipeQuery(recipeId || '')
 
@@ -37,19 +43,20 @@ function EditRecipeDetailsForm() {
         }
     })
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ name, instructions }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ name, instructions, recipeCategoryId }) => {
         await editRecipe(
             {
                 recipeId: recipeId || '',
                 attributes: {
                     name,
-                    instructions
+                    instructions,
+                    recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId)
                 }
             },
             {
                 onSuccess: (res) => {
                     toast.success(res.message)
-                    queryClient.invalidateQueries(singleRecipeQueryKey(recipeId || ''))
+                    queryClient.invalidateQueries(recipesQueryKey())
                     navigate(-1)
                 }
             }
@@ -68,6 +75,14 @@ function EditRecipeDetailsForm() {
                             register={register}
                             validation={{ required: 'This is required.' }}
                             error={touchedFields.name && errors.name}
+                        />
+                        <SelectField<Inputs>
+                            label='Recipe Category'
+                            name='recipeCategoryId'
+                            options={getRecipeCategoryOptions(getRecipeCategoriesData)}
+                            register={register}
+                            validation={{ required: 'This is required.' }}
+                            error={touchedFields.recipeCategoryId && errors.recipeCategoryId}
                         />
                         <TextAreaField<Inputs>
                             label='Instructions'

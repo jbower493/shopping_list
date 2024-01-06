@@ -22,11 +22,7 @@ type Inputs = {
 function AddRecipeForm() {
     const navigate = useNavigate()
 
-    const {
-        data: getRecipeCategoriesData,
-        isFetching: isGetRecipeCategoriesFetching,
-        isError: isGetRecipeCategoriesError
-    } = useGetRecipeCategoriesQuery()
+    const { data: getRecipeCategoriesData, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
     const { mutateAsync: createRecipe } = useCreateRecipeMutation()
 
