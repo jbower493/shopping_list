@@ -64,8 +64,8 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                     </Link>
                 </li>
                 <li>
-                    <Link to='/shop' onClick={() => closeMenu()}>
-                        Shop
+                    <Link to='/recipe-categories' onClick={() => closeMenu()}>
+                        Recipe Categories
                     </Link>
                 </li>
             </ul>
