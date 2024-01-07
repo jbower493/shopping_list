@@ -10,6 +10,8 @@ import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToRecipePayload } from 'containers/recipes/types'
 import { queryClient } from 'utils/queryClient'
+import CategoryTag from 'components/CategoryTag'
+import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 
 function EditRecipe() {
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
@@ -17,6 +19,8 @@ function EditRecipe() {
 
     const { recipeId } = useParams()
     const navigate = useNavigate()
+
+    const { data: getRecipeCategoriesData } = useGetRecipeCategoriesQuery()
 
     const {
         data: getSingleRecipeData,
@@ -30,7 +34,7 @@ function EditRecipe() {
     if (isGetSingleRecipeFetching || isGetItemsFetching) return <Loader fullPage />
     if (isGetSingleRecipeError || !getSingleRecipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
-    const { name, id, items, instructions } = getSingleRecipeData
+    const { name, id, items, instructions, recipe_category } = getSingleRecipeData
 
     const renderInstructions = () => {
         if (!isInstructionsShowing) {
@@ -68,22 +72,33 @@ function EditRecipe() {
     return (
         <div className='p-4'>
             <Link to='/recipes'>Back to recipes</Link>
-            <div className='flex justify-between mb-7 mt-2'>
-                <div className='flex items-center'>
-                    <h2>{name}</h2>
-                    <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
-                        <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
-                    </button>
+            <div className='mb-7 mt-2'>
+                <div className='flex justify-between'>
+                    <div className='flex items-center'>
+                        <h2>{name}</h2>
+                        <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
+                            <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                        </button>
+                    </div>
+                    <div className='flex items-center'>
+                        {anyChanges ? (
+                            <small className='opacity-40 flex items-center text-sm mr-2'>
+                                <CheckIcon className='w-4 h-4 mr-1' />
+                                Saved
+                            </small>
+                        ) : (
+                            ''
+                        )}
+                    </div>
                 </div>
-                <div className='flex items-center'>
-                    {anyChanges ? (
-                        <small className='opacity-40 flex items-center text-sm mr-2'>
-                            <CheckIcon className='w-4 h-4 mr-1' />
-                            Saved
-                        </small>
-                    ) : (
-                        ''
-                    )}
+                <div className='ml-[-0.5rem] mt-1'>
+                    <CategoryTag
+                        key={id}
+                        className='ml-2'
+                        categoriesData={getRecipeCategoriesData || []}
+                        categoryName={recipe_category?.name || 'Uncategorized'}
+                        size='sm'
+                    />
                 </div>
             </div>
 

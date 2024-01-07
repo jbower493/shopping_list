@@ -1,15 +1,17 @@
 import React from 'react'
-import { getCategoryColor } from 'utils/functions'
+import { getCategoryColor, getRecipeCategoryColor } from 'utils/functions'
 import type { Category } from 'containers/categories/types'
+import { RecipeCategory } from 'containers/recipeCategories/types'
 
 interface CategoryTagProps {
-    categoriesData: Category[]
+    categoriesData: Category[] | RecipeCategory[]
     categoryName: string
     size?: 'sm' | 'md'
     className?: string
+    isRecipeCategory?: boolean
 }
 
-function CategoryTag({ categoriesData, categoryName, size, className }: CategoryTagProps) {
+function CategoryTag({ categoriesData, categoryName, size, className, isRecipeCategory }: CategoryTagProps) {
     const getSize = () => {
         if (size === 'sm') return 'px-2 h-5 text-xs'
         if (size === 'md') return 'px-3 h-6 text-sm'
@@ -19,10 +21,9 @@ function CategoryTag({ categoriesData, categoryName, size, className }: Category
     return (
         <div
             key={1}
-            className={`flex items-center rounded-full pb-[1px] w-fit ${getSize()} ${getCategoryColor(
-                categoriesData,
-                categoryName
-            )} text-white ${className}`}
+            className={`flex items-center rounded-full pb-[1px] w-fit ${getSize()} ${
+                !isRecipeCategory ? getCategoryColor(categoriesData, categoryName) : getRecipeCategoryColor(categoriesData, categoryName)
+            } text-white ${className}`}
         >
             {categoryName}
         </div>

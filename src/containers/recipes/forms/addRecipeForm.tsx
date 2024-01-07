@@ -10,13 +10,19 @@ import { recipesQueryKey, useCreateRecipeMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
+import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
+import SelectField from 'components/Form/Inputs/SelectField'
+import { getRecipeCategoryOptions } from 'utils/functions'
 
 type Inputs = {
     name: string
+    recipeCategoryId: string
 }
 
 function AddRecipeForm() {
     const navigate = useNavigate()
+
+    const { data: getRecipeCategoriesData, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
     const { mutateAsync: createRecipe } = useCreateRecipeMutation()
 
@@ -28,9 +34,9 @@ function AddRecipeForm() {
         mode: 'onChange'
     })
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId }) => {
         await createRecipe(
-            { name },
+            { name, recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId) },
             {
                 onSuccess: (res) => {
                     toast.success(res.message)
@@ -41,29 +47,48 @@ function AddRecipeForm() {
         )
     }
 
+    const renderForm = () => {
+        return (
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <ModalBody>
+                    <InputField<Inputs>
+                        label='Name'
+                        name='name'
+                        type='text'
+                        register={register}
+                        validation={{ required: 'This is required.' }}
+                        error={touchedFields.name && errors.name}
+                    />
+                    <SelectField<Inputs>
+                        label='Recipe Category'
+                        name='recipeCategoryId'
+                        options={getRecipeCategoryOptions(getRecipeCategoriesData)}
+                        register={register}
+                        validation={{ required: 'This is required.' }}
+                        error={touchedFields.recipeCategoryId && errors.recipeCategoryId}
+                    />
+                </ModalBody>
+                <ModalFooter
+                    buttons={[
+                        <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                            Back
+                        </Button>,
+                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
+                    ]}
+                />
+            </form>
+        )
+    }
+
     return (
         <div>
-            <UrlModal title='New Recipe' desc='Enter a name for your new recipe.' onClose={() => navigate(-1)}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalBody>
-                        <InputField<Inputs>
-                            label='Name'
-                            name='name'
-                            type='text'
-                            register={register}
-                            validation={{ required: 'This is required.' }}
-                            error={touchedFields.name && errors.name}
-                        />
-                    </ModalBody>
-                    <ModalFooter
-                        buttons={[
-                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                                Back
-                            </Button>,
-                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
-                        ]}
-                    />
-                </form>
+            <UrlModal
+                title='New Recipe'
+                desc='Enter a name for your new recipe.'
+                onClose={() => navigate(-1)}
+                loading={isGetRecipeCategoriesFetching}
+            >
+                {renderForm()}
             </UrlModal>
         </div>
     )

@@ -9,6 +9,10 @@ import Categories from 'containers/categories/categories'
 import AddCategoryForm from 'containers/categories/forms/addCategoryForm'
 import DeleteCategoryForm from 'containers/categories/forms/deleteCategoryForm'
 
+import RecipeCategories from 'containers/recipeCategories/recipeCategories'
+import AddRecipeCategoryForm from 'containers/recipeCategories/forms/addRecipeCategoryForm'
+import DeleteRecipeCategoryForm from 'containers/recipeCategories/forms/deleteRecipeCategoryForm'
+
 import Lists from 'containers/lists/lists'
 import AddListForm from 'containers/lists/forms/addListForm'
 import DeleteListForm from 'containers/lists/forms/deleteListForm'
@@ -27,8 +31,8 @@ import DeleteMenuForm from 'containers/menus/forms/deleteMenuForm'
 import EditMenu from 'containers/menus/editMenu'
 
 import Shop from 'containers/shop/shop'
-import ChooseList from 'containers/shop/chooseList'
 import EditRecipeDetailsForm from 'containers/recipes/forms/editRecipeDetailsForm'
+import AddRecipeToMenuForm from 'containers/menus/forms/addRecipeToMenuForm'
 
 function UserRouter() {
     return (
@@ -42,6 +46,10 @@ function UserRouter() {
             <Route path='/categories' element={<Categories />}>
                 <Route path='new' element={<AddCategoryForm />} />
                 <Route path='delete/:categoryId' element={<DeleteCategoryForm />} />
+            </Route>
+            <Route path='/recipe-categories' element={<RecipeCategories />}>
+                <Route path='new' element={<AddRecipeCategoryForm />} />
+                <Route path='delete/:recipeCategoryId' element={<DeleteRecipeCategoryForm />} />
             </Route>
             <Route path='/lists' element={<Lists />}>
                 <Route path='new' element={<AddListForm />} />
@@ -62,8 +70,9 @@ function UserRouter() {
                 <Route path='new' element={<AddMenuForm />} />
                 <Route path='delete/:menuId' element={<DeleteMenuForm />} />
             </Route>
-            <Route path='/menus/edit/:menuId' element={<EditMenu />} />
-            <Route path='/shop' element={<ChooseList />} />
+            <Route path='/menus/edit/:menuId' element={<EditMenu />}>
+                <Route path='add-recipe' element={<AddRecipeToMenuForm />} />
+            </Route>
             <Route path='/shop/:listId' element={<Shop />} />
             <Route path='*' element={<div className='h-full flex justify-center items-center'>No route</div>} />
         </Routes>

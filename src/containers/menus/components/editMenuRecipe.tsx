@@ -3,12 +3,10 @@ import { singleMenuQueryKey, useRemoveRecipeFromMenuMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
 import { queryClient } from 'utils/queryClient'
+import { Recipe } from 'containers/recipes/types'
 
 interface EditMenuRecipeProps {
-    recipe: {
-        name: string
-        id: number
-    }
+    recipe: Recipe
     menuId: number
     setAnyChanges: (anyChanges: boolean) => void
 }
