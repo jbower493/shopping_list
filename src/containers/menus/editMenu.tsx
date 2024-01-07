@@ -8,6 +8,8 @@ import { PlusIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/outline'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
 import { queryClient } from 'utils/queryClient'
+import { getExistingRecipeCategories } from 'utils/functions'
+import CategoryTag from 'components/CategoryTag'
 
 function EditMenu() {
     // The recipe id as a string
@@ -30,17 +32,47 @@ function EditMenu() {
 
     const { name, id, recipes } = getSingleMenuData
 
+    // const renderCurrentRecipes = () => {
+    //     return (
+    //         <>
+    //             <h3 className='mb-2'>Recipes</h3>
+    //             <ul>
+    //                 {recipes.map((recipe, index) => (
+    //                     <EditMenuRecipe key={index} recipe={recipe} menuId={id} setAnyChanges={setAnyChanges} />
+    //                 ))}
+    //             </ul>
+    //         </>
+    //     )
+    // }
+
     const renderCurrentRecipes = () => {
-        return (
-            <>
-                <h3 className='mb-2'>Recipes</h3>
-                <ul>
-                    {recipes.map((recipe, index) => (
-                        <EditMenuRecipe key={index} recipe={recipe} menuId={id} setAnyChanges={setAnyChanges} />
-                    ))}
-                </ul>
-            </>
-        )
+        // Get a unique list of all the recipe categories present in the recipe
+        const recipeCategoriesInRecipe = getExistingRecipeCategories(recipes)
+
+        const renderRecipeCategory = (recipeCategoryId: number, recipeCategoryName: string) => {
+            let recipeslist = recipes.filter(({ recipe_category }) => !recipe_category)
+
+            if (recipeCategoryId !== -1) recipeslist = recipes.filter(({ recipe_category }) => recipe_category?.id === recipeCategoryId)
+
+            // TODO: remove this once the recipes are being sorted already by the backend
+            recipeslist.sort((a, b) => (a.name > b.name ? 1 : -1))
+
+            return (
+                <div key={recipeCategoryId} className='mb-6'>
+                    <div className='mb-2'>
+                        <CategoryTag categoriesData={recipeCategoriesInRecipe.filter(({ id }) => id !== -1)} categoryName={recipeCategoryName} />
+                        {recipeCategoryId === -1 ? <p className='text-[13px] opacity-40 mt-1'>Edit the recipe to assign it to a category</p> : ''}
+                    </div>
+                    <ul>
+                        {recipeslist.map((recipe) => (
+                            <EditMenuRecipe key={recipe.id} recipe={recipe} menuId={id} setAnyChanges={setAnyChanges} />
+                        ))}
+                    </ul>
+                </div>
+            )
+        }
+
+        return recipeCategoriesInRecipe.map(({ id, name }) => renderRecipeCategory(id, name))
     }
 
     const renderAddRecipeSelect = () => {

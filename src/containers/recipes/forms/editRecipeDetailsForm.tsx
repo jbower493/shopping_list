@@ -14,6 +14,7 @@ import TextAreaField from 'components/Form/Inputs/TextAreaField'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { getRecipeCategoryOptions } from 'utils/functions'
+import { menusQueryKey } from 'containers/menus/queries'
 
 type Inputs = {
     name: string
@@ -57,6 +58,7 @@ function EditRecipeDetailsForm() {
                 onSuccess: (res) => {
                     toast.success(res.message)
                     queryClient.invalidateQueries(recipesQueryKey())
+                    queryClient.invalidateQueries(menusQueryKey())
                     navigate(-1)
                 }
             }
