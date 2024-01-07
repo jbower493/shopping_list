@@ -1,33 +1,57 @@
 import React, { useEffect } from 'react'
-import { toast } from 'react-hot-toast'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { singleListQueryKey, useAddItemsFromRecipeMutation } from '../queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import { queryClient } from 'utils/queryClient'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
-import { getFilteredRecipes } from 'containers/menus/forms/addRecipeToMenuForm'
 import { getRecipeCategoryOptions } from 'utils/functions'
+import { singleMenuQueryKey, useAddRecipeToMenuMutation } from '../queries'
+import { Recipe } from 'containers/recipes/types'
+
+export function getFilteredRecipes(selectedRecipeCategoryId: string | undefined, getRecipesData: Recipe[]) {
+    function filterFn({ recipe_category }: Recipe) {
+        if (selectedRecipeCategoryId === 'ALL_CATEGORIES') {
+            return true
+        }
+
+        if (recipe_category?.id === Number(selectedRecipeCategoryId)) {
+            return true
+        }
+
+        if (!recipe_category && selectedRecipeCategoryId === 'none') {
+            return true
+        }
+
+        return false
+    }
+
+    const list = (getRecipesData || []).filter(filterFn)
+
+    return list.map(({ id, name }) => ({
+        label: name,
+        value: id.toString()
+    }))
+}
 
 type Inputs = {
     recipeCategoryId: string | undefined
     recipeId: string
 }
 
-function AddFromRecipeForm() {
+function AddRecipeToMenuForm() {
     const navigate = useNavigate()
-    const { listId } = useParams()
+    const { menuId } = useParams()
 
     const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
     const { data: getRecipeCategoriesData, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
-    const { mutateAsync: addItemsFromRecipe } = useAddItemsFromRecipeMutation()
+    const { mutateAsync: addRecipeToMenu } = useAddRecipeToMenuMutation()
 
     const {
         register,
@@ -42,14 +66,13 @@ function AddFromRecipeForm() {
     const selectedRecipeCategoryId = watch('recipeCategoryId')
 
     const onSubmit: SubmitHandler<Inputs> = async ({ recipeId }) => {
-        await addItemsFromRecipe(
-            { listId: listId || '', recipeId },
+        await addRecipeToMenu(
+            { menuId: menuId || '', recipeId },
             {
-                onSuccess: (res) => {
-                    toast.success(res.message)
-                    queryClient.removeQueries(singleListQueryKey(listId || ''))
-                },
-                onSettled: () => navigate(-1)
+                onSuccess: () => {
+                    queryClient.invalidateQueries(singleMenuQueryKey(menuId || ''))
+                    navigate(-1)
+                }
             }
         )
     }
@@ -86,7 +109,7 @@ function AddFromRecipeForm() {
                         <Button key={1} color='secondary' onClick={() => navigate(-1)}>
                             Back
                         </Button>,
-                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add All To List' />
+                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add Recipe' />
                     ]}
                 />
             </form>
@@ -96,8 +119,8 @@ function AddFromRecipeForm() {
     return (
         <div>
             <UrlModal
-                title='Add From Recipe'
-                desc='Choose a recipe to add items from. This will add every item in your recipe to the current list.'
+                title='Add Recipe To Menu'
+                desc='Choose a recipe to add to this menu. Select a recipe category to show only the recipes from that category.'
                 onClose={() => navigate(-1)}
                 loading={isGetRecipesFetching || isGetRecipeCategoriesFetching}
             >
@@ -107,4 +130,4 @@ function AddFromRecipeForm() {
     )
 }
 
-export default AddFromRecipeForm
+export default AddRecipeToMenuForm

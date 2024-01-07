@@ -8,11 +8,11 @@ interface SelectFieldProps<T extends FieldValues> {
     name: Path<T>
     options: {
         label: string
-        value: string
+        value: string | undefined
     }[]
     register: UseFormRegister<T>
-    validation: {
-        required: string
+    validation?: {
+        required?: string
     }
     error: FieldError | undefined | false
 }
