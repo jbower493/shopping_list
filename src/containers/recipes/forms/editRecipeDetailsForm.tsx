@@ -40,7 +40,8 @@ function EditRecipeDetailsForm() {
         mode: 'onChange',
         defaultValues: {
             name: getSingleRecipeData?.name,
-            instructions: getSingleRecipeData?.instructions || undefined
+            instructions: getSingleRecipeData?.instructions || undefined,
+            recipeCategoryId: getSingleRecipeData?.recipe_category?.id.toString() || ''
         }
     })
 
