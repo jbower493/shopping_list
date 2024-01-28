@@ -50,6 +50,8 @@ function Shop() {
 
             if (id !== -1) list = items.filter(({ category }) => category?.id === id)
 
+            list.sort((a, b) => (a.name > b.name ? 1 : -1))
+
             return (
                 <>
                     <CategoryTag key={id} className='mb-2' categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />

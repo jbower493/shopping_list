@@ -36,7 +36,6 @@ function EditList() {
 
             if (id !== -1) list = items.filter(({ category }) => category?.id === id)
 
-            // TODO: remove this once the lists items are being sorted already by the backend
             list.sort((a, b) => (a.name > b.name ? 1 : -1))
 
             return (
