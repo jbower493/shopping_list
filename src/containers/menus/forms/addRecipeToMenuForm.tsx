@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
@@ -53,15 +53,16 @@ function AddRecipeToMenuForm() {
 
     const { mutateAsync: addRecipeToMenu } = useAddRecipeToMenuMutation()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, touchedFields, isValid, isSubmitting },
-        watch,
-        resetField
-    } = useForm<Inputs>({
+    const methods = useForm<Inputs>({
         mode: 'onChange'
     })
+
+    const {
+        handleSubmit,
+        formState: { isValid, isSubmitting },
+        watch,
+        resetField
+    } = methods
 
     const selectedRecipeCategoryId = watch('recipeCategoryId')
 
@@ -86,33 +87,26 @@ function AddRecipeToMenuForm() {
         if (!getRecipesData) return ''
 
         return (
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody>
-                    <SelectField<Inputs>
-                        label='Recipe Category'
-                        name='recipeCategoryId'
-                        options={[{ label: 'All categories', value: 'ALL_CATEGORIES' }, ...getRecipeCategoryOptions(getRecipeCategoriesData)]}
-                        register={register}
-                        error={touchedFields.recipeCategoryId && errors.recipeCategoryId}
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <ModalBody>
+                        <SelectField.HookForm
+                            label='Recipe Category'
+                            name='recipeCategoryId'
+                            options={[{ label: 'All categories', value: 'ALL_CATEGORIES' }, ...getRecipeCategoryOptions(getRecipeCategoriesData)]}
+                        />
+                        <SelectField.HookForm label='Recipe' name='recipeId' options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)} />
+                    </ModalBody>
+                    <ModalFooter
+                        buttons={[
+                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                Back
+                            </Button>,
+                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add Recipe' />
+                        ]}
                     />
-                    <SelectField<Inputs>
-                        label='Recipe'
-                        name='recipeId'
-                        options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.recipeId && errors.recipeId}
-                    />
-                </ModalBody>
-                <ModalFooter
-                    buttons={[
-                        <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                            Back
-                        </Button>,
-                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add Recipe' />
-                    ]}
-                />
-            </form>
+                </form>
+            </FormProvider>
         )
     }
 

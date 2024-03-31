@@ -1,4 +1,3 @@
-import React from 'react'
 import { ChevronUpDownIcon } from '@heroicons/react/24/solid'
 import { Combobox } from '@headlessui/react'
 
@@ -16,7 +15,7 @@ function ComboBox({ options, value, setValue }: ComboBoxProps) {
 
     return (
         <Combobox value={value} onChange={setValue}>
-            <div className='ComboBox relative w-60 mb-0 mr-4'>
+            <div className='ComboBox relative w-60'>
                 <div>
                     <Combobox.Input
                         className='mb-0 pr-9'

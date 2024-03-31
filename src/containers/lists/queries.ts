@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { List, NewList, DetailedList, AddItemToListPayload } from 'containers/lists/types'
+import { List, NewList, DetailedList, AddItemToListPayload, ListItem } from 'containers/lists/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
@@ -54,12 +54,14 @@ export function useGetSingleListQuery(id: string) {
 
 // TODO: make sure list order is correct with both optimistic updates. Set an explicit order on the backend and the sort in the same order when adding a new item
 /***** Add item to list *****/
-const addItemToList = ({ listId, itemName, categoryId }: AddItemToListPayload): Promise<MutationResponse> => {
-    const body: { item_name: string; category_id?: string } = {
-        item_name: itemName
+const addItemToList = ({ listId, itemName, categoryId, quantity, quantityUnitId }: AddItemToListPayload): Promise<MutationResponse> => {
+    const body: { item_name: string; category_id?: string; quantity: number; quantity_unit_id?: number } = {
+        item_name: itemName,
+        quantity
     }
 
     if (categoryId) body.category_id = categoryId
+    if (quantityUnitId) body.quantity_unit_id = quantityUnitId
 
     return axios.post(`/list/${listId}/add-item`, body)
 }
@@ -105,12 +107,18 @@ export function useAddItemToListMutation() {
                     }
                 }
 
-                const newItems = [
+                // TODO: get actual quantity once I have enough stuff implemented
+                function getAddedItemQuantity(): ListItem['item_quantity'] {
+                    return { quantity: 1, quantity_unit: null }
+                }
+
+                const newItems: ListItem[] = [
                     ...old.data.list.items,
                     {
                         id: 0,
                         name: payload.itemName,
-                        category: getAddedItemCategory()
+                        category: getAddedItemCategory(),
+                        item_quantity: getAddedItemQuantity()
                     }
                 ]
 

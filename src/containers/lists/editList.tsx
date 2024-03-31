@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { useParams, Link, Outlet } from 'react-router-dom'
 import { useAddItemToListMutation } from './queries'
 import { useGetSingleListQuery } from './queries'
@@ -6,7 +5,6 @@ import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
-import { CheckIcon } from '@heroicons/react/24/outline'
 import EditListItem from 'containers/lists/components/editListItem'
 import CategoryTag from 'components/CategoryTag'
 import { getExistingCategories } from 'utils/functions'
@@ -14,8 +12,6 @@ import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToListPayload } from 'containers/lists/types'
 
 function EditList() {
-    const [anyChanges, setAnyChanges] = useState<boolean>(false)
-
     const { listId } = useParams()
 
     const { data: getSingleListData, isLoading: isGetSingleListLoading, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
@@ -50,7 +46,7 @@ function EditList() {
                     </div>
                     <ul>
                         {list.map((item, index) => (
-                            <EditListItem key={index} item={item} listId={listIdSafe} setAnyChanges={setAnyChanges} />
+                            <EditListItem key={index} item={item} listId={listIdSafe} />
                         ))}
                     </ul>
                 </div>
@@ -67,20 +63,10 @@ function EditList() {
 
     return (
         <div className='p-4'>
-            {/* TEMP */}
-            {/* {isGetSingleListFetching ? <h4>Is refetching list</h4> : ''} */}
             <Link to='/lists'>Back to lists</Link>
             <div className='flex justify-between mb-7 mt-2'>
                 <h2>Edit List</h2>
                 <div className='flex items-center'>
-                    {anyChanges ? (
-                        <small className='opacity-40 flex items-center text-sm mr-2'>
-                            <CheckIcon className='w-4 h-4 mr-1' />
-                            Saved
-                        </small>
-                    ) : (
-                        ''
-                    )}
                     <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
                     <p>{name}</p>
                 </div>
@@ -88,16 +74,14 @@ function EditList() {
 
             <AddItem
                 className='mb-2'
-                onAdd={(itemToAdd, categoryId, clearInput) => {
-                    const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd }
+                onAdd={(itemToAdd, categoryId, quantity, quantityUnitId, clearInput) => {
+                    // TODO: send actual quantity data
+                    const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd, quantity: 1 }
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
+                    if (quantityUnitId) payload.quantityUnitId = quantityUnitId
 
-                    addItemToList(payload, {
-                        onSuccess: () => {
-                            setAnyChanges(true)
-                        }
-                    })
+                    addItemToList(payload)
 
                     clearInput()
                 }}

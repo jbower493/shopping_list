@@ -1,6 +1,5 @@
-import React from 'react'
 import { toast } from 'react-hot-toast'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
@@ -23,13 +22,14 @@ function AddFromMenuForm() {
     const { data: getMenusData, isFetching: isGetMenusFetching, isError: isGetMenusError } = useGetMenusQuery()
     const { mutateAsync: addItemsFromMenu } = useAddItemsFromMenuMutation()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, touchedFields, isValid, isSubmitting }
-    } = useForm<Inputs>({
+    const methods = useForm<Inputs>({
         mode: 'onChange'
     })
+
+    const {
+        handleSubmit,
+        formState: { isValid, isSubmitting }
+    } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ menuId }) => {
         await addItemsFromMenu(
@@ -49,29 +49,28 @@ function AddFromMenuForm() {
         if (!getMenusData) return ''
 
         return (
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody>
-                    <SelectField<Inputs>
-                        label='Menu'
-                        name='menuId'
-                        options={getMenusData.map(({ id, name }) => ({
-                            label: name,
-                            value: id.toString()
-                        }))}
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.menuId && errors.menuId}
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <ModalBody>
+                        <SelectField.HookForm
+                            label='Menu'
+                            name='menuId'
+                            options={getMenusData.map(({ id, name }) => ({
+                                label: name,
+                                value: id.toString()
+                            }))}
+                        />
+                    </ModalBody>
+                    <ModalFooter
+                        buttons={[
+                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                Back
+                            </Button>,
+                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add All To List' />
+                        ]}
                     />
-                </ModalBody>
-                <ModalFooter
-                    buttons={[
-                        <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                            Back
-                        </Button>,
-                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add All To List' />
-                    ]}
-                />
-            </form>
+                </form>
+            </FormProvider>
         )
     }
 

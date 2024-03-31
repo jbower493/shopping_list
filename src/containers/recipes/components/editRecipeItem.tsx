@@ -1,4 +1,3 @@
-import React from 'react'
 import { singleRecipeQueryKey, useRemoveItemFromRecipeMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
@@ -10,10 +9,9 @@ interface EditRecipeItemProps {
         id: number
     }
     recipeId: number
-    setAnyChanges: (anyChanges: boolean) => void
 }
 
-function EditRecipeItem({ item: { name, id }, recipeId, setAnyChanges }: EditRecipeItemProps) {
+function EditRecipeItem({ item: { name, id }, recipeId }: EditRecipeItemProps) {
     const { mutate: removeItemFromRecipe, isLoading: isRemoveItemFromRecipeLoading } = useRemoveItemFromRecipeMutation()
 
     return (
@@ -29,7 +27,6 @@ function EditRecipeItem({ item: { name, id }, recipeId, setAnyChanges }: EditRec
                             { recipeId: recipeId.toString(), itemId: id },
                             {
                                 onSuccess: () => {
-                                    setAnyChanges(true)
                                     queryClient.invalidateQueries(singleRecipeQueryKey(recipeId.toString()))
                                 }
                             }
