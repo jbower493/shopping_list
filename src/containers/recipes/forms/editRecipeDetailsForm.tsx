@@ -14,12 +14,20 @@ import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries
 import SelectField from 'components/Form/Inputs/SelectField'
 import { getRecipeCategoryOptions } from 'utils/functions'
 import { menusQueryKey } from 'containers/menus/queries'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 type Inputs = {
     name: string
     instructions?: string
     recipeCategoryId: string
 }
+
+const schema = z.object({
+    name: z.string().min(1, 'Required'),
+    instructions: z.string(),
+    recipeCategoryId: z.string()
+})
 
 function EditRecipeDetailsForm() {
     const navigate = useNavigate()
@@ -32,7 +40,8 @@ function EditRecipeDetailsForm() {
     const { mutateAsync: editRecipe } = useEditRecipeMutation()
 
     const methods = useForm<Inputs>({
-        mode: 'onChange',
+        mode: 'all',
+        resolver: zodResolver(schema),
         defaultValues: {
             name: getSingleRecipeData?.name,
             instructions: getSingleRecipeData?.instructions || undefined,
@@ -73,14 +82,7 @@ function EditRecipeDetailsForm() {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <ModalBody>
-                            <InputField<Inputs>
-                                label='Name'
-                                name='name'
-                                type='text'
-                                register={register}
-                                validation={{ required: 'This is required.' }}
-                                error={touchedFields.name && errors.name}
-                            />
+                            <InputField.HookForm label='Name' name='name' />
                             <SelectField.HookForm
                                 label='Recipe Category'
                                 name='recipeCategoryId'
@@ -90,7 +92,7 @@ function EditRecipeDetailsForm() {
                                 label='Instructions'
                                 name='instructions'
                                 register={register}
-                                error={touchedFields.name && errors.name}
+                                error={touchedFields.instructions && errors.instructions}
                             />
                         </ModalBody>
                         <ModalFooter

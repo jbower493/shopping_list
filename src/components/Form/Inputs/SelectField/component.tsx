@@ -13,9 +13,9 @@ export interface SelectFieldProps {
     componentRef?: React.LegacyRef<HTMLSelectElement>
 }
 
-type SelectField = React.FC<SelectFieldProps>
+type TSelectField = React.FC<SelectFieldProps>
 
-const SelectField: SelectField = ({ label, options = [], name, onChange, onBlur, value, componentRef }) => {
+const SelectField: TSelectField = ({ label, options = [], name, onChange, onBlur, value, componentRef }) => {
     return (
         <div>
             <label>{label}</label>

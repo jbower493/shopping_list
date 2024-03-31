@@ -12,11 +12,18 @@ import SelectField from 'components/Form/Inputs/SelectField'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { getCategoryOptions } from 'utils/functions'
 import { queryClient } from 'utils/queryClient'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 type Inputs = {
     name: string
     categoryId: string
 }
+
+const schema = z.object({
+    name: z.string().min(1, 'Required'),
+    categoryId: z.string()
+})
 
 function AddItemForm() {
     const navigate = useNavigate()
@@ -26,13 +33,17 @@ function AddItemForm() {
     const { mutateAsync: createItem } = useCreateItemMutation()
 
     const methods = useForm<Inputs>({
-        mode: 'onChange'
+        mode: 'all',
+        resolver: zodResolver(schema),
+        defaultValues: {
+            name: '',
+            categoryId: ''
+        }
     })
 
     const {
-        register,
         handleSubmit,
-        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
+        formState: { isDirty, isValid, isSubmitting }
     } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, categoryId }) => {
@@ -55,14 +66,7 @@ function AddItemForm() {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalBody>
-                        <InputField<Inputs>
-                            label='Name'
-                            name='name'
-                            type='text'
-                            register={register}
-                            validation={{ required: 'This is required.' }}
-                            error={touchedFields.name && errors.name}
-                        />
+                        <InputField.HookForm label='Name' name='name' />
                         <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(getCategoriesData)} />
                     </ModalBody>
                     <ModalFooter

@@ -1,4 +1,3 @@
-import React from 'react'
 import { toast } from 'react-hot-toast'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -13,11 +12,18 @@ import { queryClient } from 'utils/queryClient'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { getRecipeCategoryOptions } from 'utils/functions'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 type Inputs = {
     name: string
     recipeCategoryId: string
 }
+
+const schema = z.object({
+    name: z.string().min(1, 'Required'),
+    recipeCategoryId: z.string()
+})
 
 function AddRecipeForm() {
     const navigate = useNavigate()
@@ -27,13 +33,17 @@ function AddRecipeForm() {
     const { mutateAsync: createRecipe } = useCreateRecipeMutation()
 
     const methods = useForm<Inputs>({
-        mode: 'onChange'
+        mode: 'all',
+        resolver: zodResolver(schema),
+        defaultValues: {
+            name: '',
+            recipeCategoryId: ''
+        }
     })
 
     const {
-        register,
         handleSubmit,
-        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
+        formState: { isDirty, isValid, isSubmitting }
     } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId }) => {
@@ -54,14 +64,7 @@ function AddRecipeForm() {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalBody>
-                        <InputField<Inputs>
-                            label='Name'
-                            name='name'
-                            type='text'
-                            register={register}
-                            validation={{ required: 'This is required.' }}
-                            error={touchedFields.name && errors.name}
-                        />
+                        <InputField.HookForm label='Name' name='name' />
                         <SelectField.HookForm
                             label='Recipe Category'
                             name='recipeCategoryId'
