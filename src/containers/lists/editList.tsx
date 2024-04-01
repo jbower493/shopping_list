@@ -63,7 +63,10 @@ function EditList() {
 
     return (
         <div className='p-4'>
-            <Link to='/lists'>Back to lists</Link>
+            <div className='flex justify-between'>
+                <Link to='/lists'>Back to lists</Link>
+                <Link to={`/shop/${listIdSafe}`}>Shop</Link>
+            </div>
             <div className='flex justify-between mb-7 mt-2'>
                 <h2>Edit List</h2>
                 <div className='flex items-center'>
