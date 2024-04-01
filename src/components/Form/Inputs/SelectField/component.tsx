@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface SelectFieldProps {
-    label: string
+    label?: string
     name: string
     options: {
         label: string
@@ -11,15 +11,16 @@ export interface SelectFieldProps {
     onBlur?: React.FocusEventHandler<HTMLSelectElement>
     value?: string
     componentRef?: React.LegacyRef<HTMLSelectElement>
+    className?: string
 }
 
 type TSelectField = React.FC<SelectFieldProps>
 
-const SelectField: TSelectField = ({ label, options = [], name, onChange, onBlur, value, componentRef }) => {
+const SelectField: TSelectField = ({ label, options = [], name, onChange, onBlur, value, componentRef, className }) => {
     return (
         <div>
-            <label>{label}</label>
-            <select name={name} onChange={onChange} onBlur={onBlur} value={value} ref={componentRef}>
+            {label ? <label>{label}</label> : ''}
+            <select className={className} name={name} onChange={onChange} onBlur={onBlur} value={value} ref={componentRef} placeholder='No unit'>
                 {options.map(({ label, value }, index) => (
                     <option key={index} value={value}>
                         {label}

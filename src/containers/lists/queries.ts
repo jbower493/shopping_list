@@ -6,6 +6,7 @@ import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
 import { getItems, itemsQueryKey } from 'containers/items/queries'
 import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
+import { getQuantityUnits, quantityUnitsQueryKey } from 'containers/quantityUnits/queries'
 
 const listsKeySet = new QueryKeySet('List')
 
@@ -52,7 +53,6 @@ export function useGetSingleListQuery(id: string) {
     })
 }
 
-// TODO: make sure list order is correct with both optimistic updates. Set an explicit order on the backend and the sort in the same order when adding a new item
 /***** Add item to list *****/
 const addItemToList = ({ listId, itemName, categoryId, quantity, quantityUnitId }: AddItemToListPayload): Promise<MutationResponse> => {
     const body: { item_name: string; category_id?: string; quantity: number; quantity_unit_id?: number } = {
@@ -83,6 +83,9 @@ export function useAddItemToListMutation() {
             type ItemsQueryData = Awaited<ReturnType<typeof getItems>> | undefined
             const itemsQueryData: ItemsQueryData = queryClient.getQueryData(itemsQueryKey())
 
+            type QuantityUnitsData = Awaited<ReturnType<typeof getQuantityUnits>> | undefined
+            const quantityUnitsQueryData: QuantityUnitsData = queryClient.getQueryData(quantityUnitsQueryKey())
+
             // Optimistically update to new value
             queryClient.setQueryData(singleListQueryKey(payload.listId), (old: SingleListQueryData) => {
                 if (!old) return undefined
@@ -107,9 +110,13 @@ export function useAddItemToListMutation() {
                     }
                 }
 
-                // TODO: get actual quantity once I have enough stuff implemented
                 function getAddedItemQuantity(): ListItem['item_quantity'] {
-                    return { quantity: 1, quantity_unit: null }
+                    return {
+                        quantity: payload.quantity,
+                        quantity_unit: payload.quantityUnitId
+                            ? quantityUnitsQueryData?.data.quantity_units.find((quantityUnit) => quantityUnit.id === payload.quantityUnitId) || null
+                            : null
+                    }
                 }
 
                 const newItems: ListItem[] = [

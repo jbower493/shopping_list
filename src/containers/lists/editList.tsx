@@ -75,8 +75,7 @@ function EditList() {
             <AddItem
                 className='mb-2'
                 onAdd={(itemToAdd, categoryId, quantity, quantityUnitId, clearInput) => {
-                    // TODO: send actual quantity data
-                    const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd, quantity: 1 }
+                    const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd, quantity }
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
                     if (quantityUnitId) payload.quantityUnitId = quantityUnitId
