@@ -3,15 +3,17 @@ import { useParams } from 'react-router-dom'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { useGetSingleListQuery } from 'containers/lists/queries'
 import Loader from 'components/Loader'
-import { useSessionStorage } from 'utils/hooks'
+import { useLocalStorage } from 'utils/hooks'
 import Checkbox from 'components/Checkbox'
 import { getExistingCategories } from 'utils/functions'
 import CategoryTag from 'components/CategoryTag'
+import ItemWithQuantity from 'components/ItemWithQuantity'
+import { ListItem } from 'containers/lists/types'
 
 function Shop() {
     const { listId } = useParams()
 
-    const { value: checked, setValue: setChecked } = useSessionStorage<string[]>(`list${listId?.toString() || ''}`, [])
+    const { value: checked, setValue: setChecked } = useLocalStorage<string[]>(`list${listId?.toString() || ''}`, [])
 
     const { data: getSingleListData, isFetching: isGetSingleListFetching, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
 
@@ -27,19 +29,31 @@ function Shop() {
     const categoriesInList = getExistingCategories(items)
 
     const renderItems = () => {
-        const renderOneItem = (name: string, index: number) => {
-            const isChecked = !!checked?.includes(name)
+        const renderOneItem = (itemWithinCategory: ListItem) => {
+            const isChecked = !!checked?.includes(itemWithinCategory.name)
 
             return (
                 <button
-                    key={index}
+                    key={itemWithinCategory.id}
                     onClick={() => {
-                        if (isChecked) uncheckItem(name)
-                        else checkItem(name)
+                        if (isChecked) uncheckItem(itemWithinCategory.name)
+                        else checkItem(itemWithinCategory.name)
                     }}
                     className='flex justify-between w-full max-w-md mb-2'
                 >
-                    <p className={`${isChecked ? 'line-through opacity-30' : ''}`}>{name}</p>
+                    <div
+                        className={`${
+                            isChecked
+                                ? 'relative opacity-30 after:content-[""] after:w-full after:h-[1px] after:bg-black after:absolute after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2'
+                                : ''
+                        }`}
+                    >
+                        <ItemWithQuantity
+                            quantityValue={itemWithinCategory.item_quantity.quantity}
+                            unitSymbol={itemWithinCategory.item_quantity.quantity_unit?.symbol}
+                            itemName={itemWithinCategory.name}
+                        />
+                    </div>
                     <Checkbox isChecked={isChecked} />
                 </button>
             )
@@ -55,7 +69,7 @@ function Shop() {
             return (
                 <>
                     <CategoryTag key={id} className='mb-2' categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
-                    <ul className='mb-6'>{list.map(({ name }, index) => renderOneItem(name, index))}</ul>
+                    <ul className='mb-6'>{list.map((itemWithinCategory) => renderOneItem(itemWithinCategory))}</ul>
                 </>
             )
         }
