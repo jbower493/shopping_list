@@ -16,6 +16,7 @@ import { getRecipeCategoryOptions } from 'utils/functions'
 import { menusQueryKey } from 'containers/menus/queries'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
@@ -81,13 +82,19 @@ function EditRecipeDetailsForm() {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <ModalBody>
-                            <InputField.HookForm label='Name' name='name' />
-                            <SelectField.HookForm
-                                label='Recipe Category'
-                                name='recipeCategoryId'
-                                options={getRecipeCategoryOptions(getRecipeCategoriesData)}
-                            />
-                            <TextAreaField.HookForm label='Instructions' name='instructions' />
+                            <FormRow>
+                                <InputField.HookForm label='Name' name='name' />
+                            </FormRow>
+                            <FormRow>
+                                <SelectField.HookForm
+                                    label='Recipe Category'
+                                    name='recipeCategoryId'
+                                    options={getRecipeCategoryOptions(getRecipeCategoriesData)}
+                                />
+                            </FormRow>
+                            <FormRow>
+                                <TextAreaField.HookForm label='Instructions' name='instructions' />
+                            </FormRow>
                         </ModalBody>
                         <ModalFooter
                             buttons={[

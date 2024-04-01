@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 import SubmitButton from 'components/Form/SubmitButton'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
@@ -53,9 +54,15 @@ function RegisterForm() {
             <FormProvider {...methods}>
                 <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
                     <h2 className='text-center mb-2 '>Register</h2>
-                    <InputField.HookForm label='Name' name='name' />
-                    <InputField.HookForm label='Email' name='email' type='email' />
-                    <InputField.HookForm label='Password' name='password' type='password' />
+                    <FormRow>
+                        <InputField.HookForm label='Name' name='name' />
+                    </FormRow>
+                    <FormRow>
+                        <InputField.HookForm label='Email' name='email' type='email' />
+                    </FormRow>
+                    <FormRow>
+                        <InputField.HookForm label='Password' name='password' type='password' />
+                    </FormRow>
                     <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Register' fullWidth />
                     <Link className='mt-3 inline-block' to='/login'>
                         Login

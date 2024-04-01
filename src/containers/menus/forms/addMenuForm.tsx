@@ -11,6 +11,7 @@ import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
@@ -57,7 +58,9 @@ function AddMenuForm() {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <ModalBody>
-                            <InputField.HookForm label='Name' name='name' />
+                            <FormRow>
+                                <InputField.HookForm label='Name' name='name' />
+                            </FormRow>
                         </ModalBody>
                         <ModalFooter
                             buttons={[

@@ -17,7 +17,7 @@ body,
     input,
     select,
     textarea {
-        @apply rounded border focus:border-black outline-none border-gray-300 px-3 w-full h-9 text-base mb-3;
+        @apply rounded border focus:border-black outline-none border-gray-300 px-3 w-full h-9 text-base;
     }
 
     textarea {

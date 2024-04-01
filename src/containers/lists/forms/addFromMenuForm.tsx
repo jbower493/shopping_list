@@ -10,6 +10,7 @@ import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { useGetMenusQuery } from 'containers/menus/queries'
 import { queryClient } from 'utils/queryClient'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     menuId: string
@@ -52,14 +53,16 @@ function AddFromMenuForm() {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalBody>
-                        <SelectField.HookForm
-                            label='Menu'
-                            name='menuId'
-                            options={getMenusData.map(({ id, name }) => ({
-                                label: name,
-                                value: id.toString()
-                            }))}
-                        />
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Menu'
+                                name='menuId'
+                                options={getMenusData.map(({ id, name }) => ({
+                                    label: name,
+                                    value: id.toString()
+                                }))}
+                            />
+                        </FormRow>
                     </ModalBody>
                     <ModalFooter
                         buttons={[

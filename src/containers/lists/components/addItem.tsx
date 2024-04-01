@@ -28,7 +28,7 @@ function AddItem({ onAdd, itemsList, isAddItemLoading, className }: AddItemProps
 
     return (
         <div className={className}>
-            <p>Add Item</p>
+            <h4>Add Item</h4>
             <div className='flex items-center gap-3'>
                 <SelectField
                     label='mate'

@@ -14,6 +14,7 @@ import { getCategoryOptions } from 'utils/functions'
 import { queryClient } from 'utils/queryClient'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
@@ -66,8 +67,12 @@ function AddItemForm() {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalBody>
-                        <InputField.HookForm label='Name' name='name' />
-                        <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(getCategoriesData)} />
+                        <FormRow>
+                            <InputField.HookForm label='Name' name='name' />
+                        </FormRow>
+                        <FormRow>
+                            <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(getCategoriesData)} />
+                        </FormRow>
                     </ModalBody>
                     <ModalFooter
                         buttons={[

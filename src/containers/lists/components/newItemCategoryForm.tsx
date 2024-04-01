@@ -8,6 +8,7 @@ import SubmitButton from 'components/Form/SubmitButton'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { getCategoryOptions } from 'utils/functions'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     categoryId: string
@@ -38,7 +39,9 @@ function NewItemCategoryForm({ onSubmitFunc, isOpen, close, itemName }: NewItemC
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <ModalBody>
-                        <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(getCategoriesData)} />
+                        <FormRow>
+                            <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(getCategoriesData)} />
+                        </FormRow>
                     </ModalBody>
                     <ModalFooter
                         buttons={[

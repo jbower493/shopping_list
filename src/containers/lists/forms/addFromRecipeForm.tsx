@@ -14,11 +14,19 @@ import { queryClient } from 'utils/queryClient'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import { getFilteredRecipes } from 'containers/menus/forms/addRecipeToMenuForm'
 import { getRecipeCategoryOptions } from 'utils/functions'
+import FormRow from 'components/Form/FormRow'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 type Inputs = {
     recipeCategoryId: string | undefined
     recipeId: string
 }
+
+const schema = z.object({
+    recipeCategoryId: z.string(),
+    recipeId: z.string()
+})
 
 function AddFromRecipeForm() {
     const navigate = useNavigate()
@@ -30,7 +38,12 @@ function AddFromRecipeForm() {
     const { mutateAsync: addItemsFromRecipe } = useAddItemsFromRecipeMutation()
 
     const methods = useForm<Inputs>({
-        mode: 'onChange'
+        mode: 'all',
+        resolver: zodResolver(schema),
+        defaultValues: {
+            recipeCategoryId: 'ALL_CATEGORIES',
+            recipeId: ''
+        }
     })
 
     const {
@@ -67,12 +80,20 @@ function AddFromRecipeForm() {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalBody>
-                        <SelectField.HookForm
-                            label='Recipe Category'
-                            name='recipeCategoryId'
-                            options={[{ label: 'All categories', value: 'ALL_CATEGORIES' }, ...getRecipeCategoryOptions(getRecipeCategoriesData)]}
-                        />
-                        <SelectField.HookForm label='Recipe' name='recipeId' options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)} />
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Recipe Category'
+                                name='recipeCategoryId'
+                                options={[{ label: 'All categories', value: 'ALL_CATEGORIES' }, ...getRecipeCategoryOptions(getRecipeCategoriesData)]}
+                            />
+                        </FormRow>
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Recipe'
+                                name='recipeId'
+                                options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
+                            />
+                        </FormRow>
                     </ModalBody>
                     <ModalFooter
                         buttons={[
