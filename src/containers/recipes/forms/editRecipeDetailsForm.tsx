@@ -1,6 +1,5 @@
-import React from 'react'
 import { toast } from 'react-hot-toast'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
@@ -15,12 +14,21 @@ import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries
 import SelectField from 'components/Form/Inputs/SelectField'
 import { getRecipeCategoryOptions } from 'utils/functions'
 import { menusQueryKey } from 'containers/menus/queries'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
     instructions?: string
     recipeCategoryId: string
 }
+
+const schema = z.object({
+    name: z.string().min(1, 'Required'),
+    instructions: z.string(),
+    recipeCategoryId: z.string()
+})
 
 function EditRecipeDetailsForm() {
     const navigate = useNavigate()
@@ -32,18 +40,20 @@ function EditRecipeDetailsForm() {
 
     const { mutateAsync: editRecipe } = useEditRecipeMutation()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
-    } = useForm<Inputs>({
-        mode: 'onChange',
+    const methods = useForm<Inputs>({
+        mode: 'all',
+        resolver: zodResolver(schema),
         defaultValues: {
             name: getSingleRecipeData?.name,
             instructions: getSingleRecipeData?.instructions || undefined,
             recipeCategoryId: getSingleRecipeData?.recipe_category?.id.toString() || ''
         }
     })
+
+    const {
+        handleSubmit,
+        formState: { isDirty, isValid, isSubmitting }
+    } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, instructions, recipeCategoryId }) => {
         await editRecipe(
@@ -69,40 +79,33 @@ function EditRecipeDetailsForm() {
     return (
         <div>
             <UrlModal title='Edit Recipe' desc='Update the name or instructions of your recipe' onClose={() => navigate(-1)}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalBody>
-                        <InputField<Inputs>
-                            label='Name'
-                            name='name'
-                            type='text'
-                            register={register}
-                            validation={{ required: 'This is required.' }}
-                            error={touchedFields.name && errors.name}
+                <FormProvider {...methods}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <ModalBody>
+                            <FormRow>
+                                <InputField.HookForm label='Name' name='name' />
+                            </FormRow>
+                            <FormRow>
+                                <SelectField.HookForm
+                                    label='Recipe Category'
+                                    name='recipeCategoryId'
+                                    options={getRecipeCategoryOptions(getRecipeCategoriesData)}
+                                />
+                            </FormRow>
+                            <FormRow>
+                                <TextAreaField.HookForm label='Instructions' name='instructions' />
+                            </FormRow>
+                        </ModalBody>
+                        <ModalFooter
+                            buttons={[
+                                <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                    Back
+                                </Button>,
+                                <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Save' />
+                            ]}
                         />
-                        <SelectField<Inputs>
-                            label='Recipe Category'
-                            name='recipeCategoryId'
-                            options={getRecipeCategoryOptions(getRecipeCategoriesData)}
-                            register={register}
-                            validation={{ required: 'This is required.' }}
-                            error={touchedFields.recipeCategoryId && errors.recipeCategoryId}
-                        />
-                        <TextAreaField<Inputs>
-                            label='Instructions'
-                            name='instructions'
-                            register={register}
-                            error={touchedFields.name && errors.name}
-                        />
-                    </ModalBody>
-                    <ModalFooter
-                        buttons={[
-                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                                Back
-                            </Button>,
-                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Save' />
-                        ]}
-                    />
-                </form>
+                    </form>
+                </FormProvider>
             </UrlModal>
         </div>
     )

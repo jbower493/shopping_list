@@ -1,6 +1,5 @@
-import React from 'react'
 import { toast } from 'react-hot-toast'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
@@ -13,11 +12,19 @@ import SelectField from 'components/Form/Inputs/SelectField'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { getCategoryOptions } from 'utils/functions'
 import { queryClient } from 'utils/queryClient'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
     categoryId: string
 }
+
+const schema = z.object({
+    name: z.string().min(1, 'Required'),
+    categoryId: z.string()
+})
 
 function AddItemForm() {
     const navigate = useNavigate()
@@ -26,13 +33,19 @@ function AddItemForm() {
 
     const { mutateAsync: createItem } = useCreateItemMutation()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
-    } = useForm<Inputs>({
-        mode: 'onChange'
+    const methods = useForm<Inputs>({
+        mode: 'all',
+        resolver: zodResolver(schema),
+        defaultValues: {
+            name: '',
+            categoryId: ''
+        }
     })
+
+    const {
+        handleSubmit,
+        formState: { isDirty, isValid, isSubmitting }
+    } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, categoryId }) => {
         await createItem(
@@ -51,34 +64,26 @@ function AddItemForm() {
         if (isGetCategoriesError || !getCategoriesData) return <h3>Error fetching categories</h3>
 
         return (
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody>
-                    <InputField<Inputs>
-                        label='Name'
-                        name='name'
-                        type='text'
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.name && errors.name}
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <ModalBody>
+                        <FormRow>
+                            <InputField.HookForm label='Name' name='name' />
+                        </FormRow>
+                        <FormRow>
+                            <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(getCategoriesData)} />
+                        </FormRow>
+                    </ModalBody>
+                    <ModalFooter
+                        buttons={[
+                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                Back
+                            </Button>,
+                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
+                        ]}
                     />
-                    <SelectField<Inputs>
-                        label='Category'
-                        name='categoryId'
-                        options={getCategoryOptions(getCategoriesData)}
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.categoryId && errors.categoryId}
-                    />
-                </ModalBody>
-                <ModalFooter
-                    buttons={[
-                        <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                            Back
-                        </Button>,
-                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
-                    ]}
-                />
-            </form>
+                </form>
+            </FormProvider>
         )
     }
 

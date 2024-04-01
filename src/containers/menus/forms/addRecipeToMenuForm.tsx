@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
@@ -13,6 +13,9 @@ import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries
 import { getRecipeCategoryOptions } from 'utils/functions'
 import { singleMenuQueryKey, useAddRecipeToMenuMutation } from '../queries'
 import { Recipe } from 'containers/recipes/types'
+import FormRow from 'components/Form/FormRow'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export function getFilteredRecipes(selectedRecipeCategoryId: string | undefined, getRecipesData: Recipe[]) {
     function filterFn({ recipe_category }: Recipe) {
@@ -44,6 +47,11 @@ type Inputs = {
     recipeId: string
 }
 
+const schema = z.object({
+    recipeCategoryId: z.string(),
+    recipeId: z.string()
+})
+
 function AddRecipeToMenuForm() {
     const navigate = useNavigate()
     const { menuId } = useParams()
@@ -53,15 +61,21 @@ function AddRecipeToMenuForm() {
 
     const { mutateAsync: addRecipeToMenu } = useAddRecipeToMenuMutation()
 
+    const methods = useForm<Inputs>({
+        mode: 'all',
+        resolver: zodResolver(schema),
+        defaultValues: {
+            recipeCategoryId: 'ALL_CATEGORIES',
+            recipeId: ''
+        }
+    })
+
     const {
-        register,
         handleSubmit,
-        formState: { errors, touchedFields, isValid, isSubmitting },
+        formState: { isValid, isSubmitting },
         watch,
         resetField
-    } = useForm<Inputs>({
-        mode: 'onChange'
-    })
+    } = methods
 
     const selectedRecipeCategoryId = watch('recipeCategoryId')
 
@@ -86,33 +100,34 @@ function AddRecipeToMenuForm() {
         if (!getRecipesData) return ''
 
         return (
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody>
-                    <SelectField<Inputs>
-                        label='Recipe Category'
-                        name='recipeCategoryId'
-                        options={[{ label: 'All categories', value: 'ALL_CATEGORIES' }, ...getRecipeCategoryOptions(getRecipeCategoriesData)]}
-                        register={register}
-                        error={touchedFields.recipeCategoryId && errors.recipeCategoryId}
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <ModalBody>
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Recipe Category'
+                                name='recipeCategoryId'
+                                options={[{ label: 'All categories', value: 'ALL_CATEGORIES' }, ...getRecipeCategoryOptions(getRecipeCategoriesData)]}
+                            />
+                        </FormRow>
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Recipe'
+                                name='recipeId'
+                                options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
+                            />
+                        </FormRow>
+                    </ModalBody>
+                    <ModalFooter
+                        buttons={[
+                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                Back
+                            </Button>,
+                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add Recipe' />
+                        ]}
                     />
-                    <SelectField<Inputs>
-                        label='Recipe'
-                        name='recipeId'
-                        options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.recipeId && errors.recipeId}
-                    />
-                </ModalBody>
-                <ModalFooter
-                    buttons={[
-                        <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                            Back
-                        </Button>,
-                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Add Recipe' />
-                    ]}
-                />
-            </form>
+                </form>
+            </FormProvider>
         )
     }
 

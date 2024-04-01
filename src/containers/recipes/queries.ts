@@ -49,10 +49,11 @@ export function useGetSingleRecipeQuery(id: string) {
 }
 
 /***** Add item to recipe *****/
-const addItemToRecipe = ({ recipeId, itemName, categoryId }: AddItemToRecipePayload): Promise<MutationResponse> => {
-    const body: { item_name: string; category_id?: string } = { item_name: itemName }
+const addItemToRecipe = ({ recipeId, itemName, categoryId, quantity, quantityUnitId }: AddItemToRecipePayload): Promise<MutationResponse> => {
+    const body: { item_name: string; category_id?: string; quantity: number; quantity_unit_id?: number } = { item_name: itemName, quantity }
 
     if (categoryId) body.category_id = categoryId
+    if (quantityUnitId) body.quantity_unit_id = quantityUnitId
 
     return axios.post(`/recipe/${recipeId}/add-item`, body)
 }

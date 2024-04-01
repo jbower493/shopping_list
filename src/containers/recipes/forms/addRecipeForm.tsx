@@ -1,6 +1,5 @@
-import React from 'react'
 import { toast } from 'react-hot-toast'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
@@ -13,11 +12,19 @@ import { queryClient } from 'utils/queryClient'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { getRecipeCategoryOptions } from 'utils/functions'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import FormRow from 'components/Form/FormRow'
 
 type Inputs = {
     name: string
     recipeCategoryId: string
 }
+
+const schema = z.object({
+    name: z.string().min(1, 'Required'),
+    recipeCategoryId: z.string()
+})
 
 function AddRecipeForm() {
     const navigate = useNavigate()
@@ -26,13 +33,19 @@ function AddRecipeForm() {
 
     const { mutateAsync: createRecipe } = useCreateRecipeMutation()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
-    } = useForm<Inputs>({
-        mode: 'onChange'
+    const methods = useForm<Inputs>({
+        mode: 'all',
+        resolver: zodResolver(schema),
+        defaultValues: {
+            name: '',
+            recipeCategoryId: ''
+        }
     })
+
+    const {
+        handleSubmit,
+        formState: { isDirty, isValid, isSubmitting }
+    } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId }) => {
         await createRecipe(
@@ -49,34 +62,30 @@ function AddRecipeForm() {
 
     const renderForm = () => {
         return (
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody>
-                    <InputField<Inputs>
-                        label='Name'
-                        name='name'
-                        type='text'
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.name && errors.name}
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <ModalBody>
+                        <FormRow>
+                            <InputField.HookForm label='Name' name='name' />
+                        </FormRow>
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Recipe Category'
+                                name='recipeCategoryId'
+                                options={getRecipeCategoryOptions(getRecipeCategoriesData)}
+                            />
+                        </FormRow>
+                    </ModalBody>
+                    <ModalFooter
+                        buttons={[
+                            <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                Back
+                            </Button>,
+                            <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
+                        ]}
                     />
-                    <SelectField<Inputs>
-                        label='Recipe Category'
-                        name='recipeCategoryId'
-                        options={getRecipeCategoryOptions(getRecipeCategoriesData)}
-                        register={register}
-                        validation={{ required: 'This is required.' }}
-                        error={touchedFields.recipeCategoryId && errors.recipeCategoryId}
-                    />
-                </ModalBody>
-                <ModalFooter
-                    buttons={[
-                        <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                            Back
-                        </Button>,
-                        <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Create' />
-                    ]}
-                />
-            </form>
+                </form>
+            </FormProvider>
         )
     }
 
