@@ -50,9 +50,8 @@ function EditRecipeDetailsForm() {
     })
 
     const {
-        register,
         handleSubmit,
-        formState: { errors, touchedFields, isDirty, isValid, isSubmitting }
+        formState: { isDirty, isValid, isSubmitting }
     } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, instructions, recipeCategoryId }) => {
@@ -88,12 +87,7 @@ function EditRecipeDetailsForm() {
                                 name='recipeCategoryId'
                                 options={getRecipeCategoryOptions(getRecipeCategoriesData)}
                             />
-                            <TextAreaField<Inputs>
-                                label='Instructions'
-                                name='instructions'
-                                register={register}
-                                error={touchedFields.instructions && errors.instructions}
-                            />
+                            <TextAreaField.HookForm label='Instructions' name='instructions' />
                         </ModalBody>
                         <ModalFooter
                             buttons={[
