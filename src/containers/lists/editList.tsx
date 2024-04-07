@@ -1,10 +1,10 @@
-import { useParams, Link, Outlet } from 'react-router-dom'
+import { useParams, Link, Outlet, useNavigate } from 'react-router-dom'
 import { useAddItemToListMutation } from './queries'
 import { useGetSingleListQuery } from './queries'
 import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
-import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditListItem from 'containers/lists/components/editListItem'
 import CategoryTag from 'components/CategoryTag'
 import { getExistingCategories } from 'utils/functions'
@@ -13,6 +13,7 @@ import type { AddItemToListPayload } from 'containers/lists/types'
 
 function EditList() {
     const { listId } = useParams()
+    const navigate = useNavigate()
 
     const { data: getSingleListData, isLoading: isGetSingleListLoading, isError: isGetSingleListError } = useGetSingleListQuery(listId || '')
     const { data: getItemsData, isLoading: isGetItemsLoading, isError: isGetItemsError } = useGetItemsQuery()
@@ -67,12 +68,11 @@ function EditList() {
                 <Link to='/lists'>Back to lists</Link>
                 <Link to={`/shop/${listIdSafe}`}>Shop</Link>
             </div>
-            <div className='flex justify-between mb-7 mt-2'>
-                <h2>Edit List</h2>
-                <div className='flex items-center'>
-                    <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
-                    <p>{name}</p>
-                </div>
+            <div className='flex mb-7 mt-2'>
+                <h2>{name}</h2>
+                <button className='ml-4' type='button' onClick={() => navigate(`/lists/edit/${listIdSafe}/details`)}>
+                    <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                </button>
             </div>
 
             <AddItem

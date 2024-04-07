@@ -71,13 +71,11 @@ function EditRecipe() {
         <div className='p-4'>
             <Link to='/recipes'>Back to recipes</Link>
             <div className='mb-7 mt-2'>
-                <div className='flex justify-between'>
-                    <div className='flex items-center'>
-                        <h2>{name}</h2>
-                        <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
-                            <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
-                        </button>
-                    </div>
+                <div className='flex items-center'>
+                    <h2>{name}</h2>
+                    <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
+                        <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                    </button>
                 </div>
                 <div className='ml-[-0.5rem] mt-1'>
                     <CategoryTag

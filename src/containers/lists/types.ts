@@ -33,3 +33,7 @@ export interface ListItem {
     }
     category: Category | null
 }
+
+export interface EditListPayload {
+    name: string
+}

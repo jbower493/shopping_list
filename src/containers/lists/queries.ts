@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { List, NewList, DetailedList, AddItemToListPayload, ListItem } from 'containers/lists/types'
+import { List, NewList, DetailedList, AddItemToListPayload, ListItem, EditListPayload } from 'containers/lists/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
@@ -227,5 +227,15 @@ const addItemsFromMenu = ({ listId, menuId }: { listId: string; menuId: string }
 export function useAddItemsFromMenuMutation() {
     return useMutation({
         mutationFn: addItemsFromMenu
+    })
+}
+
+/***** Edit list *****/
+const editList = ({ listId, attributes }: { listId: string; attributes: EditListPayload }): Promise<MutationResponse> =>
+    axios.put(`/list/${listId}`, attributes)
+
+export function useEditListMutation() {
+    return useMutation({
+        mutationFn: editList
     })
 }
