@@ -33,32 +33,32 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
     return (
         <nav
             ref={sidebarRef}
-            className={`fixed top-0 h-full pt-14 w-40 bg-gray-100 flex${
+            className={`fixed top-0 h-full pt-14 w-44 bg-gray-100 flex${
                 showMenu ? ' translate-x-0' : ' -translate-x-full'
             } transition-transform sm:translate-x-0 flex-col justify-between z-10`}
         >
             <ul className='p-4'>
-                <li className='mb-1'>
+                <li className='mb-2'>
                     <Link to='/lists' onClick={() => closeMenu()}>
                         Lists
                     </Link>
                 </li>
-                <li className='mb-1'>
+                <li className='mb-2'>
                     <Link to='/recipes' onClick={() => closeMenu()}>
                         Recipes
                     </Link>
                 </li>
-                <li className='mb-1'>
+                <li className='mb-2'>
                     <Link to='/menus' onClick={() => closeMenu()}>
                         Menus
                     </Link>
                 </li>
-                <li className='mb-1'>
+                <li className='mb-2'>
                     <Link to='/items' onClick={() => closeMenu()}>
                         Items
                     </Link>
                 </li>
-                <li className='mb-1'>
+                <li className='mb-2'>
                     <Link to='/categories' onClick={() => closeMenu()}>
                         Categories
                     </Link>
