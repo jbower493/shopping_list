@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import type { Item, NewItem } from 'containers/items/types'
+import type { EditItemPayload, Item, NewItem } from 'containers/items/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
@@ -33,5 +33,15 @@ const deleteItem = (id: string): Promise<MutationResponse> => axios.delete(`/ite
 export function useDeleteItemMutation() {
     return useMutation({
         mutationFn: deleteItem
+    })
+}
+
+/***** Edit item *****/
+const editItem = ({ itemId, attributes }: { itemId: string; attributes: EditItemPayload }): Promise<MutationResponse> =>
+    axios.put(`/item/${itemId}`, attributes)
+
+export function useEditItemMutation() {
+    return useMutation({
+        mutationFn: editItem
     })
 }

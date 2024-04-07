@@ -10,3 +10,8 @@ export interface NewItem {
     name: string
     category_id?: number | null
 }
+
+export interface EditItemPayload {
+    name: string
+    category_id: number | null
+}

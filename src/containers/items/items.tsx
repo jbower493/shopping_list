@@ -3,7 +3,7 @@ import { useGetItemsQuery } from './queries'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
-import { TrashIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid'
 import CategoryTag from 'components/CategoryTag'
 
 // TODO: when implementing change category for single item, make sure to invalidate all items, lists and recipes queries
@@ -37,6 +37,9 @@ function Items() {
                             />
                         </div>
                         <div>
+                            <button className='mr-4' type='button' onClick={() => navigate(`/items/edit/${id}`)}>
+                                <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                            </button>
                             <button type='button' onClick={() => navigate(`/items/delete/${id}`)}>
                                 <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                             </button>
