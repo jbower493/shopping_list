@@ -1,14 +1,13 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useParams, Link, useNavigate, Outlet } from 'react-router-dom'
-import { singleRecipeQueryKey, useAddItemToRecipeMutation } from './queries'
+import { useAddItemToRecipeMutation } from './queries'
 import { useGetSingleRecipeQuery } from './queries'
-import { itemsQueryKey, useGetItemsQuery } from 'containers/items/queries'
+import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
 import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToRecipePayload } from 'containers/recipes/types'
-import { queryClient } from 'utils/queryClient'
 import CategoryTag from 'components/CategoryTag'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 
@@ -22,14 +21,14 @@ function EditRecipe() {
 
     const {
         data: getSingleRecipeData,
-        isFetching: isGetSingleRecipeFetching,
+        isLoading: isGetSingleRecipeLoading,
         isError: isGetSingleRecipeError
     } = useGetSingleRecipeQuery(recipeId || '')
-    const { data: getItemsData, isFetching: isGetItemsFetching, isError: isGetItemsError } = useGetItemsQuery()
+    const { data: getItemsData, isLoading: isGetItemsLoading, isError: isGetItemsError } = useGetItemsQuery()
 
-    const { mutate: addItemToRecipe, isLoading: isAddItemToRecipeLoading } = useAddItemToRecipeMutation()
+    const { mutate: addItemToRecipe } = useAddItemToRecipeMutation()
 
-    if (isGetSingleRecipeFetching || isGetItemsFetching) return <Loader fullPage />
+    if (isGetSingleRecipeLoading || isGetItemsLoading) return <Loader fullPage />
     if (isGetSingleRecipeError || !getSingleRecipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
     const { name, id, items, instructions, recipe_category } = getSingleRecipeData
@@ -113,16 +112,11 @@ function EditRecipe() {
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
                     if (quantityUnitId) payload.quantityUnitId = quantityUnitId
 
-                    addItemToRecipe(payload, {
-                        onSuccess: () => {
-                            clearInput()
-                            queryClient.invalidateQueries(singleRecipeQueryKey(id.toString()))
-                            queryClient.invalidateQueries(itemsQueryKey())
-                        }
-                    })
+                    addItemToRecipe(payload)
+
+                    clearInput()
                 }}
                 itemsList={getItemsData}
-                isAddItemLoading={isAddItemToRecipeLoading}
             />
 
             {renderCurrentItems()}

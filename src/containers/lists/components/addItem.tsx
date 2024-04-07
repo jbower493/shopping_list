@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Loader from 'components/Loader'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import ComboBox from 'components/Form/Inputs/Combobox'
 import { Item } from 'containers/items/types'
@@ -11,11 +10,10 @@ import { useQuantityUnitsQuery } from 'containers/quantityUnits/queries'
 interface AddItemProps {
     onAdd: (itemToAdd: string, categoryId: string | null, quantity: number, quantityUnitId: number | null, clearInput: () => void) => void
     itemsList: Item[]
-    isAddItemLoading: boolean
     className?: string
 }
 
-function AddItem({ onAdd, itemsList, isAddItemLoading, className }: AddItemProps) {
+function AddItem({ onAdd, itemsList, className }: AddItemProps) {
     const [itemToAdd, setItemToAdd] = useState<string>('')
     const [quantityValueToAdd, setQuantityValueToAdd] = useState('1')
     const [quantityUnitToAdd, setQuantityUnitToAdd] = useState('NO_UNIT')
@@ -63,21 +61,17 @@ function AddItem({ onAdd, itemsList, isAddItemLoading, className }: AddItemProps
                 />
                 <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsList.map(({ name }) => name)} placeholder='Item name' />
                 <div className='w-10 h-9 flex justify-center items-center'>
-                    {isAddItemLoading ? (
-                        <Loader size={'small'} />
-                    ) : (
-                        <button
-                            onClick={() => {
-                                if (isNewItem) {
-                                    setIsCategoryModalOpen(true)
-                                } else {
-                                    addItem()
-                                }
-                            }}
-                        >
-                            <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
-                        </button>
-                    )}
+                    <button
+                        onClick={() => {
+                            if (isNewItem) {
+                                setIsCategoryModalOpen(true)
+                            } else {
+                                addItem()
+                            }
+                        }}
+                    >
+                        <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
+                    </button>
                 </div>
             </div>
             <NewItemCategoryForm

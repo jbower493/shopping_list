@@ -87,7 +87,6 @@ function EditList() {
                     clearInput()
                 }}
                 itemsList={getItemsData}
-                isAddItemLoading={false}
             />
 
             <div className='flex mb-4'>

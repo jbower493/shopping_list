@@ -1,8 +1,12 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload, EditRecipePayload } from 'containers/recipes/types'
+import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload, EditRecipePayload, RecipeItem } from 'containers/recipes/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
+import { fireErrorNotification, queryClient } from 'utils/queryClient'
+import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
+import { getItems, itemsQueryKey } from 'containers/items/queries'
+import { getQuantityUnits, quantityUnitsQueryKey } from 'containers/quantityUnits/queries'
 
 const recipesKeySet = new QueryKeySet('Recipe')
 
@@ -60,7 +64,95 @@ const addItemToRecipe = ({ recipeId, itemName, categoryId, quantity, quantityUni
 
 export function useAddItemToRecipeMutation() {
     return useMutation({
-        mutationFn: addItemToRecipe
+        mutationFn: addItemToRecipe,
+        onMutate: async (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleRecipeQueryKey(payload.recipeId))
+
+            // Snapshot the data of the current queries
+            type SingleRecipeQueryData = Awaited<ReturnType<typeof getSingleRecipe>> | undefined
+            const singleRecipeQueryData: SingleRecipeQueryData = queryClient.getQueryData(singleRecipeQueryKey(payload.recipeId))
+
+            type CategoriesQueryData = Awaited<ReturnType<typeof getCategories>> | undefined
+            const categoriesQueryData: CategoriesQueryData = queryClient.getQueryData(categoriesQueryKey())
+
+            type ItemsQueryData = Awaited<ReturnType<typeof getItems>> | undefined
+            const itemsQueryData: ItemsQueryData = queryClient.getQueryData(itemsQueryKey())
+
+            type QuantityUnitsData = Awaited<ReturnType<typeof getQuantityUnits>> | undefined
+            const quantityUnitsQueryData: QuantityUnitsData = queryClient.getQueryData(quantityUnitsQueryKey())
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleRecipeQueryKey(payload.recipeId), (old: SingleRecipeQueryData) => {
+                if (!old) return undefined
+
+                const getAddedItemCategory = () => {
+                    function getCategoryId() {
+                        // If its a new item and therefore it is getting assigned a category on creation
+                        if (payload.categoryId) return Number(payload.categoryId)
+
+                        // If its an existing item, check the items list to see what it's category is (if it has a category)
+                        const matchingItemCategory = itemsQueryData?.data.items.find(({ name }) => name === payload.itemName)?.category
+
+                        return matchingItemCategory?.id || null
+                    }
+
+                    const categoryId = getCategoryId()
+
+                    if (!categoryId) return null
+                    return {
+                        id: categoryId,
+                        name: categoriesQueryData?.data.categories.find(({ id }) => id === categoryId)?.name || ''
+                    }
+                }
+
+                function getAddedItemQuantity(): RecipeItem['item_quantity'] {
+                    return {
+                        quantity: payload.quantity,
+                        quantity_unit: payload.quantityUnitId
+                            ? quantityUnitsQueryData?.data.quantity_units.find((quantityUnit) => quantityUnit.id === payload.quantityUnitId) || null
+                            : null
+                    }
+                }
+
+                const newItems: RecipeItem[] = [
+                    ...old.data.recipe.items,
+                    {
+                        id: 0,
+                        name: payload.itemName,
+                        category: getAddedItemCategory(),
+                        item_quantity: getAddedItemQuantity()
+                    }
+                ]
+
+                const newData: SingleRecipeQueryData = {
+                    data: {
+                        recipe: {
+                            ...old.data.recipe,
+                            items: newItems.sort((a, b) => (a.name > b.name ? 1 : -1))
+                        }
+                    },
+                    message: old.message
+                }
+
+                return newData
+            })
+
+            // Return context object with the current data
+            return {
+                singleListQueryData: singleRecipeQueryData
+            }
+        },
+        onSuccess: (data, variables) => {
+            // Invalidate affected queries on success
+            queryClient.invalidateQueries(singleRecipeQueryKey(variables.recipeId))
+            queryClient.invalidateQueries(itemsQueryKey())
+        },
+        onError: (err, variables, context) => {
+            // Roll back to old data on error
+            queryClient.setQueryData(singleRecipeQueryKey(variables.recipeId), context?.singleListQueryData)
+            fireErrorNotification(err)
+        }
     })
 }
 
@@ -68,9 +160,55 @@ export function useAddItemToRecipeMutation() {
 const removeItemFromRecipe = ({ recipeId, itemId }: { recipeId: string; itemId: number }): Promise<MutationResponse> =>
     axios.post(`/recipe/${recipeId}/remove-item`, { item_id: itemId })
 
+// export function useRemoveItemFromRecipeMutation() {
+//     return useMutation({
+//         mutationFn: removeItemFromRecipe
+//     })
+// }
+
 export function useRemoveItemFromRecipeMutation() {
     return useMutation({
-        mutationFn: removeItemFromRecipe
+        mutationFn: removeItemFromRecipe,
+        onMutate: (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleRecipeQueryKey(payload.recipeId))
+
+            // Snapshot the data of the current queries
+            type SingleRecipeQueryData = Awaited<ReturnType<typeof getSingleRecipe>> | undefined
+            const singleRecipeQueryData: SingleRecipeQueryData = queryClient.getQueryData(singleRecipeQueryKey(payload.recipeId))
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleRecipeQueryKey(payload.recipeId), (old: SingleRecipeQueryData) => {
+                if (!old) return undefined
+
+                const newData: SingleRecipeQueryData = {
+                    data: {
+                        recipe: {
+                            ...old.data.recipe,
+                            items: old.data.recipe.items.filter((item) => item.id !== payload.itemId)
+                        }
+                    },
+                    message: old.message
+                }
+
+                return newData
+            })
+
+            // Return context object with the current data
+            return {
+                singleListQueryData: singleRecipeQueryData
+            }
+        },
+        onSuccess: (data, variables) => {
+            // "isMutating" seems to return 1 for the current mutation even in the on success handler. If "isMutating" is greater than 1, that means that previous deletions are still happening. So we only want to invalidate the cache if its the last deletion
+            if (queryClient.isMutating() < 2) {
+                queryClient.invalidateQueries(singleRecipeQueryKey(variables.recipeId))
+            }
+        },
+        onError: (err, variables, context) => {
+            queryClient.setQueryData(singleRecipeQueryKey(variables.recipeId), context?.singleListQueryData)
+            fireErrorNotification(err)
+        }
     })
 }
 
