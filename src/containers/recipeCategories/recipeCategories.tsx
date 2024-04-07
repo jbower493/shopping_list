@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { useGetRecipeCategoriesQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
-import { TrashIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid'
 // this still all needs changing from the items stuff
 function RecipeCategories() {
     const navigate = useNavigate()
@@ -27,6 +27,9 @@ function RecipeCategories() {
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                     <p>{name}</p>
                     <div>
+                        <button className='mr-4' type='button' onClick={() => navigate(`/recipe-categories/edit/${id}`)}>
+                            <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                        </button>
                         <button type='button' onClick={() => navigate(`/recipe-categories/delete/${id}`)}>
                             <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                         </button>

@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Category, NewCategory } from 'containers/categories/types'
+import { Category, EditCategoryPayload, NewCategory } from 'containers/categories/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { MutationResponse, QueryResponse } from 'utils/queryClient/types'
 
@@ -33,5 +33,15 @@ const deleteCategory = (id: string): Promise<MutationResponse> => axios.delete(`
 export function useDeleteCategoryMutation() {
     return useMutation({
         mutationFn: deleteCategory
+    })
+}
+
+/***** Edit category *****/
+const editCategory = ({ categoryId, attributes }: { categoryId: string; attributes: EditCategoryPayload }): Promise<MutationResponse> =>
+    axios.put(`/category/${categoryId}`, attributes)
+
+export function useEditCategoryMutation() {
+    return useMutation({
+        mutationFn: editCategory
     })
 }

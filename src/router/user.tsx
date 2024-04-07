@@ -34,6 +34,8 @@ import Shop from 'containers/shop/shop'
 import EditRecipeDetailsForm from 'containers/recipes/forms/editRecipeDetailsForm'
 import AddRecipeToMenuForm from 'containers/menus/forms/addRecipeToMenuForm'
 import EditListDetailsForm from 'containers/lists/forms/editListDetailsForm'
+import EditCategoryDetailsForm from 'containers/categories/forms/editCategoryDetailsForm'
+import EditRecipeCategoryDetailsForm from 'containers/recipeCategories/forms/editRecipeCategoryDetailsForm'
 
 function UserRouter() {
     return (
@@ -47,10 +49,12 @@ function UserRouter() {
             <Route path='/categories' element={<Categories />}>
                 <Route path='new' element={<AddCategoryForm />} />
                 <Route path='delete/:categoryId' element={<DeleteCategoryForm />} />
+                <Route path='edit/:categoryId' element={<EditCategoryDetailsForm />} />
             </Route>
             <Route path='/recipe-categories' element={<RecipeCategories />}>
                 <Route path='new' element={<AddRecipeCategoryForm />} />
                 <Route path='delete/:recipeCategoryId' element={<DeleteRecipeCategoryForm />} />
+                <Route path='edit/:recipeCategoryId' element={<EditRecipeCategoryDetailsForm />} />
             </Route>
             <Route path='/lists' element={<Lists />}>
                 <Route path='new' element={<AddListForm />} />

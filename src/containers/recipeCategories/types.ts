@@ -6,3 +6,7 @@ export interface RecipeCategory {
 export interface NewRecipeCategory {
     name: string
 }
+
+export interface EditRecipeCategoryPayload {
+    name: string
+}

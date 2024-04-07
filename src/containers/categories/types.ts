@@ -6,3 +6,7 @@ export interface Category {
 export interface NewCategory {
     name: string
 }
+
+export interface EditCategoryPayload {
+    name: string
+}
