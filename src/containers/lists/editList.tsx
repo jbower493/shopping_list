@@ -76,7 +76,6 @@ function EditList() {
             </div>
 
             <AddItem
-                className='mb-2'
                 onAdd={(itemToAdd, categoryId, quantity, quantityUnitId, clearInput) => {
                     const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd, quantity }
 

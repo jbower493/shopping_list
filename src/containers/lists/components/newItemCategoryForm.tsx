@@ -63,17 +63,15 @@ function NewItemCategoryForm({ onSubmitFunc, isOpen, close, itemName }: NewItemC
     }
 
     return (
-        <div>
-            <Modal
-                open={isOpen}
-                title='Categorize New Item'
-                desc={`This is a new item. Please choose a category for "${itemName}".`}
-                onClose={() => close()}
-                loading={isGetCategoriesFetching}
-            >
-                {renderForm()}
-            </Modal>
-        </div>
+        <Modal
+            open={isOpen}
+            title='Categorize New Item'
+            desc={`This is a new item. Please choose a category for "${itemName}".`}
+            onClose={() => close()}
+            loading={isGetCategoriesFetching}
+        >
+            {renderForm()}
+        </Modal>
     )
 }
 

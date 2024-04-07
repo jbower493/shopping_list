@@ -19,7 +19,7 @@ function ComboBox({ label, options, value, setValue, placeholder }: ComboBoxProp
         <Combobox value={value} onChange={setValue}>
             <div>
                 {label ? <label>{label}</label> : ''}
-                <div className='relative w-44'>
+                <div className='relative w-40'>
                     <div>
                         <Combobox.Input
                             className='mb-0 pr-9'
