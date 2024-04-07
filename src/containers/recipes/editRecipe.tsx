@@ -58,9 +58,11 @@ function EditRecipe() {
             <>
                 <h3 className='mb-2'>Items</h3>
                 <ul>
-                    {items.map((item, index) => (
-                        <EditRecipeItem key={index} item={item} recipeId={id} />
-                    ))}
+                    {[...items]
+                        .sort((a, b) => (a.name > b.name ? 1 : -1))
+                        .map((item, index) => (
+                            <EditRecipeItem key={index} item={item} recipeId={id} />
+                        ))}
                 </ul>
             </>
         )
