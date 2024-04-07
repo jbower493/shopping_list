@@ -1,5 +1,5 @@
 import { Category } from 'containers/categories/types'
-import { Item } from 'containers/items/types'
+import { QuantityUnit } from 'containers/quantityUnits/types'
 import { RecipeCategory } from 'containers/recipeCategories/types'
 
 export interface Recipe {
@@ -40,10 +40,7 @@ export interface RecipeItem {
     name: string
     item_quantity: {
         quantity: number
-        quantity_unit: {
-            name: string
-            symbol: string
-        } | null
+        quantity_unit: QuantityUnit | null
     }
     category: Category | null
 }

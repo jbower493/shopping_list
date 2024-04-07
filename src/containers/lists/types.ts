@@ -1,4 +1,5 @@
 import { Category } from 'containers/categories/types'
+import { QuantityUnit } from 'containers/quantityUnits/types'
 
 export interface List {
     id: number
@@ -28,10 +29,7 @@ export interface ListItem {
     name: string
     item_quantity: {
         quantity: number
-        quantity_unit: {
-            name: string
-            symbol: string
-        } | null
+        quantity_unit: QuantityUnit | null
     }
     category: Category | null
 }
