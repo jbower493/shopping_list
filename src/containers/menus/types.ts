@@ -14,3 +14,7 @@ export interface DetailedMenu {
     name: string
     recipes: RecipeType[]
 }
+
+export interface EditMenuPayload {
+    name: string
+}

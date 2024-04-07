@@ -1,9 +1,8 @@
-import React from 'react'
 import { useParams, Link, useNavigate, Outlet } from 'react-router-dom'
 import { useGetSingleMenuQuery } from './queries'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import Loader from 'components/Loader'
-import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
 import { getExistingRecipeCategories } from 'utils/functions'
 import CategoryTag from 'components/CategoryTag'
@@ -30,7 +29,6 @@ function EditMenu() {
 
             if (recipeCategoryId !== -1) recipeslist = recipes.filter(({ recipe_category }) => recipe_category?.id === recipeCategoryId)
 
-            // TODO: remove this once the recipes are being sorted already by the backend
             recipeslist.sort((a, b) => (a.name > b.name ? 1 : -1))
 
             return (
@@ -61,12 +59,11 @@ function EditMenu() {
     return (
         <div className='p-4'>
             <Link to='/menus'>Back to menus</Link>
-            <div className='flex justify-between mb-7 mt-2'>
-                <h2>Edit Menu</h2>
-                <div className='flex items-center'>
-                    <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
-                    <p>{name}</p>
-                </div>
+            <div className='flex items-center mb-7 mt-2'>
+                <h2>{name}</h2>
+                <button className='ml-4' type='button' onClick={() => navigate(`/menus/edit/${id}/details`)}>
+                    <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                </button>
             </div>
             <Button className='mb-8' onClick={() => navigate(`/menus/edit/${menuId}/add-recipe`)}>
                 Add Recipe
