@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import type { Item, NewItem, BulkAssignCategoryPayload } from 'containers/items/types'
+import type { Item, NewItem } from 'containers/items/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
@@ -33,15 +33,5 @@ const deleteItem = (id: string): Promise<MutationResponse> => axios.delete(`/ite
 export function useDeleteItemMutation() {
     return useMutation({
         mutationFn: deleteItem
-    })
-}
-
-/***** Bulk assign category *****/
-const bulkAssignCategory = ({ category_id, item_ids }: BulkAssignCategoryPayload): Promise<MutationResponse> =>
-    axios.put(`/item/category/${category_id}/bulk`, { item_ids })
-
-export function useBulkAssignCategoryMutation() {
-    return useMutation({
-        mutationFn: bulkAssignCategory
     })
 }
