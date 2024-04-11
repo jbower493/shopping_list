@@ -1,0 +1,11 @@
+.removing {
+    position: relative;
+    top: 100px;
+    left: 200px;
+    opacity: 0;
+    height: 0;
+
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: linear;
+}
