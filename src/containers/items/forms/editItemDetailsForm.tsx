@@ -43,7 +43,7 @@ function EditItemDetailsForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: item?.name,
-            categoryId: item?.category?.id.toString() || ''
+            categoryId: item?.category?.id.toString() || 'none'
         }
     })
 

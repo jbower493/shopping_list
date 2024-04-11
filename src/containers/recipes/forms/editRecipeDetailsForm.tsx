@@ -46,7 +46,7 @@ function EditRecipeDetailsForm() {
         defaultValues: {
             name: getSingleRecipeData?.name,
             instructions: getSingleRecipeData?.instructions || undefined,
-            recipeCategoryId: getSingleRecipeData?.recipe_category?.id.toString() || ''
+            recipeCategoryId: getSingleRecipeData?.recipe_category?.id.toString() || 'none'
         }
     })
 

@@ -35,7 +35,7 @@ function App() {
         return (
             <>
                 <Sidebar showMenu={showMenu} closeMenu={handleCloseMenu} menuIconRef={menuIconRef} />
-                <main className='h-full sm:pl-40'>
+                <main className='h-full sm:pl-48'>
                     <UserRouter />
                 </main>
             </>
