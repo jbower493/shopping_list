@@ -4,8 +4,6 @@ import { ListItem } from '../types'
 import ItemWithQuantity from 'components/ItemWithQuantity'
 import { useState } from 'react'
 
-import './removing.css'
-
 interface EditListItemProps {
     item: ListItem
     listId: number
@@ -21,7 +19,11 @@ function EditListItem({ item: { name, id, item_quantity }, listId }: EditListIte
     }
 
     return (
-        <li className={`flex justify-between w-full max-w-md mb-2 rounded-md relative top-0 left-0 h-6${isBeingRemoved ? ' removing' : ''}`}>
+        <li
+            className={`flex justify-between w-full max-w-md mb-2 rounded-md relative top-0 left-0 h-6${
+                isBeingRemoved ? ' top-24 left-52 opacity-0 h-0 transition-all duration-300 ease-linear' : ''
+            }`}
+        >
             <ItemWithQuantity quantityValue={item_quantity.quantity} unitSymbol={item_quantity.quantity_unit?.symbol} itemName={name} />
             <button
                 type='button'
