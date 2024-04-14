@@ -108,15 +108,13 @@ function EditRecipe() {
 
             <AddItem
                 className='mb-6'
-                onAdd={(itemToAdd, categoryId, quantity, quantityUnitId, clearInput) => {
+                onAdd={(itemToAdd, categoryId, quantity, quantityUnitId) => {
                     const payload: AddItemToRecipePayload = { recipeId: id.toString(), itemName: itemToAdd, quantity }
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
                     if (quantityUnitId) payload.quantityUnitId = quantityUnitId
 
                     addItemToRecipe(payload)
-
-                    clearInput()
                 }}
                 itemsList={getItemsData}
             />

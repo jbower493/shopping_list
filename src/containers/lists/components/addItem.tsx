@@ -8,7 +8,7 @@ import InputField from 'components/Form/Inputs/InputField/component'
 import { useQuantityUnitsQuery } from 'containers/quantityUnits/queries'
 
 interface AddItemProps {
-    onAdd: (itemToAdd: string, categoryId: string | null, quantity: number, quantityUnitId: number | null, clearInput: () => void) => void
+    onAdd: (itemToAdd: string, categoryId: string | null, quantity: number, quantityUnitId: number | null) => void
     itemsList: Item[]
     className?: string
 }
@@ -17,17 +17,17 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
     const [itemToAdd, setItemToAdd] = useState<string>('')
     const [quantityValueToAdd, setQuantityValueToAdd] = useState('1')
     const [quantityUnitToAdd, setQuantityUnitToAdd] = useState('NO_UNIT')
-
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
+    const [isBeingAdded, setIsBeingAdded] = useState(false)
 
     const { data: quantityUnitsData } = useQuantityUnitsQuery()
 
     const isNewItem = !itemsList.find(({ name }) => name === itemToAdd)
 
-    const addItem = (categoryId: string | null = null) => {
+    function addItem(itemToAdd: string, categoryId: string | null = null) {
         const quanityUnitItToSend = quantityUnitToAdd === 'NO_UNIT' ? null : Number(quantityUnitToAdd)
 
-        onAdd(itemToAdd, categoryId, Number(quantityValueToAdd), quanityUnitItToSend, () => setItemToAdd(''))
+        onAdd(itemToAdd, categoryId, Number(quantityValueToAdd), quanityUnitItToSend)
     }
 
     const quantityUnitOptions = [
@@ -60,13 +60,27 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
                     className='px-[2px] w-[85px]'
                 />
                 <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsList.map(({ name }) => name)} placeholder='Item name' />
-                <div className='w-10 h-9 flex justify-center items-center'>
+                <div className='w-10 h-9 flex justify-center items-center relative'>
+                    <div
+                        className={`absolute w-[150px] h-6 right-12 pointer-events-none opacity-0${
+                            isBeingAdded ? ' transition-transform duration-200 ease-linear -translate-x-10 translate-y-40 opacity-100' : ''
+                        }`}
+                    >
+                        {'itemToAdd'}
+                    </div>
                     <button
                         onClick={() => {
                             if (isNewItem) {
                                 setIsCategoryModalOpen(true)
                             } else {
-                                addItem()
+                                const frozenItemToAdd = itemToAdd
+                                setItemToAdd('')
+
+                                setIsBeingAdded(true)
+                                setTimeout(() => {
+                                    setIsBeingAdded(false)
+                                    addItem(frozenItemToAdd)
+                                }, 200)
                             }
                         }}
                     >
@@ -78,8 +92,15 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
                 isOpen={isCategoryModalOpen}
                 close={() => setIsCategoryModalOpen(false)}
                 onSubmitFunc={(categoryId) => {
+                    const frozenItemToAdd = itemToAdd
+                    setItemToAdd('')
+
                     setIsCategoryModalOpen(false)
-                    addItem(categoryId)
+                    setIsBeingAdded(true)
+                    setTimeout(() => {
+                        setIsBeingAdded(false)
+                        addItem(frozenItemToAdd, categoryId)
+                    }, 200)
                 }}
                 itemName={itemToAdd}
             />

@@ -76,15 +76,13 @@ function EditList() {
             </div>
 
             <AddItem
-                onAdd={(itemToAdd, categoryId, quantity, quantityUnitId, clearInput) => {
+                onAdd={(itemToAdd, categoryId, quantity, quantityUnitId) => {
                     const payload: AddItemToListPayload = { listId: listIdSafe.toString(), itemName: itemToAdd, quantity }
 
                     if (categoryId && categoryId !== 'none') payload.categoryId = categoryId
                     if (quantityUnitId) payload.quantityUnitId = quantityUnitId
 
                     addItemToList(payload)
-
-                    clearInput()
                 }}
                 itemsList={getItemsData}
             />
