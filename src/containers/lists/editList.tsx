@@ -63,7 +63,7 @@ function EditList() {
     }
 
     return (
-        <div className='p-4'>
+        <div className='p-4 pb-10 overflow-hidden'>
             <div className='flex justify-between'>
                 <Link to='/lists'>Back to lists</Link>
                 <Link to={`/shop/${listIdSafe}`}>Shop</Link>

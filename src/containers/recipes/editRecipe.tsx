@@ -69,7 +69,7 @@ function EditRecipe() {
     }
 
     return (
-        <div className='p-4'>
+        <div className='p-4 pb-10 overflow-hidden'>
             <Link to='/recipes'>Back to recipes</Link>
             <div className='mb-7 mt-2'>
                 <div className='flex items-center'>
