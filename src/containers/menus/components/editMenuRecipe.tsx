@@ -8,10 +8,9 @@ import { Recipe } from 'containers/recipes/types'
 interface EditMenuRecipeProps {
     recipe: Recipe
     menuId: number
-    setAnyChanges: (anyChanges: boolean) => void
 }
 
-function EditMenuRecipe({ recipe: { name, id }, menuId, setAnyChanges }: EditMenuRecipeProps) {
+function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
     const { mutate: removeRecipeFromMenu, isLoading: isRemoveRecipeFromMenuLoading } = useRemoveRecipeFromMenuMutation()
 
     return (
@@ -27,7 +26,6 @@ function EditMenuRecipe({ recipe: { name, id }, menuId, setAnyChanges }: EditMen
                             { menuId: menuId.toString(), recipeId: id },
                             {
                                 onSuccess: () => {
-                                    setAnyChanges(true)
                                     queryClient.invalidateQueries(singleMenuQueryKey(menuId.toString()))
                                 }
                             }

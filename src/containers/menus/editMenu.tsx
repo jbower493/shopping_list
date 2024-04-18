@@ -4,8 +4,6 @@ import { useGetRecipesQuery } from 'containers/recipes/queries'
 import Loader from 'components/Loader'
 import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
-import { getExistingRecipeCategories } from 'utils/functions'
-import CategoryTag from 'components/CategoryTag'
 import Button from 'components/Button'
 
 function EditMenu() {
@@ -21,39 +19,15 @@ function EditMenu() {
     const { name, id, recipes } = getSingleMenuData
 
     const renderCurrentRecipes = () => {
-        // Get a unique list of all the recipe categories present in the recipe
-        const recipeCategoriesInRecipe = getExistingRecipeCategories(recipes)
-
-        const renderRecipeCategory = (recipeCategoryId: number, recipeCategoryName: string) => {
-            let recipeslist = recipes.filter(({ recipe_category }) => !recipe_category)
-
-            if (recipeCategoryId !== -1) recipeslist = recipes.filter(({ recipe_category }) => recipe_category?.id === recipeCategoryId)
-
-            recipeslist.sort((a, b) => (a.name > b.name ? 1 : -1))
-
-            return (
-                <div key={recipeCategoryId} className='mb-6'>
-                    <div className='mb-2'>
-                        <CategoryTag categoriesData={recipeCategoriesInRecipe.filter(({ id }) => id !== -1)} categoryName={recipeCategoryName} />
-                        {recipeCategoryId === -1 ? <p className='text-[13px] opacity-40 mt-1'>Edit the recipe to assign it to a category</p> : ''}
-                    </div>
-                    <ul>
-                        {recipeslist.map((recipe) => (
-                            <EditMenuRecipe
-                                key={recipe.id}
-                                recipe={recipe}
-                                menuId={id}
-                                setAnyChanges={() => {
-                                    //
-                                }}
-                            />
-                        ))}
-                    </ul>
-                </div>
-            )
-        }
-
-        return recipeCategoriesInRecipe.map(({ id, name }) => renderRecipeCategory(id, name))
+        return (
+            <ul>
+                {[...recipes]
+                    .sort((a, b) => (a.name > b.name ? 1 : -1))
+                    .map((recipe) => (
+                        <EditMenuRecipe key={recipe.id} recipe={recipe} menuId={id} />
+                    ))}
+            </ul>
+        )
     }
 
     return (
