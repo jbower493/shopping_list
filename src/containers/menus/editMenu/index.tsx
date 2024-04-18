@@ -1,10 +1,11 @@
 import { useParams, Link, useNavigate, Outlet } from 'react-router-dom'
-import { useGetSingleMenuQuery } from './queries'
+import { useGetSingleMenuQuery } from '../queries'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import Loader from 'components/Loader'
 import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
 import Button from 'components/Button'
+import { Days } from './days'
 
 function EditMenu() {
     const { menuId } = useParams()
@@ -18,10 +19,11 @@ function EditMenu() {
 
     const { name, id, recipes } = getSingleMenuData
 
-    const renderCurrentRecipes = () => {
+    const renderRecipesWithNoDay = () => {
         return (
             <ul>
                 {[...recipes]
+                    .filter(({ day_of_week }) => !day_of_week.day)
                     .sort((a, b) => (a.name > b.name ? 1 : -1))
                     .map((recipe) => (
                         <EditMenuRecipe key={recipe.id} recipe={recipe} menuId={id} />
@@ -42,8 +44,9 @@ function EditMenu() {
             <Button className='mb-8' onClick={() => navigate(`/menus/edit/${menuId}/add-recipe`)}>
                 Add Recipe
             </Button>
-            {renderCurrentRecipes()}
-
+            <Days recipes={recipes} menuId={Number(menuId)} />
+            <h3 className='mb-4 mt-8'>Recipes with no day</h3>
+            {renderRecipesWithNoDay()}
             <Outlet />
         </div>
     )

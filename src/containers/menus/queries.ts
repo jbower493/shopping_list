@@ -49,8 +49,8 @@ export function useGetSingleMenuQuery(id: string) {
 }
 
 /***** Add recipe to menu *****/
-const addRecipeToMenu = ({ menuId, recipeId }: { menuId: string; recipeId: string }): Promise<MutationResponse> =>
-    axios.post(`/menu/${menuId}/add-recipe/${recipeId}`)
+const addRecipeToMenu = ({ menuId, recipeId, day }: { menuId: string; recipeId: string; day: string | null }): Promise<MutationResponse> =>
+    axios.post(`/menu/${menuId}/add-recipe/${recipeId}`, { day })
 
 export function useAddRecipeToMenuMutation() {
     return useMutation({

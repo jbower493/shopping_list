@@ -16,6 +16,7 @@ import { Recipe } from 'containers/recipes/types'
 import FormRow from 'components/Form/FormRow'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { getDayOptions } from '../editMenu/days'
 
 export function getFilteredRecipes(selectedRecipeCategoryId: string | undefined, getRecipesData: Recipe[]) {
     function filterFn({ recipe_category }: Recipe) {
@@ -45,12 +46,49 @@ export function getFilteredRecipes(selectedRecipeCategoryId: string | undefined,
 type Inputs = {
     recipeCategoryId: string | undefined
     recipeId: string
+    day: string
 }
 
 const schema = z.object({
     recipeCategoryId: z.string(),
-    recipeId: z.string()
+    recipeId: z.string(),
+    day: z.string()
 })
+
+const tempOptions = [
+    {
+        label: 'No day',
+        value: 'NO_DAY'
+    },
+    {
+        label: 'Saturday',
+        value: '2024-04-20'
+    },
+    {
+        label: 'Sunday',
+        value: '2024-04-21'
+    },
+    {
+        label: 'Monday',
+        value: '2024-04-22'
+    },
+    {
+        label: 'Tuesday',
+        value: '2024-04-23'
+    },
+    {
+        label: 'Wednesday',
+        value: '2024-04-24'
+    },
+    {
+        label: 'Thursday',
+        value: '2024-04-25'
+    },
+    {
+        label: 'Friday',
+        value: '2024-04-26'
+    }
+]
 
 function AddRecipeToMenuForm() {
     const navigate = useNavigate()
@@ -66,7 +104,8 @@ function AddRecipeToMenuForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             recipeCategoryId: 'ALL_CATEGORIES',
-            recipeId: ''
+            recipeId: '',
+            day: '2024-04-20'
         }
     })
 
@@ -79,9 +118,9 @@ function AddRecipeToMenuForm() {
 
     const selectedRecipeCategoryId = watch('recipeCategoryId')
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ recipeId }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ recipeId, day }) => {
         await addRecipeToMenu(
-            { menuId: menuId || '', recipeId },
+            { menuId: menuId || '', recipeId, day: day === 'NO_DAY' ? null : day },
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries(singleMenuQueryKey(menuId || ''))
@@ -115,6 +154,16 @@ function AddRecipeToMenuForm() {
                                 label='Recipe'
                                 name='recipeId'
                                 options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
+                            />
+                        </FormRow>
+                        <FormRow>
+                            <SelectField.HookForm
+                                label='Day'
+                                name='day'
+                                options={getDayOptions().map(({ day, date }) => ({
+                                    label: day,
+                                    value: date
+                                }))}
                             />
                         </FormRow>
                     </ModalBody>

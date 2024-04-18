@@ -14,7 +14,7 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
     const { mutate: removeRecipeFromMenu, isLoading: isRemoveRecipeFromMenuLoading } = useRemoveRecipeFromMenuMutation()
 
     return (
-        <li className='flex justify-between w-full max-w-md mb-2'>
+        <div className='flex justify-between w-full max-w-md mb-2'>
             {name}
             {isRemoveRecipeFromMenuLoading ? (
                 <Loader size='small' />
@@ -35,7 +35,7 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                 </button>
             )}
-        </li>
+        </div>
     )
 }
 

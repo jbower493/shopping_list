@@ -6,6 +6,9 @@ export interface Recipe {
     id: number
     name: string
     recipe_category: RecipeCategory | null
+    day_of_week: {
+        day: string
+    }
 }
 
 export interface NewRecipe {
