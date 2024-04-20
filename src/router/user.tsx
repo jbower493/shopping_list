@@ -38,6 +38,7 @@ import EditCategoryDetailsForm from 'containers/categories/forms/editCategoryDet
 import EditRecipeCategoryDetailsForm from 'containers/recipeCategories/forms/editRecipeCategoryDetailsForm'
 import EditMenuDetailsForm from 'containers/menus/forms/editMenuDetailsForm'
 import EditItemDetailsForm from 'containers/items/forms/editItemDetailsForm'
+import { FullScreenPage } from 'components/FullScreenPage'
 
 function UserRouter() {
     return (
@@ -84,7 +85,14 @@ function UserRouter() {
                 <Route path='details' element={<EditMenuDetailsForm />} />
             </Route>
             <Route path='/shop/:listId' element={<Shop />} />
-            <Route path='*' element={<div className='h-full flex justify-center items-center'>No route</div>} />
+            <Route
+                path='*'
+                element={
+                    <FullScreenPage>
+                        <div className='h-full flex justify-center items-center'>No route</div>
+                    </FullScreenPage>
+                }
+            />
         </Routes>
     )
 }

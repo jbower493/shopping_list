@@ -33,7 +33,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
     return (
         <nav
             ref={sidebarRef}
-            className={`fixed top-0 h-full pt-14 w-48 bg-gray-100 flex${
+            className={`fixed top-0 bottom-0 pt-14 w-48 bg-gray-100 flex${
                 showMenu ? ' translate-x-0' : ' -translate-x-full'
             } transition-transform sm:translate-x-0 flex-col justify-between z-10`}
         >

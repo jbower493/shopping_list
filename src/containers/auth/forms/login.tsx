@@ -9,6 +9,7 @@ import { userQueryKey } from 'utils/queryClient/keyFactory'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
+import { FullScreenPage } from 'components/FullScreenPage'
 
 type Inputs = {
     email: string
@@ -47,26 +48,28 @@ function LoginForm() {
     }
 
     return (
-        <div className='flex items-center h-full h-[-webkit-fill-available] p-4'>
-            <FormProvider {...methods}>
-                <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
-                    <h2 className='text-center mb-2'>Login</h2>
-                    <FormRow>
-                        <InputField.HookForm label='Email' name='email' type='email' />
-                    </FormRow>
-                    <FormRow>
-                        <InputField.HookForm label='Password' name='password' type='password' />
-                    </FormRow>
-                    <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Login' fullWidth />
-                    <Link className='mt-3 w-fit block' to='/register'>
-                        Register
-                    </Link>
-                    <Link className='mt-1 w-fit block' to='/forgot-password'>
-                        Forgot Password
-                    </Link>
-                </form>
-            </FormProvider>
-        </div>
+        <FullScreenPage>
+            <div className='flex items-center h-full p-4'>
+                <FormProvider {...methods}>
+                    <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
+                        <h2 className='text-center mb-2'>Login</h2>
+                        <FormRow>
+                            <InputField.HookForm label='Email' name='email' type='email' />
+                        </FormRow>
+                        <FormRow>
+                            <InputField.HookForm label='Password' name='password' type='password' />
+                        </FormRow>
+                        <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Login' fullWidth />
+                        <Link className='mt-3 w-fit block' to='/register'>
+                            Register
+                        </Link>
+                        <Link className='mt-1 w-fit block' to='/forgot-password'>
+                            Forgot Password
+                        </Link>
+                    </form>
+                </FormProvider>
+            </div>
+        </FullScreenPage>
     )
 }
 

@@ -35,7 +35,7 @@ function App() {
         return (
             <>
                 <Sidebar showMenu={showMenu} closeMenu={handleCloseMenu} menuIconRef={menuIconRef} />
-                <main className='h-full sm:pl-48'>
+                <main className='sm:pl-48'>
                     <UserRouter />
                 </main>
             </>
@@ -43,7 +43,7 @@ function App() {
     }
 
     return (
-        <div className='h-full h-[-webkit-fill-available]'>
+        <div>
             <Toaster />
             <header className='fixed top-0 w-full z-20 h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
                 <Link to='/lists' className='hover:no-underline'>
@@ -51,7 +51,7 @@ function App() {
                 </Link>
                 {!isGetUserFetching && !isGetUserError && getUserData ? renderMenu() : ''}
             </header>
-            <div className='h-full h-[-webkit-fill-available] pt-14'>{renderApp()}</div>
+            <div className='pt-14'>{renderApp()}</div>
         </div>
     )
 }
