@@ -55,15 +55,15 @@ function EditList() {
         }
 
         return (
-            <>
+            <div className='overflow-hidden pb-40'>
                 <h3 className='mb-2'>Items</h3>
                 {categoriesInList.map(({ id, name }) => renderCategory(id, name))}
-            </>
+            </div>
         )
     }
 
     return (
-        <div className='p-4 pb-10 overflow-hidden'>
+        <div className='p-4'>
             <div className='flex justify-between'>
                 <Link to='/lists'>Back to lists</Link>
                 <Link to={`/shop/${listIdSafe}`}>Shop</Link>

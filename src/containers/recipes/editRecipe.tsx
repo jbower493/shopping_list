@@ -57,7 +57,7 @@ function EditRecipe() {
         return (
             <>
                 <h3 className='mb-2'>Items</h3>
-                <ul>
+                <ul className='overflow-hidden pb-40'>
                     {[...items]
                         .sort((a, b) => (a.name > b.name ? 1 : -1))
                         .map((item, index) => (
@@ -69,7 +69,7 @@ function EditRecipe() {
     }
 
     return (
-        <div className='p-4 pb-10 overflow-hidden'>
+        <div className='p-4'>
             <Link to='/recipes'>Back to recipes</Link>
             <div className='mb-7 mt-2'>
                 <div className='flex items-center'>
