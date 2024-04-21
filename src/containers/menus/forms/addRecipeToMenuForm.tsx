@@ -55,41 +55,6 @@ const schema = z.object({
     day: z.string()
 })
 
-const tempOptions = [
-    {
-        label: 'No day',
-        value: 'NO_DAY'
-    },
-    {
-        label: 'Saturday',
-        value: '2024-04-20'
-    },
-    {
-        label: 'Sunday',
-        value: '2024-04-21'
-    },
-    {
-        label: 'Monday',
-        value: '2024-04-22'
-    },
-    {
-        label: 'Tuesday',
-        value: '2024-04-23'
-    },
-    {
-        label: 'Wednesday',
-        value: '2024-04-24'
-    },
-    {
-        label: 'Thursday',
-        value: '2024-04-25'
-    },
-    {
-        label: 'Friday',
-        value: '2024-04-26'
-    }
-]
-
 function AddRecipeToMenuForm() {
     const navigate = useNavigate()
     const { menuId } = useParams()
