@@ -51,7 +51,7 @@ function App() {
                 </Link>
                 {!isGetUserFetching && !isGetUserError && getUserData ? renderMenu() : ''}
             </header>
-            <div className='pt-14 min-h-dvh'>{renderApp()}</div>
+            <div className='pt-14 min-h-[101dvh] sm:min-h-dvh'>{renderApp()}</div>
         </div>
     )
 }
