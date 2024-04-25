@@ -38,7 +38,7 @@ function AddRecipeForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: '',
-            recipeCategoryId: recipeCategoriesdata?.[0]?.id?.toString() || ''
+            recipeCategoryId: 'none'
         }
     })
 
