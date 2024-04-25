@@ -44,7 +44,7 @@ function EditMenu() {
             <div>
                 <Droppable
                     className={classnames('h-[32px] w-72 flex items-center rounded-lg pl-2', {
-                        'bg-primary-50 border-primary border-2 ml-[-2px]': isDragging
+                        'bg-primary-50 border-primary border-2 border-dashed ml-[-2px]': isDragging
                     })}
                     onDragOver={(e) => {
                         e.preventDefault()

@@ -68,8 +68,8 @@ function AddRecipeToMenuForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             recipeCategoryId: 'ALL_CATEGORIES',
-            recipeId: '',
-            day: '2024-04-20'
+            recipeId: getRecipesData?.[0]?.id.toString(),
+            day: 'NO_DAY'
         }
     })
 
@@ -77,7 +77,7 @@ function AddRecipeToMenuForm() {
         handleSubmit,
         formState: { isValid, isSubmitting },
         watch,
-        resetField
+        setValue
     } = methods
 
     const selectedRecipeCategoryId = watch('recipeCategoryId')
@@ -88,7 +88,21 @@ function AddRecipeToMenuForm() {
     }
 
     useEffect(() => {
-        resetField('recipeId')
+        function getInitialRecipeIdValue() {
+            if (selectedRecipeCategoryId === 'ALL_CATEGORIES') {
+                return getRecipesData?.[0]?.id.toString() || ''
+            }
+
+            if (selectedRecipeCategoryId === 'none') {
+                return getRecipesData?.find(({ recipe_category }) => !recipe_category)?.id.toString() || ''
+            }
+
+            return (
+                getRecipesData?.find(({ recipe_category }) => recipe_category?.id?.toString() === selectedRecipeCategoryId || '')?.id.toString() || ''
+            )
+        }
+
+        setValue('recipeId', getInitialRecipeIdValue())
     }, [selectedRecipeCategoryId])
 
     const renderForm = () => {
@@ -117,10 +131,13 @@ function AddRecipeToMenuForm() {
                             <SelectField.HookForm
                                 label='Day'
                                 name='day'
-                                options={getDayOptions().map(({ day, date }) => ({
-                                    label: day,
-                                    value: date
-                                }))}
+                                options={[
+                                    { label: 'No day', value: 'NO_DAY' },
+                                    ...getDayOptions().map(({ day, date }) => ({
+                                        label: day,
+                                        value: date
+                                    }))
+                                ]}
                             />
                         </FormRow>
                     </ModalBody>
