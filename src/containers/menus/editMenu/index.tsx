@@ -8,7 +8,7 @@ import Button from 'components/Button'
 import { Days, getDayOptions } from './days'
 import { Droppable } from './days/droppable'
 import { createContext, useContext, useState } from 'react'
-import classNames from 'classnames'
+import classnames from 'classnames'
 
 export const EditMenuIsDraggingContext = createContext({
     isDragging: false,
@@ -43,7 +43,9 @@ function EditMenu() {
         return (
             <div>
                 <Droppable
-                    className={classNames('mt-8 h-8 w-72 flex items-center rounded-lg pl-2', { 'bg-primary-50': isDragging })}
+                    className={classnames('h-[32px] w-72 flex items-center rounded-lg pl-2', {
+                        'bg-primary-50 border-primary border-2 ml-[-2px]': isDragging
+                    })}
                     onDragOver={(e) => {
                         e.preventDefault()
 
@@ -62,7 +64,7 @@ function EditMenu() {
                 >
                     <h4>No Day Assigned</h4>
                 </Droppable>
-                <ul className='mt-2'>
+                <ul className='mt-2 pl-4'>
                     {[...recipes]
                         .filter(
                             ({ day_of_week }) =>

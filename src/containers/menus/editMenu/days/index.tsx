@@ -88,7 +88,9 @@ export function Days({ recipes, menuId }: { recipes: MenuRecipe[]; menuId: numbe
                     return (
                         <li key={day} className='w-full max-w-md mb-4'>
                             <Droppable
-                                className={classnames('h-8 w-72 flex items-center rounded-lg pl-2', { 'bg-primary-50': isDragging })}
+                                className={classnames('h-[32px] w-72 flex items-center rounded-lg pl-2', {
+                                    'bg-primary-50 border-primary border-2 ml-[-2px]': isDragging
+                                })}
                                 onDragOver={(e) => {
                                     e.dataTransfer.dropEffect = 'move'
                                 }}

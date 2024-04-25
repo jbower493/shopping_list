@@ -17,7 +17,7 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
     const { mutate: removeRecipeFromMenu, isLoading: isRemoveRecipeFromMenuLoading } = useRemoveRecipeFromMenuMutation()
 
     return (
-        <div className='flex justify-between w-full max-w-md mb-1'>
+        <div className='flex justify-between w-full max-w-md mt-1'>
             <button
                 type='button'
                 draggable
@@ -32,7 +32,7 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
                     // img.src = 'https://img.freepik.com/free-photo/abstract-autumn%E2%80%A6-generated-by-ai_188544-9871.jpg?size=626&ext=jpg'
                     // e.dataTransfer.setDragImage(img, 20, 20)
                 }}
-                onDragEnd={(e) => {
+                onDragEnd={() => {
                     setIsDragging(false)
                 }}
             >
