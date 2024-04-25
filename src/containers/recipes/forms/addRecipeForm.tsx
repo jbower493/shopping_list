@@ -29,7 +29,7 @@ const schema = z.object({
 function AddRecipeForm() {
     const navigate = useNavigate()
 
-    const { data: getRecipeCategoriesData, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
+    const { data: recipeCategoriesdata, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
     const { mutateAsync: createRecipe } = useCreateRecipeMutation()
 
@@ -38,7 +38,7 @@ function AddRecipeForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: '',
-            recipeCategoryId: ''
+            recipeCategoryId: recipeCategoriesdata?.[0]?.id?.toString() || ''
         }
     })
 
@@ -72,7 +72,7 @@ function AddRecipeForm() {
                             <SelectField.HookForm
                                 label='Recipe Category'
                                 name='recipeCategoryId'
-                                options={getRecipeCategoryOptions(getRecipeCategoriesData)}
+                                options={getRecipeCategoryOptions(recipeCategoriesdata)}
                             />
                         </FormRow>
                     </ModalBody>
