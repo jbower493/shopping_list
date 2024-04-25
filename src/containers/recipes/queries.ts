@@ -11,7 +11,7 @@ import { getQuantityUnits, quantityUnitsQueryKey } from 'containers/quantityUnit
 const recipesKeySet = new QueryKeySet('Recipe')
 
 /***** Get recipes *****/
-const getRecipes = (): Promise<QueryResponse<{ recipes: Recipe[] }>> => axios.get('/recipe')
+export const getRecipes = (): Promise<QueryResponse<{ recipes: Recipe[] }>> => axios.get('/recipe')
 export const recipesQueryKey = recipesKeySet.many
 
 export function useGetRecipesQuery() {

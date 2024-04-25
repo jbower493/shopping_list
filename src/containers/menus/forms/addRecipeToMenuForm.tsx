@@ -8,10 +8,9 @@ import Button from 'components/Button'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
-import { queryClient } from 'utils/queryClient'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import { getRecipeCategoryOptions } from 'utils/functions'
-import { singleMenuQueryKey, useAddRecipeToMenuMutation } from '../queries'
+import { useAddRecipeToMenuMutation } from '../queries'
 import { Recipe } from 'containers/recipes/types'
 import FormRow from 'components/Form/FormRow'
 import * as z from 'zod'
@@ -62,7 +61,7 @@ function AddRecipeToMenuForm() {
     const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
     const { data: getRecipeCategoriesData, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
-    const { mutateAsync: addRecipeToMenu } = useAddRecipeToMenuMutation()
+    const { mutate: addRecipeToMenu } = useAddRecipeToMenuMutation()
 
     const methods = useForm<Inputs>({
         mode: 'all',
@@ -84,15 +83,8 @@ function AddRecipeToMenuForm() {
     const selectedRecipeCategoryId = watch('recipeCategoryId')
 
     const onSubmit: SubmitHandler<Inputs> = async ({ recipeId, day }) => {
-        await addRecipeToMenu(
-            { menuId: menuId || '', recipeId, day: day === 'NO_DAY' ? null : day },
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries(singleMenuQueryKey(menuId || ''))
-                    navigate(-1)
-                }
-            }
-        )
+        navigate(-1)
+        addRecipeToMenu({ menuId: menuId || '', recipeId, day: day === 'NO_DAY' ? null : day })
     }
 
     useEffect(() => {

@@ -4,6 +4,7 @@ import { Menu, NewMenu, DetailedMenu, EditMenuPayload, UpdateMenuRecipePayload, 
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
+import { getRecipes, recipesQueryKey } from 'containers/recipes/queries'
 
 const menusKeySet = new QueryKeySet('Menu')
 
@@ -55,7 +56,63 @@ const addRecipeToMenu = ({ menuId, recipeId, day }: { menuId: string; recipeId: 
 
 export function useAddRecipeToMenuMutation() {
     return useMutation({
-        mutationFn: addRecipeToMenu
+        mutationFn: addRecipeToMenu,
+        onMutate: async (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleMenuQueryKey(payload.menuId))
+
+            // Snapshot the data of the current queries
+            type SingleMenuQueryData = Awaited<ReturnType<typeof getSingleMenu>> | undefined
+            const singleMenuQueryData: SingleMenuQueryData = queryClient.getQueryData(singleMenuQueryKey(payload.menuId))
+
+            type RecipesQueryData = Awaited<ReturnType<typeof getRecipes>> | undefined
+            const recipesQueryData: RecipesQueryData = queryClient.getQueryData(recipesQueryKey())
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleMenuQueryKey(payload.menuId), (old: SingleMenuQueryData) => {
+                if (!old) return undefined
+
+                const addedRecipeData = recipesQueryData?.data.recipes.find(({ id }) => id === Number(payload.recipeId))
+
+                const newRecipes: MenuRecipe[] = [
+                    ...old.data.menu.recipes,
+                    {
+                        id: 0,
+                        name: addedRecipeData?.name || '',
+                        day_of_week: {
+                            day: payload.day || null
+                        },
+                        recipe_category: addedRecipeData?.recipe_category || null
+                    }
+                ]
+
+                const newData: SingleMenuQueryData = {
+                    data: {
+                        menu: {
+                            ...old.data.menu,
+                            recipes: newRecipes
+                        }
+                    },
+                    message: old.message
+                }
+
+                return newData
+            })
+
+            // Return context object with the current data
+            return {
+                singleMenuQueryData: singleMenuQueryData
+            }
+        },
+        onSuccess: (data, variables) => {
+            // Invalidate affected queries on success
+            queryClient.invalidateQueries(singleMenuQueryKey(variables.menuId))
+        },
+        onError: (err, variables, context) => {
+            // Roll back to old data on error
+            queryClient.setQueryData(singleMenuQueryKey(variables.menuId), context?.singleMenuQueryData)
+            fireErrorNotification(err)
+        }
     })
 }
 
@@ -63,9 +120,55 @@ export function useAddRecipeToMenuMutation() {
 const removeRecipeFromMenu = ({ menuId, recipeId }: { menuId: string; recipeId: number }): Promise<MutationResponse> =>
     axios.post(`/menu/${menuId}/remove-recipe`, { recipe_id: recipeId })
 
+// export function useRemoveRecipeFromMenuMutation() {
+//     return useMutation({
+//         mutationFn: removeRecipeFromMenu
+//     })
+// }
+
 export function useRemoveRecipeFromMenuMutation() {
     return useMutation({
-        mutationFn: removeRecipeFromMenu
+        mutationFn: removeRecipeFromMenu,
+        onMutate: (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleMenuQueryKey(payload.menuId))
+
+            // Snapshot the data of the current queries
+            type SingleMenuQueryData = Awaited<ReturnType<typeof getSingleMenu>> | undefined
+            const singleMenuQueryData: SingleMenuQueryData = queryClient.getQueryData(singleMenuQueryKey(payload.menuId))
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleMenuQueryKey(payload.menuId), (old: SingleMenuQueryData) => {
+                if (!old) return undefined
+
+                const newData: SingleMenuQueryData = {
+                    data: {
+                        menu: {
+                            ...old.data.menu,
+                            recipes: old.data.menu.recipes.filter((recipe) => recipe.id !== payload.recipeId)
+                        }
+                    },
+                    message: old.message
+                }
+
+                return newData
+            })
+
+            // Return context object with the current data
+            return {
+                singleMenuQueryData: singleMenuQueryData
+            }
+        },
+        onSuccess: (data, variables) => {
+            // "isMutating" seems to return 1 for the current mutation even in the on success handler. If "isMutating" is greater than 1, that means that previous deletions are still happening. So we only want to invalidate the cache if its the last deletion
+            if (queryClient.isMutating() < 2) {
+                queryClient.invalidateQueries(singleMenuQueryKey(variables.menuId))
+            }
+        },
+        onError: (err, variables, context) => {
+            queryClient.setQueryData(singleMenuQueryKey(variables.menuId), context?.singleMenuQueryData)
+            fireErrorNotification(err)
+        }
     })
 }
 
