@@ -38,7 +38,7 @@ function AddItemForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: '',
-            categoryId: ''
+            categoryId: 'none'
         }
     })
 
