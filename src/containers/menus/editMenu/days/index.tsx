@@ -1,7 +1,10 @@
-import EditMenuRecipe from '../components/editMenuRecipe'
-import { singleMenuQueryKey, useUpdateMenuRecipeMutation } from '../queries'
-import { queryClient } from 'utils/queryClient'
-import { MenuRecipe } from '../types'
+import { useContext } from 'react'
+import EditMenuRecipe from '../../components/editMenuRecipe'
+import { useUpdateMenuRecipeMutation } from '../../queries'
+import { MenuRecipe } from '../../types'
+import { Droppable } from './droppable'
+import { EditMenuIsDraggingContext } from '..'
+import classnames from 'classnames'
 
 const oneDay = 24 * 60 * 60 * 1000
 
@@ -70,6 +73,8 @@ export function getDayOptions() {
 }
 
 export function Days({ recipes, menuId }: { recipes: MenuRecipe[]; menuId: number }) {
+    const { isDragging, setIsDragging } = useContext(EditMenuIsDraggingContext)
+
     const { mutate: updateMenuRecipe } = useUpdateMenuRecipeMutation()
 
     const days = getDayOptions()
@@ -82,31 +87,23 @@ export function Days({ recipes, menuId }: { recipes: MenuRecipe[]; menuId: numbe
 
                     return (
                         <li key={day} className='w-full max-w-md mb-4'>
-                            <h4
-                                className='capitalize text-primary'
+                            <Droppable
+                                className={classnames('h-8 w-72 flex items-center rounded-lg pl-2', { 'bg-primary-50': isDragging })}
                                 onDragOver={(e) => {
-                                    e.preventDefault()
-
                                     e.dataTransfer.dropEffect = 'move'
                                 }}
                                 onDrop={(e) => {
-                                    e.preventDefault()
-
                                     const data = e.dataTransfer.getData('application/my-app')
                                     const recipeId: number = JSON.parse(data)?.recipeId
 
-                                    updateMenuRecipe(
-                                        { menuId: menuId.toString(), recipeId: recipeId.toString(), attributes: { day: date } },
-                                        {
-                                            onSuccess: () => {
-                                                queryClient.invalidateQueries(singleMenuQueryKey(menuId.toString()))
-                                            }
-                                        }
-                                    )
+                                    updateMenuRecipe({ menuId: menuId.toString(), recipeId: recipeId.toString(), attributes: { day: date } })
+
+                                    setIsDragging(false)
                                 }}
                             >
-                                {day}
-                            </h4>
+                                <h4 className='capitalize text-primary'>{day}</h4>
+                            </Droppable>
+
                             {recipesOnThisDay.map((recipe) => {
                                 return (
                                     <div key={recipe.id} className='pl-4'>
