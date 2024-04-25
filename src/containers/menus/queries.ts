@@ -1,8 +1,9 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Menu, NewMenu, DetailedMenu, EditMenuPayload } from 'containers/menus/types'
+import { Menu, NewMenu, DetailedMenu, EditMenuPayload, UpdateMenuRecipePayload, MenuRecipe } from 'containers/menus/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
+import { fireErrorNotification, queryClient } from 'utils/queryClient'
 
 const menusKeySet = new QueryKeySet('Menu')
 
@@ -75,5 +76,65 @@ const editMenu = ({ menuId, attributes }: { menuId: string; attributes: EditMenu
 export function useEditMenuMutation() {
     return useMutation({
         mutationFn: editMenu
+    })
+}
+
+/***** Update menu recipe *****/
+const updateMenuRecipe = ({
+    menuId,
+    recipeId,
+    attributes
+}: {
+    menuId: string
+    recipeId: string
+    attributes: UpdateMenuRecipePayload
+}): Promise<MutationResponse> => axios.put(`/menu/${menuId}/update-menu-recipe/${recipeId}`, attributes)
+
+export function useUpdateMenuRecipeMutation() {
+    return useMutation({
+        mutationFn: updateMenuRecipe,
+        onMutate: async (payload) => {
+            // Cancel any outgoing refetches so they don't overwrite our optimistic update
+            queryClient.cancelQueries(singleMenuQueryKey(payload.menuId))
+
+            // Snapshot the data of the current queries
+            type SingleMenuQueryData = Awaited<ReturnType<typeof getSingleMenu>> | undefined
+            const singleMenuQueryData: SingleMenuQueryData = queryClient.getQueryData(singleMenuQueryKey(payload.menuId))
+
+            // Optimistically update to new value
+            queryClient.setQueryData(singleMenuQueryKey(payload.menuId), (old: SingleMenuQueryData) => {
+                if (!old) return undefined
+
+                const newRecipes: MenuRecipe[] = old.data.menu.recipes.map((recipe) =>
+                    recipe.id === Number(payload.recipeId) ? { ...recipe, day_of_week: { day: payload.attributes.day } } : recipe
+                )
+
+                const newData: SingleMenuQueryData = {
+                    data: {
+                        menu: {
+                            ...old.data.menu,
+                            recipes: newRecipes
+                        }
+                    },
+                    message: old.message
+                }
+
+                return newData
+            })
+
+            // Return context object with the current data
+            return {
+                singleMenuQueryData: singleMenuQueryData
+            }
+        },
+        onSuccess: (data, variables) => {
+            // Invalidate affected queries on success
+            queryClient.invalidateQueries(singleMenuQueryKey(variables.menuId))
+        },
+        onError: (err, variables, context) => {
+            // Roll back to old data on error
+            queryClient.setQueryData(singleMenuQueryKey(variables.menuId), context?.singleMenuQueryData)
+            fireErrorNotification(err)
+        }
     })
 }

@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -9,6 +8,7 @@ import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
 import { baseUrl } from 'config'
 import { queryClient } from 'utils/queryClient'
+import 'drag-drop-touch'
 
 axios.defaults.baseURL = baseUrl
 axios.defaults.withCredentials = true

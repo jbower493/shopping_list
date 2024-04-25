@@ -5,16 +5,16 @@ import Loader from 'components/Loader'
 import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
 import Button from 'components/Button'
-import { Days } from './days'
+import { Days, getDayOptions } from './days'
 
 function EditMenu() {
     const { menuId } = useParams()
     const navigate = useNavigate()
 
-    const { data: getSingleMenuData, isFetching: isGetSingleMenuFetching, isError: isGetSingleMenuError } = useGetSingleMenuQuery(menuId || '')
+    const { data: getSingleMenuData, isLoading: isGetSingleMenuLoading, isError: isGetSingleMenuError } = useGetSingleMenuQuery(menuId || '')
     const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
 
-    if (isGetSingleMenuFetching || isGetRecipesFetching) return <Loader fullPage />
+    if (isGetSingleMenuLoading || isGetRecipesFetching) return <Loader fullPage />
     if (isGetSingleMenuError || !getSingleMenuData || isGetRecipesError || !getRecipesData) return <h1>Menu error</h1>
 
     const { name, id, recipes } = getSingleMenuData
@@ -23,7 +23,12 @@ function EditMenu() {
         return (
             <ul>
                 {[...recipes]
-                    .filter(({ day_of_week }) => !day_of_week.day)
+                    .filter(
+                        ({ day_of_week }) =>
+                            !getDayOptions()
+                                .map((dayOption) => dayOption.date)
+                                .includes(day_of_week.day || '')
+                    )
                     .sort((a, b) => (a.name > b.name ? 1 : -1))
                     .map((recipe) => (
                         <EditMenuRecipe key={recipe.id} recipe={recipe} menuId={id} />

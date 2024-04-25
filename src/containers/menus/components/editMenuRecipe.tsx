@@ -15,7 +15,21 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
 
     return (
         <div className='flex justify-between w-full max-w-md mb-2'>
-            {name}
+            <button
+                type='button'
+                draggable
+                onDragStart={(e) => {
+                    const data = JSON.stringify({ recipeId: id })
+                    e.dataTransfer.setData('application/my-app', data)
+                    e.dataTransfer.dropEffect = 'move'
+
+                    // const img = new Image()
+                    // img.src = 'https://img.freepik.com/free-photo/abstract-autumn%E2%80%A6-generated-by-ai_188544-9871.jpg?size=626&ext=jpg'
+                    // e.dataTransfer.setDragImage(img, 20, 20)
+                }}
+            >
+                {name}
+            </button>
             {isRemoveRecipeFromMenuLoading ? (
                 <Loader size='small' />
             ) : (
