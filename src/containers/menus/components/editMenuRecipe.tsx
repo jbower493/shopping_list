@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { singleMenuQueryKey, useRemoveRecipeFromMenuMutation } from '../queries'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Loader from 'components/Loader'
 import { queryClient } from 'utils/queryClient'
 import { Recipe } from 'containers/recipes/types'
 import { EditMenuIsDraggingContext } from '../editMenu'
+import classnames from 'classnames'
 
 interface EditMenuRecipeProps {
     recipe: Recipe
@@ -14,11 +15,14 @@ interface EditMenuRecipeProps {
 function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
     const { setIsDragging } = useContext(EditMenuIsDraggingContext)
 
+    const [isClicked, setIsClicked] = useState(false)
+
     const { mutate: removeRecipeFromMenu, isLoading: isRemoveRecipeFromMenuLoading } = useRemoveRecipeFromMenuMutation()
 
     return (
         <div className='flex justify-between w-full max-w-md mt-1'>
             <button
+                className={classnames('transition-transform', { 'scale-[1.2]': isClicked })}
                 type='button'
                 draggable
                 onDragStart={(e) => {
@@ -27,14 +31,15 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
                     const data = JSON.stringify({ recipeId: id })
                     e.dataTransfer.setData('application/my-app', data)
                     e.dataTransfer.dropEffect = 'move'
-
-                    // const img = new Image()
-                    // img.src = 'https://img.freepik.com/free-photo/abstract-autumn%E2%80%A6-generated-by-ai_188544-9871.jpg?size=626&ext=jpg'
-                    // e.dataTransfer.setDragImage(img, 20, 20)
                 }}
                 onDragEnd={() => {
+                    setIsClicked(false)
                     setIsDragging(false)
                 }}
+                onMouseDown={() => setIsClicked(true)}
+                onTouchStart={() => setIsClicked(true)}
+                onMouseUp={() => setIsClicked(false)}
+                onTouchEnd={() => setIsClicked(false)}
             >
                 {name}
             </button>
