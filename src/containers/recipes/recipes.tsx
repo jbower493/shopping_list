@@ -74,7 +74,7 @@ function Recipes() {
                 <Button className='mb-8' onClick={() => navigate('/recipes/new')}>
                     Add New
                 </Button>
-                <InputField name='search' placeholder='Search for an item' value={search} onChange={(e) => setSearch(e.target.value)} />
+                <InputField name='search' placeholder='Search for a recipe' value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             {filteredRecipes.length > 0 ? renderCurrentRecipes() : <p>No recipes matched your search</p>}
             <Outlet />
