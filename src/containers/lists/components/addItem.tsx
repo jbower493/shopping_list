@@ -73,13 +73,13 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
                             if (isNewItem) {
                                 setIsCategoryModalOpen(true)
                             } else {
-                                const frozenItemToAdd = itemToAdd
-                                setItemToAdd('')
-
                                 setIsBeingAdded(true)
                                 setTimeout(() => {
                                     setIsBeingAdded(false)
-                                    addItem(frozenItemToAdd)
+                                    addItem(itemToAdd)
+                                    setItemToAdd('')
+                                    setQuantityValueToAdd('1')
+                                    setQuantityUnitToAdd('NO_UNIT')
                                 }, 200)
                             }
                         }}
@@ -92,14 +92,14 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
                 isOpen={isCategoryModalOpen}
                 close={() => setIsCategoryModalOpen(false)}
                 onSubmitFunc={(categoryId) => {
-                    const frozenItemToAdd = itemToAdd
-                    setItemToAdd('')
-
                     setIsCategoryModalOpen(false)
                     setIsBeingAdded(true)
                     setTimeout(() => {
                         setIsBeingAdded(false)
-                        addItem(frozenItemToAdd, categoryId)
+                        addItem(itemToAdd, categoryId)
+                        setItemToAdd('')
+                        setQuantityValueToAdd('1')
+                        setQuantityUnitToAdd('NO_UNIT')
                     }, 200)
                 }}
                 itemName={itemToAdd}
