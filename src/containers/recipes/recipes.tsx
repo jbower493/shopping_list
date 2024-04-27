@@ -1,4 +1,3 @@
-import React from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useGetRecipesQuery } from './queries'
 import Loader from 'components/Loader'
@@ -7,9 +6,13 @@ import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
 import CategoryTag from 'components/CategoryTag'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import { getExistingRecipeCategories } from 'utils/functions'
+import { useState } from 'react'
+import InputField from 'components/Form/Inputs/InputField/component'
 
 function Recipes() {
     const navigate = useNavigate()
+
+    const [search, setSearch] = useState('')
 
     const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
 
@@ -22,14 +25,16 @@ function Recipes() {
     if (isGetRecipesFetching || isGetRecipeCategoriesFetching) return <Loader fullPage />
     if (isGetRecipesError || !getRecipesData || !getRecipeCategoriesData || isGetRecipeCategoriesError) return <h1>Recipes error</h1>
 
+    const filteredRecipes = getRecipesData.filter((recipe) => recipe.name.toLowerCase().includes(search.toLowerCase()))
+
     const renderCurrentRecipes = () => {
         // Get a unique list of all the recipe categories present in the recipe
-        const recipeCategoriesInRecipe = getExistingRecipeCategories(getRecipesData)
+        const recipeCategoriesInRecipe = getExistingRecipeCategories(filteredRecipes)
 
         const renderRecipeCategory = (recipeCategoryId: number, recipeCategoryName: string) => {
-            let recipeslist = getRecipesData.filter(({ recipe_category }) => !recipe_category)
+            let recipeslist = filteredRecipes.filter(({ recipe_category }) => !recipe_category)
 
-            if (recipeCategoryId !== -1) recipeslist = getRecipesData.filter(({ recipe_category }) => recipe_category?.id === recipeCategoryId)
+            if (recipeCategoryId !== -1) recipeslist = filteredRecipes.filter(({ recipe_category }) => recipe_category?.id === recipeCategoryId)
 
             // TODO: remove this once the recipes are being sorted already by the backend
             recipeslist.sort((a, b) => (a.name > b.name ? 1 : -1))
@@ -65,10 +70,13 @@ function Recipes() {
     return (
         <div className='p-4'>
             <h2 className='mb-4'>Recipes</h2>
-            <Button className='mb-8' onClick={() => navigate('/recipes/new')}>
-                Add New
-            </Button>
-            {renderCurrentRecipes()}
+            <div className='flex justify-between mt-4 w-full max-w-md'>
+                <Button className='mb-8' onClick={() => navigate('/recipes/new')}>
+                    Add New
+                </Button>
+                <InputField name='search' placeholder='Search for an item' value={search} onChange={(e) => setSearch(e.target.value)} />
+            </div>
+            {filteredRecipes.length > 0 ? renderCurrentRecipes() : <p>No recipes matched your search</p>}
             <Outlet />
         </div>
     )
