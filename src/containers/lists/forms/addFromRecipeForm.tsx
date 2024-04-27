@@ -42,7 +42,7 @@ function AddFromRecipeForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             recipeCategoryId: 'ALL_CATEGORIES',
-            recipeId: ''
+            recipeId: getRecipesData?.[0]?.id.toString()
         }
     })
 
@@ -50,7 +50,7 @@ function AddFromRecipeForm() {
         handleSubmit,
         formState: { isValid, isSubmitting },
         watch,
-        resetField
+        setValue
     } = methods
 
     const selectedRecipeCategoryId = watch('recipeCategoryId')
@@ -69,7 +69,21 @@ function AddFromRecipeForm() {
     }
 
     useEffect(() => {
-        resetField('recipeId')
+        function getInitialRecipeIdValue() {
+            if (selectedRecipeCategoryId === 'ALL_CATEGORIES') {
+                return getRecipesData?.[0]?.id.toString() || ''
+            }
+
+            if (selectedRecipeCategoryId === 'none') {
+                return getRecipesData?.find(({ recipe_category }) => !recipe_category)?.id.toString() || ''
+            }
+
+            return (
+                getRecipesData?.find(({ recipe_category }) => recipe_category?.id?.toString() === selectedRecipeCategoryId || '')?.id.toString() || ''
+            )
+        }
+
+        setValue('recipeId', getInitialRecipeIdValue())
     }, [selectedRecipeCategoryId])
 
     const renderForm = () => {
