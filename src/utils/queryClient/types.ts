@@ -3,6 +3,8 @@ export interface QueryResponse<T> {
     data: T
 }
 
-export interface MutationResponse {
+// eslint-disable-next-line
+export interface MutationResponse<T = any> {
     message: string
+    data?: T
 }

@@ -4,7 +4,7 @@ import { useAddItemToRecipeMutation } from './queries'
 import { useGetSingleRecipeQuery } from './queries'
 import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
-import { PencilSquareIcon } from '@heroicons/react/24/solid'
+import { DocumentDuplicateIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToRecipePayload } from 'containers/recipes/types'
@@ -70,7 +70,12 @@ function EditRecipe() {
 
     return (
         <div className='p-4'>
-            <Link to='/recipes'>Back to recipes</Link>
+            <div className='flex justify-between'>
+                <Link to='/recipes'>Back to recipes</Link>
+                <button type='button' onClick={() => navigate(`/recipes/edit/${id}/duplicate`)}>
+                    <DocumentDuplicateIcon className='w-5 text-primary hover:text-primary-hover' />
+                </button>
+            </div>
             <div className='mb-7 mt-2'>
                 <div className='flex items-center'>
                     <h2>{name}</h2>

@@ -160,12 +160,6 @@ export function useAddItemToRecipeMutation() {
 const removeItemFromRecipe = ({ recipeId, itemId }: { recipeId: string; itemId: number }): Promise<MutationResponse> =>
     axios.post(`/recipe/${recipeId}/remove-item`, { item_id: itemId })
 
-// export function useRemoveItemFromRecipeMutation() {
-//     return useMutation({
-//         mutationFn: removeItemFromRecipe
-//     })
-// }
-
 export function useRemoveItemFromRecipeMutation() {
     return useMutation({
         mutationFn: removeItemFromRecipe,
@@ -219,5 +213,20 @@ const editRecipe = ({ recipeId, attributes }: { recipeId: string; attributes: Ed
 export function useEditRecipeMutation() {
     return useMutation({
         mutationFn: editRecipe
+    })
+}
+
+/***** Duplicate recipe *****/
+const duplicateRecipe = ({
+    recipeId,
+    attributes
+}: {
+    recipeId: string
+    attributes: { name: string }
+}): Promise<MutationResponse<{ new_recipe_id: number }>> => axios.post(`/recipe/${recipeId}/duplicate`, attributes)
+
+export function useDuplicateRecipeMutation() {
+    return useMutation({
+        mutationFn: duplicateRecipe
     })
 }

@@ -32,6 +32,7 @@ import EditMenu from 'containers/menus/editMenu'
 
 import Shop from 'containers/shop/shop'
 import EditRecipeDetailsForm from 'containers/recipes/forms/editRecipeDetailsForm'
+import DuplicateRecipeForm from 'containers/recipes/forms/duplicateRecipeForm'
 import AddRecipeToMenuForm from 'containers/menus/forms/addRecipeToMenuForm'
 import EditListDetailsForm from 'containers/lists/forms/editListDetailsForm'
 import EditCategoryDetailsForm from 'containers/categories/forms/editCategoryDetailsForm'
@@ -75,6 +76,7 @@ function UserRouter() {
             </Route>
             <Route path='/recipes/edit/:recipeId' element={<EditRecipe />}>
                 <Route path='details' element={<EditRecipeDetailsForm />} />
+                <Route path='duplicate' element={<DuplicateRecipeForm />} />
             </Route>
             <Route path='/menus' element={<Menus />}>
                 <Route path='new' element={<AddMenuForm />} />
