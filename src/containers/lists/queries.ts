@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { List, NewList, DetailedList, AddItemToListPayload, ListItem, EditListPayload } from 'containers/lists/types'
+import { List, NewList, DetailedList, AddItemToListPayload, ListItem, EditListPayload, UpdateListItemQuantityPayload } from 'containers/lists/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
@@ -41,7 +41,7 @@ export function useDeleteListMutation() {
 }
 
 /***** Get single list *****/
-const getSingleList = (id: string, signal: AbortSignal | undefined): Promise<QueryResponse<{ list: DetailedList }>> =>
+export const getSingleList = (id: string, signal: AbortSignal | undefined): Promise<QueryResponse<{ list: DetailedList }>> =>
     axios.get(`/list/${id}`, { signal })
 export const singleListQueryKey = listsKeySet.one
 
@@ -237,5 +237,15 @@ const editList = ({ listId, attributes }: { listId: string; attributes: EditList
 export function useEditListMutation() {
     return useMutation({
         mutationFn: editList
+    })
+}
+
+/***** Update item quantity *****/
+const updateListItemQuantity = ({ listId, attributes }: { listId: string; attributes: UpdateListItemQuantityPayload }): Promise<MutationResponse> =>
+    axios.put(`/list/${listId}/update-item-quantity`, attributes)
+
+export function useUpdateListItemQuantityMutation() {
+    return useMutation({
+        mutationFn: updateListItemQuantity
     })
 }

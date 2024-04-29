@@ -44,3 +44,9 @@ export interface RecipeItem {
     }
     category: Category | null
 }
+
+export interface UpdateRecipeItemQuantityPayload {
+    item_id: number
+    quantity: number
+    qunatity_unit_id?: number
+}

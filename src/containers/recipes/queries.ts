@@ -1,6 +1,14 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Recipe, NewRecipe, DetailedRecipe, AddItemToRecipePayload, EditRecipePayload, RecipeItem } from 'containers/recipes/types'
+import {
+    Recipe,
+    NewRecipe,
+    DetailedRecipe,
+    AddItemToRecipePayload,
+    EditRecipePayload,
+    RecipeItem,
+    UpdateRecipeItemQuantityPayload
+} from 'containers/recipes/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
@@ -228,5 +236,20 @@ const duplicateRecipe = ({
 export function useDuplicateRecipeMutation() {
     return useMutation({
         mutationFn: duplicateRecipe
+    })
+}
+
+/***** Update item quantity *****/
+const updateRecipeItemQuantity = ({
+    recipeId,
+    attributes
+}: {
+    recipeId: string
+    attributes: UpdateRecipeItemQuantityPayload
+}): Promise<MutationResponse> => axios.put(`/recipe/${recipeId}/update-item-quantity`, attributes)
+
+export function useUpdateRecipeItemQuantityMutation() {
+    return useMutation({
+        mutationFn: updateRecipeItemQuantity
     })
 }

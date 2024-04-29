@@ -37,3 +37,9 @@ export interface ListItem {
 export interface EditListPayload {
     name: string
 }
+
+export interface UpdateListItemQuantityPayload {
+    item_id: number
+    quantity: number
+    quantity_unit_id: number | null
+}
