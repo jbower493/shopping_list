@@ -4,14 +4,12 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { getSingleList, singleListQueryKey, useGetSingleListQuery, useUpdateListItemQuantityMutation } from '../queries'
+import { useGetSingleListQuery, useUpdateListItemQuantityMutation } from '../queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import SubmitButton from 'components/Form/SubmitButton'
-import { queryClient } from 'utils/queryClient'
 import FormRow from 'components/Form/FormRow'
 import InputField from 'components/Form/Inputs/InputField'
 import { useQuantityUnitsQuery } from 'containers/quantityUnits/queries'
-import { QuantityUnit } from 'containers/quantityUnits/types'
 
 type Inputs = {
     quantity: string
@@ -48,56 +46,7 @@ export function UpdateListItemQuantityForm() {
         await updateListItemQuantity(
             { listId: listId || '', attributes },
             {
-                onSuccess: () => {
-                    queryClient.setQueryData(singleListQueryKey(listId || ''), (old: Awaited<ReturnType<typeof getSingleList>> | undefined) => {
-                        if (!old) return undefined
-
-                        function getNewQuantityUnit() {
-                            if (!quanityUnitIdToSend) {
-                                return null
-                            }
-
-                            const foundUnit = quantityUnitsData?.find((unit) => unit.id === quanityUnitIdToSend)
-
-                            if (!foundUnit?.name || !foundUnit?.symbol) {
-                                return null
-                            }
-
-                            const newUnit = {
-                                id: quanityUnitIdToSend,
-                                name: foundUnit?.name,
-                                symbol: foundUnit?.symbol
-                            } as QuantityUnit
-
-                            return newUnit
-                        }
-
-                        const newData = {
-                            ...old,
-                            data: {
-                                list: {
-                                    ...old.data.list,
-                                    items: old.data.list.items.map((item) => {
-                                        if (item.id !== Number(itemId)) {
-                                            return item
-                                        }
-
-                                        return {
-                                            ...item,
-                                            item_quantity: {
-                                                quantity: Number(quantity),
-                                                quantity_unit: getNewQuantityUnit()
-                                            }
-                                        }
-                                    })
-                                }
-                            }
-                        }
-
-                        return newData
-                    })
-
-                    queryClient.invalidateQueries(singleListQueryKey(listId || ''))
+                onSuccess() {
                     navigate(-1)
                 }
             }

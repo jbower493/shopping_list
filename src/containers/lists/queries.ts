@@ -7,6 +7,7 @@ import { fireErrorNotification, queryClient } from 'utils/queryClient'
 import { getItems, itemsQueryKey } from 'containers/items/queries'
 import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
 import { getQuantityUnits, quantityUnitsQueryKey } from 'containers/quantityUnits/queries'
+import { QuantityUnit } from 'containers/quantityUnits/types'
 
 const listsKeySet = new QueryKeySet('List')
 
@@ -246,6 +247,62 @@ const updateListItemQuantity = ({ listId, attributes }: { listId: string; attrib
 
 export function useUpdateListItemQuantityMutation() {
     return useMutation({
-        mutationFn: updateListItemQuantity
+        mutationFn: updateListItemQuantity,
+        onSuccess(data, variables) {
+            queryClient.setQueryData(singleListQueryKey(variables.listId || ''), (old: Awaited<ReturnType<typeof getSingleList>> | undefined) => {
+                if (!old) return undefined
+
+                function getNewQuantityUnit() {
+                    const sentQuanityUnitId = variables.attributes.quantity_unit_id
+
+                    if (!variables.attributes.quantity_unit_id) {
+                        return null
+                    }
+
+                    type QuantityUnitsData = Awaited<ReturnType<typeof getQuantityUnits>> | undefined
+                    const quantityUnitsQueryData: QuantityUnitsData = queryClient.getQueryData(quantityUnitsQueryKey())
+
+                    const foundUnit = quantityUnitsQueryData?.data.quantity_units.find((unit) => unit.id === sentQuanityUnitId)
+
+                    if (!foundUnit?.name || !foundUnit?.symbol) {
+                        return null
+                    }
+
+                    const newUnit = {
+                        id: sentQuanityUnitId,
+                        name: foundUnit?.name,
+                        symbol: foundUnit?.symbol
+                    } as QuantityUnit
+
+                    return newUnit
+                }
+
+                const newData = {
+                    ...old,
+                    data: {
+                        list: {
+                            ...old.data.list,
+                            items: old.data.list.items.map((item) => {
+                                if (item.id !== Number(variables.attributes.item_id)) {
+                                    return item
+                                }
+
+                                return {
+                                    ...item,
+                                    item_quantity: {
+                                        quantity: Number(variables.attributes.quantity),
+                                        quantity_unit: getNewQuantityUnit()
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+
+                return newData
+            })
+
+            queryClient.invalidateQueries(singleListQueryKey(variables.listId || ''))
+        }
     })
 }
