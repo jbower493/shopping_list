@@ -15,6 +15,7 @@ import { fireErrorNotification, queryClient } from 'utils/queryClient'
 import { categoriesQueryKey, getCategories } from 'containers/categories/queries'
 import { getItems, itemsQueryKey } from 'containers/items/queries'
 import { getQuantityUnits, quantityUnitsQueryKey } from 'containers/quantityUnits/queries'
+import { QuantityUnit } from 'containers/quantityUnits/types'
 
 const recipesKeySet = new QueryKeySet('Recipe')
 
@@ -250,6 +251,65 @@ const updateRecipeItemQuantity = ({
 
 export function useUpdateRecipeItemQuantityMutation() {
     return useMutation({
-        mutationFn: updateRecipeItemQuantity
+        mutationFn: updateRecipeItemQuantity,
+        onSuccess(data, variables) {
+            queryClient.setQueryData(
+                singleRecipeQueryKey(variables.recipeId || ''),
+                (old: Awaited<ReturnType<typeof getSingleRecipe>> | undefined) => {
+                    if (!old) return undefined
+
+                    function getNewQuantityUnit() {
+                        const sentQuanityUnitId = variables.attributes.quantity_unit_id
+
+                        if (!variables.attributes.quantity_unit_id) {
+                            return null
+                        }
+
+                        type QuantityUnitsData = Awaited<ReturnType<typeof getQuantityUnits>> | undefined
+                        const quantityUnitsQueryData: QuantityUnitsData = queryClient.getQueryData(quantityUnitsQueryKey())
+
+                        const foundUnit = quantityUnitsQueryData?.data.quantity_units.find((unit) => unit.id === sentQuanityUnitId)
+
+                        if (!foundUnit?.name || !foundUnit?.symbol) {
+                            return null
+                        }
+
+                        const newUnit = {
+                            id: sentQuanityUnitId,
+                            name: foundUnit?.name,
+                            symbol: foundUnit?.symbol
+                        } as QuantityUnit
+
+                        return newUnit
+                    }
+
+                    const newData = {
+                        ...old,
+                        data: {
+                            recipe: {
+                                ...old.data.recipe,
+                                items: old.data.recipe.items.map((item) => {
+                                    if (item.id !== Number(variables.attributes.item_id)) {
+                                        return item
+                                    }
+
+                                    return {
+                                        ...item,
+                                        item_quantity: {
+                                            quantity: Number(variables.attributes.quantity),
+                                            quantity_unit: getNewQuantityUnit()
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+
+                    return newData
+                }
+            )
+
+            queryClient.invalidateQueries(singleRecipeQueryKey(variables.recipeId || ''))
+        }
     })
 }

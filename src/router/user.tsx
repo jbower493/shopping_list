@@ -41,6 +41,7 @@ import EditMenuDetailsForm from 'containers/menus/forms/editMenuDetailsForm'
 import EditItemDetailsForm from 'containers/items/forms/editItemDetailsForm'
 import { FullScreenPage } from 'components/FullScreenPage'
 import { UpdateListItemQuantityForm } from 'containers/lists/forms/updateListItemQuantityForm'
+import { UpdateRecipeItemQuantityForm } from 'containers/recipes/forms/updateRecipeItemQuantityForm'
 
 function UserRouter() {
     return (
@@ -79,6 +80,7 @@ function UserRouter() {
             <Route path='/recipes/edit/:recipeId' element={<EditRecipe />}>
                 <Route path='details' element={<EditRecipeDetailsForm />} />
                 <Route path='duplicate' element={<DuplicateRecipeForm />} />
+                <Route path='update-item-quantity/:itemId' element={<UpdateRecipeItemQuantityForm />} />
             </Route>
             <Route path='/menus' element={<Menus />}>
                 <Route path='new' element={<AddMenuForm />} />

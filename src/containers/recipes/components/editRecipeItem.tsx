@@ -1,8 +1,9 @@
 import { useRemoveItemFromRecipeMutation } from '../queries'
-import { TrashIcon } from '@heroicons/react/24/solid'
+import { ChevronUpDownIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { RecipeItem } from '../types'
 import ItemWithQuantity from 'components/ItemWithQuantity'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface EditRecipeItemProps {
     item: RecipeItem
@@ -10,6 +11,8 @@ interface EditRecipeItemProps {
 }
 
 function EditRecipeItem({ item: { name, id, item_quantity }, recipeId }: EditRecipeItemProps) {
+    const navigate = useNavigate()
+
     const [isBeingRemoved, setIsBeingRemoved] = useState(false)
 
     const { mutate: removeItemFromRecipe } = useRemoveItemFromRecipeMutation()
@@ -25,18 +28,28 @@ function EditRecipeItem({ item: { name, id, item_quantity }, recipeId }: EditRec
             }`}
         >
             <ItemWithQuantity quantityValue={item_quantity.quantity} unitSymbol={item_quantity.quantity_unit?.symbol} itemName={name} />
-            <button
-                type='button'
-                onClick={() => {
-                    setIsBeingRemoved(true)
-                    setTimeout(() => {
-                        setIsBeingRemoved(false)
-                        removeItem()
-                    }, 200)
-                }}
-            >
-                <TrashIcon className={`w-5 text-primary hover:text-primary-hover${isBeingRemoved ? ' hidden' : ''}`} />
-            </button>
+            <div className='flex items-center gap-6'>
+                <button
+                    type='button'
+                    onClick={() => {
+                        navigate(`/recipes/edit/${recipeId}/update-item-quantity/${id}`)
+                    }}
+                >
+                    <ChevronUpDownIcon className={`w-6 text-primary hover:text-primary-hover${isBeingRemoved ? ' hidden' : ''}`} />
+                </button>
+                <button
+                    type='button'
+                    onClick={() => {
+                        setIsBeingRemoved(true)
+                        setTimeout(() => {
+                            setIsBeingRemoved(false)
+                            removeItem()
+                        }, 200)
+                    }}
+                >
+                    <TrashIcon className={`w-5 text-primary hover:text-primary-hover${isBeingRemoved ? ' hidden' : ''}`} />
+                </button>
+            </div>
         </li>
     )
 }

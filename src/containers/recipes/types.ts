@@ -48,5 +48,5 @@ export interface RecipeItem {
 export interface UpdateRecipeItemQuantityPayload {
     item_id: number
     quantity: number
-    qunatity_unit_id?: number
+    quantity_unit_id: number | null
 }
