@@ -63,9 +63,14 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
                         Categories
                     </Link>
                 </li>
-                <li>
+                <li className='mb-2'>
                     <Link to='/recipe-categories' onClick={() => closeMenu()}>
                         Recipe Categories
+                    </Link>
+                </li>
+                <li>
+                    <Link to='/account' onClick={() => closeMenu()}>
+                        Account
                     </Link>
                 </li>
             </ul>

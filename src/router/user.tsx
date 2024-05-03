@@ -42,6 +42,7 @@ import EditItemDetailsForm from 'containers/items/forms/editItemDetailsForm'
 import { FullScreenPage } from 'components/FullScreenPage'
 import { UpdateListItemQuantityForm } from 'containers/lists/forms/updateListItemQuantityForm'
 import { UpdateRecipeItemQuantityForm } from 'containers/recipes/forms/updateRecipeItemQuantityForm'
+import { Account } from 'containers/account'
 
 function UserRouter() {
     return (
@@ -91,6 +92,7 @@ function UserRouter() {
                 <Route path='details' element={<EditMenuDetailsForm />} />
             </Route>
             <Route path='/shop/:listId' element={<Shop />} />
+            <Route path='/account' element={<Account />} />
             <Route
                 path='*'
                 element={
