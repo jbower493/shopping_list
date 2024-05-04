@@ -1,14 +1,21 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { User, Credentials, RegisterCredentials, RequestPasswordResetPayload, ResetPasswordPayload } from 'containers/auth/types'
+import {
+    User,
+    Credentials,
+    RegisterCredentials,
+    RequestPasswordResetPayload,
+    ResetPasswordPayload,
+    UserDataAdditionalUser
+} from 'containers/auth/types'
 import { userQueryKey } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
 /***** Get user *****/
-const getUser = (): Promise<QueryResponse<{ user: User }>> => axios.get('/user')
+const getUser = (): Promise<QueryResponse<{ user: User; additional_user: UserDataAdditionalUser | null }>> => axios.get('/user')
 
 export function useGetUserQuery() {
-    return useQuery({ queryKey: userQueryKey, queryFn: getUser, select: (response) => response.data.user })
+    return useQuery({ queryKey: userQueryKey, queryFn: getUser, select: (response) => response.data })
 }
 
 /***** Login *****/

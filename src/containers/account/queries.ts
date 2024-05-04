@@ -1,8 +1,10 @@
-import { QueryKeySet } from 'utils/queryClient/keyFactory'
-import { QueryResponse } from 'utils/queryClient/types'
+import { QueryKeySet, userQueryKey } from 'utils/queryClient/keyFactory'
+import { MutationResponse, QueryResponse } from 'utils/queryClient/types'
 import { AccountAccess, AdditionalUser } from './types'
 import axios from 'axios'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { queryClient } from 'utils/queryClient'
+import toast from 'react-hot-toast'
 
 const additionalUserKeySet = new QueryKeySet('Additional_User')
 
@@ -29,5 +31,39 @@ export function useAccountAccessQuery() {
         queryKey: accountAccessQueryKey(),
         queryFn: getAccountAccess,
         select: (res) => res.data.account_access
+    })
+}
+
+/***** Add additional user *****/
+const addAdditionalUser = ({ additional_user_email }: { additional_user_email: string }): Promise<MutationResponse> =>
+    axios.post('/user/additional-user', { additional_user_email })
+
+export function useAddAdditionalUserMutation() {
+    return useMutation({
+        mutationFn: addAdditionalUser
+    })
+}
+
+/***** Remove additional user *****/
+const removeAdditionalUser = ({ additional_user_email }: { additional_user_email: string }): Promise<MutationResponse> =>
+    axios.post('/user/additional-user/remove', { additional_user_email })
+
+export function useRemoveAdditionalUserMutation() {
+    return useMutation({
+        mutationFn: removeAdditionalUser
+    })
+}
+
+/***** Login as another user *****/
+const loginAsAnotherUser = ({ user_email_to_login_as }: { user_email_to_login_as: string }): Promise<MutationResponse> =>
+    axios.post('/user/additional-user/login-as-another-user', { user_email_to_login_as })
+
+export function useLoginAsAnotherUserMutation() {
+    return useMutation({
+        mutationFn: loginAsAnotherUser,
+        onSuccess(res) {
+            toast.success(res.message)
+            queryClient.invalidateQueries(userQueryKey)
+        }
     })
 }

@@ -4,6 +4,11 @@ export interface User {
     email: string
 }
 
+export interface UserDataAdditionalUser {
+    email: string
+    name: string
+}
+
 export interface Credentials {
     email: string
     password: string
