@@ -1,6 +1,7 @@
 import Button from 'components/Button'
 import { useAdditionalUsersQuery } from '../../queries'
 import { useNavigate } from 'react-router-dom'
+import { XCircleIcon } from '@heroicons/react/24/solid'
 
 export function AdditionalUsers() {
     const navigate = useNavigate()
@@ -19,7 +20,12 @@ export function AdditionalUsers() {
         return (
             <ul className='mt-4'>
                 {(additionalUsersData || []).map((item) => (
-                    <li key={item.email}>{item.email}</li>
+                    <li key={item.email} className='flex justify-between w-full max-w-md mb-2'>
+                        <p>{item.email}</p>
+                        <button type='button' onClick={() => navigate(`/account/additional-user/remove?email=${encodeURIComponent(item.email)}`)}>
+                            <XCircleIcon className='w-5 text-primary hover:text-primary-hover' />
+                        </button>
+                    </li>
                 ))}
             </ul>
         )

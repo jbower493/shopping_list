@@ -45,6 +45,7 @@ import { Account } from 'containers/account'
 import { AddAdditionalUserForm } from 'containers/account/modules/additionalUsers/forms/addAdditionalUserForm'
 import { ChangeEmailForm } from 'containers/account/modules/changeEmail/forms/changeEmailForm'
 import { ChangePasswordForm } from 'containers/account/modules/changePassword/forms/changePasswordForm'
+import { RemoveAdditionalUserForm } from 'containers/account/modules/additionalUsers/forms/removeAdditionalUserForm'
 
 function UserRouter() {
     return (
@@ -96,6 +97,7 @@ function UserRouter() {
             <Route path='/shop/:listId' element={<Shop />} />
             <Route path='/account' element={<Account />}>
                 <Route path='additional-user/add' element={<AddAdditionalUserForm />} />
+                <Route path='additional-user/remove' element={<RemoveAdditionalUserForm />} />
                 <Route path='change-email' element={<ChangeEmailForm />} />
                 <Route path='change-password' element={<ChangePasswordForm />} />
             </Route>
