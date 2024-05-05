@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 import Items from 'containers/items/items'
@@ -43,7 +42,9 @@ import { FullScreenPage } from 'components/FullScreenPage'
 import { UpdateListItemQuantityForm } from 'containers/lists/forms/updateListItemQuantityForm'
 import { UpdateRecipeItemQuantityForm } from 'containers/recipes/forms/updateRecipeItemQuantityForm'
 import { Account } from 'containers/account'
-import { AddAdditionalUserForm } from 'containers/account/forms/addAdditionalUserForm'
+import { AddAdditionalUserForm } from 'containers/account/modules/additionalUsers/forms/addAdditionalUserForm'
+import { ChangeEmailForm } from 'containers/account/modules/changeEmail/forms/changeEmailForm'
+import { ChangePasswordForm } from 'containers/account/modules/changePassword/forms/changePasswordForm'
 
 function UserRouter() {
     return (
@@ -95,6 +96,8 @@ function UserRouter() {
             <Route path='/shop/:listId' element={<Shop />} />
             <Route path='/account' element={<Account />}>
                 <Route path='additional-user/add' element={<AddAdditionalUserForm />} />
+                <Route path='change-email' element={<ChangeEmailForm />} />
+                <Route path='change-password' element={<ChangePasswordForm />} />
             </Route>
             <Route
                 path='*'

@@ -13,13 +13,20 @@ type Inputs = {
     name: string
     email: string
     password: string
+    confirm_password: string
 }
 
-const schema = z.object({
-    name: z.string().min(1, 'Required'),
-    email: z.string().min(1, 'Required'),
-    password: z.string().min(1, 'Required')
-})
+const schema = z
+    .object({
+        name: z.string().min(1, 'Required'),
+        email: z.string().min(1, 'Required'),
+        password: z.string().min(1, 'Required'),
+        confirm_password: z.string().min(1, 'Required')
+    })
+    .refine((values) => values.password === values.confirm_password, {
+        path: ['confirm_password'],
+        message: 'Must match "Password" field'
+    })
 
 function RegisterForm() {
     const navigate = useNavigate()
@@ -32,7 +39,8 @@ function RegisterForm() {
         defaultValues: {
             name: '',
             email: '',
-            password: ''
+            password: '',
+            confirm_password: ''
         }
     })
 
@@ -64,6 +72,9 @@ function RegisterForm() {
                         </FormRow>
                         <FormRow>
                             <InputField.HookForm label='Password' name='password' type='password' />
+                        </FormRow>
+                        <FormRow>
+                            <InputField.HookForm label='Confirm Password' name='confirm_password' type='password' />
                         </FormRow>
                         <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Register' fullWidth />
                         <Link className='mt-3 inline-block' to='/login'>

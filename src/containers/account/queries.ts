@@ -67,3 +67,22 @@ export function useLoginAsAnotherUserMutation() {
         }
     })
 }
+
+/***** Change email *****/
+const changeEmail = ({ new_email }: { new_email: string }): Promise<MutationResponse> => axios.post('/user/change-email', { new_email })
+
+export function useChangeEmailMutation() {
+    return useMutation({
+        mutationFn: changeEmail
+    })
+}
+
+/***** Change password *****/
+const changePassword = (attributes: { new_password: string; confirm_new_password: string }): Promise<MutationResponse> =>
+    axios.post('/user/change-password', attributes)
+
+export function useChangePasswordMutation() {
+    return useMutation({
+        mutationFn: changePassword
+    })
+}
