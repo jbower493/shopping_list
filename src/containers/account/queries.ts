@@ -86,3 +86,12 @@ export function useChangePasswordMutation() {
         mutationFn: changePassword
     })
 }
+
+/***** Delete account *****/
+const deleteAccount = ({ userId }: { userId: string }): Promise<MutationResponse> => axios.delete(`/user/${userId}`)
+
+export function useDeleteAccountMutation() {
+    return useMutation({
+        mutationFn: deleteAccount
+    })
+}
