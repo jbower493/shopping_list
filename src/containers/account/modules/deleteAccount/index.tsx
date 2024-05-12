@@ -1,7 +1,7 @@
 import Button from 'components/Button'
 import { useNavigate } from 'react-router-dom'
 
-export function DeleteAcount() {
+export function DeleteAccount() {
     const navigate = useNavigate()
 
     return (

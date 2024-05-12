@@ -3,6 +3,7 @@ import { AdditionalUsers } from './modules/additionalUsers'
 import { AccountAccess } from './modules/accountAccess'
 import { ChangeEmail } from './modules/changeEmail'
 import { ChangePassword } from './modules/changePassword'
+import { DeleteAccount } from './modules/deleteAccount'
 
 export function Account() {
     return (
@@ -12,6 +13,7 @@ export function Account() {
                 <ChangePassword />
                 <AdditionalUsers />
                 <AccountAccess />
+                <DeleteAccount />
             </div>
 
             <Outlet />

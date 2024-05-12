@@ -1,18 +1,19 @@
-import { useFormContext } from 'react-hook-form'
+import { Validate, useFormContext } from 'react-hook-form'
 import InputField from '../component'
 import ErrorMessage from 'components/Form/ErrorMessage'
 import { HTMLInputTypeAttribute } from 'react'
 
-export interface InputFieldHookFormWrapperProps {
+export interface InputFieldHookFormWrapperProps<T> {
     label: string
     name: string
     type?: HTMLInputTypeAttribute
+    validate?: Validate<T>
 }
 
-const InputFieldHookFormWrapper: React.FC<InputFieldHookFormWrapperProps> = ({ label, name, type = 'text' }) => {
+function InputFieldHookFormWrapper<T>({ label, name, type = 'text', validate }: InputFieldHookFormWrapperProps<T>): JSX.Element {
     const { register, formState } = useFormContext()
 
-    const registered = register(name)
+    const registered = register(name, { validate })
 
     return (
         <div>
