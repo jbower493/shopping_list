@@ -15,6 +15,12 @@ export interface InputFieldProps {
 type TInputField = React.FC<InputFieldProps>
 
 const InputField: TInputField = ({ label, name, type = 'text', onChange, onBlur, value, componentRef, className, placeholder }) => {
+    const numberFieldProps: { step?: React.InputHTMLAttributes<HTMLInputElement>['step'] } = {}
+
+    if (type === 'number') {
+        numberFieldProps.step = 0.01
+    }
+
     return (
         <div>
             {label ? <label>{label}</label> : ''}
@@ -27,6 +33,7 @@ const InputField: TInputField = ({ label, name, type = 'text', onChange, onBlur,
                 value={value}
                 ref={componentRef}
                 placeholder={placeholder}
+                {...numberFieldProps}
             />
         </div>
     )

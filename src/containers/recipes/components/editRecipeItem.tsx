@@ -1,5 +1,5 @@
 import { useRemoveItemFromRecipeMutation } from '../queries'
-import { ChevronUpDownIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { RecipeItem } from '../types'
 import ItemWithQuantity from 'components/ItemWithQuantity'
 import { useState } from 'react'
@@ -28,14 +28,14 @@ function EditRecipeItem({ item: { name, id, item_quantity }, recipeId }: EditRec
             }`}
         >
             <ItemWithQuantity quantityValue={item_quantity.quantity} unitSymbol={item_quantity.quantity_unit?.symbol} itemName={name} />
-            <div className='flex items-center gap-6'>
+            <div className='flex items-center gap-4'>
                 <button
                     type='button'
                     onClick={() => {
                         navigate(`/recipes/edit/${recipeId}/update-item-quantity/${id}`)
                     }}
                 >
-                    <ChevronUpDownIcon className={`w-6 text-primary hover:text-primary-hover${isBeingRemoved ? ' hidden' : ''}`} />
+                    <PencilSquareIcon className={`w-5 text-primary hover:text-primary-hover${isBeingRemoved ? ' hidden' : ''}`} />
                 </button>
                 <button
                     type='button'
