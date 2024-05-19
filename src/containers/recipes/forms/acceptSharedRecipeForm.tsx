@@ -25,11 +25,16 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
     const { data: notificationsData } = useNotificationsQuery()
     const { mutateAsync: acceptSharedRecipe } = useAcceptSharedRecipeMutation()
 
+    const shareRequest = notificationsData?.notifications.find(({ share_request_id }) => share_request_id === shareRequestId)
+
     const methods = useForm<Inputs>({
         mode: 'all',
         resolver: zodResolver(schema),
         defaultValues: {
-            name: 'bobby'
+            name: ''
+        },
+        values: {
+            name: shareRequest?.recipe_name || ''
         }
     })
 
@@ -51,8 +56,6 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
             }
         )
     }
-
-    const shareRequest = notificationsData?.notifications.find(({ share_request_id }) => share_request_id === shareRequestId)
 
     return (
         <div>

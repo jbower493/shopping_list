@@ -315,6 +315,16 @@ export function useUpdateRecipeItemQuantityMutation() {
 }
 
 /***** Accept shared recipe *****/
+const createShareRecipeRequest = ({ recipeId, email }: { recipeId: number; email: string }): Promise<MutationResponse> =>
+    axios.post(`/recipe/${recipeId}/create-share-request`, { email })
+
+export function useCreateShareRecipeRequestMutation() {
+    return useMutation({
+        mutationFn: createShareRecipeRequest
+    })
+}
+
+/***** Accept shared recipe *****/
 const acceptSharedRecipe = ({
     newRecipeName,
     shareRequestId

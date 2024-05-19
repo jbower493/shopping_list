@@ -47,6 +47,7 @@ import { ChangeEmailForm } from 'containers/account/modules/changeEmail/forms/ch
 import { ChangePasswordForm } from 'containers/account/modules/changePassword/forms/changePasswordForm'
 import { RemoveAdditionalUserForm } from 'containers/account/modules/additionalUsers/forms/removeAdditionalUserForm'
 import { DeleteAccountForm } from 'containers/account/modules/deleteAccount/forms/deleteAccountForm'
+import CreateShareRecipeRequestForm from 'containers/recipes/forms/createShareRecipeRequestForm'
 
 function UserRouter() {
     return (
@@ -85,6 +86,7 @@ function UserRouter() {
             <Route path='/recipes/edit/:recipeId' element={<EditRecipe />}>
                 <Route path='details' element={<EditRecipeDetailsForm />} />
                 <Route path='duplicate' element={<DuplicateRecipeForm />} />
+                <Route path='share' element={<CreateShareRecipeRequestForm />} />
                 <Route path='update-item-quantity/:itemId' element={<UpdateRecipeItemQuantityForm />} />
             </Route>
             <Route path='/menus' element={<Menus />}>
