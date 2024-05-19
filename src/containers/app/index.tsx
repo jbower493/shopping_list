@@ -7,6 +7,7 @@ import Sidebar from 'components/Sidebar'
 import Loader from 'components/Loader'
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import { useGetUserQuery } from 'containers/auth/queries'
+import { Notifications } from 'components/Notifications'
 
 function App() {
     const [showMenu, setShowMenu] = useState(false)
@@ -22,7 +23,7 @@ function App() {
     const renderMenu = () => {
         return (
             <div className='flex items-center'>
-                <button ref={menuIconRef} onClick={() => setShowMenu(!showMenu)} className='ml-4 sm:hidden'>
+                <button ref={menuIconRef} onClick={() => setShowMenu(!showMenu)} className='ml-5 sm:hidden'>
                     <Bars3Icon className='w-7 text-primary hover:text-primary-hover' />
                 </button>
             </div>
@@ -49,7 +50,10 @@ function App() {
                 <Link to='/lists' className='hover:no-underline'>
                     <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
                 </Link>
-                {!isGetUserFetching && !isGetUserError && getUserData ? renderMenu() : ''}
+                <div className='flex items-center'>
+                    <Notifications />
+                    {!isGetUserFetching && !isGetUserError && getUserData ? renderMenu() : ''}
+                </div>
             </header>
             <div className='pt-14 min-h-[101dvh] sm:min-h-dvh'>{renderApp()}</div>
         </div>
