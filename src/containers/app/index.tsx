@@ -43,6 +43,8 @@ function App() {
         )
     }
 
+    const doWeDeffoHaveAUser = !!(!isGetUserFetching && !isGetUserError && getUserData)
+
     return (
         <div>
             <Toaster />
@@ -51,8 +53,8 @@ function App() {
                     <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
                 </Link>
                 <div className='flex items-center'>
-                    <Notifications />
-                    {!isGetUserFetching && !isGetUserError && getUserData ? renderMenu() : ''}
+                    {doWeDeffoHaveAUser ? <Notifications /> : null}
+                    {doWeDeffoHaveAUser ? renderMenu() : null}
                 </div>
             </header>
             <div className='pt-14 min-h-[101dvh] sm:min-h-dvh'>{renderApp()}</div>
