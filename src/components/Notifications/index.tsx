@@ -57,7 +57,7 @@ export function Notifications() {
             <button ref={notificationIconRef} type='button' className='relative' onClick={() => setIsListShowing((prev) => !prev)}>
                 <BellIcon className='w-7' />
                 <div className='bg-error text-white text-sm font-bold w-5 h-5 rounded-full absolute -top-1 -left-1 flex justify-center items-center'>
-                    1
+                    {notificationsData?.notifications.length || 0}
                 </div>
             </button>
             {renderList()}
