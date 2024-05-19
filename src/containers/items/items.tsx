@@ -21,6 +21,10 @@ function Items() {
 
     const filteredItems = getItemsData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
 
+    const noItemsMessage = search
+        ? 'No items matched your search.'
+        : 'You don\'t currently have any items. Use the "Add New" button to create an item.'
+
     return (
         <div className='p-4'>
             <h2>Items</h2>
@@ -53,7 +57,7 @@ function Items() {
                         </div>
                     ))
                 ) : (
-                    <p>No items matched your search</p>
+                    <p>{noItemsMessage}</p>
                 )}
             </div>
             <Outlet />

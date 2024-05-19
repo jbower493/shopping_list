@@ -67,6 +67,10 @@ function Recipes() {
         return recipeCategoriesInRecipe.map(({ id, name }) => renderRecipeCategory(id, name))
     }
 
+    const noRecipesMessage = search
+        ? 'No recipes matched your search.'
+        : 'You don\'t currently have any recipes. Use the "Add New" button to create a recipe.'
+
     return (
         <div className='p-4'>
             <h2 className='mb-4'>Recipes</h2>
@@ -76,7 +80,7 @@ function Recipes() {
                 </Button>
                 <InputField name='search' placeholder='Search for a recipe' value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
-            {filteredRecipes.length > 0 ? renderCurrentRecipes() : <p>No recipes matched your search</p>}
+            {filteredRecipes.length > 0 ? renderCurrentRecipes() : <p>{noRecipesMessage}</p>}
             <Outlet />
         </div>
     )
