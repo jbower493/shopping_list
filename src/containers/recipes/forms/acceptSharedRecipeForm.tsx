@@ -12,6 +12,7 @@ import FormRow from 'components/Form/FormRow'
 import Modal from 'components/Modal'
 import { recipesQueryKey, useAcceptSharedRecipeMutation } from '../queries'
 import { notificationsQueryKey, useNotificationsQuery } from 'components/Notifications/queries'
+import { useNavigate } from 'react-router-dom'
 
 type Inputs = {
     name: string
@@ -22,6 +23,8 @@ const schema = z.object({
 })
 
 function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: boolean; onClose: () => void; shareRequestId: number }) {
+    const navigate = useNavigate()
+
     const { data: notificationsData } = useNotificationsQuery()
     const { mutateAsync: acceptSharedRecipe } = useAcceptSharedRecipeMutation()
 
@@ -52,6 +55,7 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
                     queryClient.invalidateQueries(notificationsQueryKey())
                     queryClient.invalidateQueries(recipesQueryKey())
                     onClose()
+                    navigate(`/recipes/edit/${res.data?.new_recipe_id}`)
                 }
             }
         )

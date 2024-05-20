@@ -76,9 +76,10 @@ function EditRecipe() {
                     <button type='button' onClick={() => navigate(`/recipes/edit/${id}/duplicate`)}>
                         <DocumentDuplicateIcon className='w-5 text-primary hover:text-primary-hover' />
                     </button>
-                    <button type='button' onClick={() => navigate(`/recipes/edit/${id}/share`)}>
+                    {/* TODO: add back in after backend is fixed */}
+                    {/* <button type='button' onClick={() => navigate(`/recipes/edit/${id}/share`)}>
                         <ArrowUpTrayIcon className='w-5 text-primary hover:text-primary-hover' />
-                    </button>
+                    </button> */}
                 </div>
             </div>
             <div className='mb-7 mt-2'>
