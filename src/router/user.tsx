@@ -72,6 +72,8 @@ function UserRouter() {
             <Route path='/lists' element={<Lists />}>
                 <Route path='new' element={<AddListForm />} />
                 <Route path='delete/:listId' element={<DeleteListForm />} />
+                <Route path='test' element={<div key='bob'>Test</div>} />
+                <Route path='the-rest' element={<div key='fred'>The rest</div>} />
             </Route>
             <Route path='/lists/edit/:listId' element={<EditList />}>
                 <Route path='details' element={<EditListDetailsForm />} />

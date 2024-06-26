@@ -1,12 +1,13 @@
-import React from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useOutlet } from 'react-router-dom'
 import { useListsQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
+import { AnimatePresence, motion } from 'framer-motion'
 
 function Lists() {
     const navigate = useNavigate()
+    const outlet = useOutlet()
 
     const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useListsQuery()
 
@@ -19,6 +20,12 @@ function Lists() {
             <Button className='mb-8' onClick={() => navigate('/lists/new')}>
                 Add New
             </Button>
+            <div>
+                <Link to='/lists/test'>Test</Link>
+            </div>
+            <div>
+                <Link to='/lists/the-rest'>The rest</Link>
+            </div>
             {getListsData.map(({ name, id }) => (
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                     <p>{name}</p>
@@ -35,7 +42,18 @@ function Lists() {
                     </div>
                 </div>
             ))}
-            <Outlet />
+
+            <AnimatePresence mode='wait'>
+                <motion.div
+                    key={outlet?.props.children?.props?.children?.key}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 1 } }}
+                    transition={{ duration: 1 }}
+                >
+                    {outlet?.props.children?.props?.children}
+                </motion.div>
+            </AnimatePresence>
         </div>
     )
 }
