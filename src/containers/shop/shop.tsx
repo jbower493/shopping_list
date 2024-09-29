@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { useGetSingleListQuery } from 'containers/lists/queries'
 import Loader from 'components/Loader'
@@ -79,12 +79,17 @@ function Shop() {
 
     return (
         <div className='p-4'>
-            <div className='flex justify-between mb-7'>
-                <h2>Shop</h2>
+            <div className='flex justify-between'>
+                <Link to='/lists'>Back to lists</Link>
                 <div className='flex items-center'>
                     <ClipboardDocumentListIcon className='mr-2 w-7 text-primary' />
-                    <p>{name}</p>
+                    <Link to={`/lists/edit/${listId}`} className='text-black hover:text-black'>
+                        {name}
+                    </Link>
                 </div>
+            </div>
+            <div className='flex justify-between mb-7 mt-2'>
+                <h2>Shop</h2>
             </div>
             {renderItems()}
         </div>

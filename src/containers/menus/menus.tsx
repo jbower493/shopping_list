@@ -1,5 +1,5 @@
 import React from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useGetMenusQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
@@ -21,7 +21,9 @@ function Menus() {
             </Button>
             {getMenusData.map(({ name, id }) => (
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
-                    <p>{name}</p>
+                    <Link to={`/menus/edit/${id}`} className='text-black hover:text-black'>
+                        {name}
+                    </Link>
                     <div>
                         <button className='mr-4' type='button' onClick={() => navigate(`/menus/edit/${id}`)}>
                             <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />

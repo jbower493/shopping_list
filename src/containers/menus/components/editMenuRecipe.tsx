@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react'
 import { singleMenuQueryKey, useRemoveRecipeFromMenuMutation } from '../queries'
-import { TrashIcon } from '@heroicons/react/24/solid'
-import Loader from 'components/Loader'
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { queryClient } from 'utils/queryClient'
 import { Recipe } from 'containers/recipes/types'
 import { EditMenuIsDraggingContext } from '../editMenu'
 import classnames from 'classnames'
+import { useNavigate } from 'react-router-dom'
 
 interface EditMenuRecipeProps {
     recipe: Recipe
@@ -14,10 +14,11 @@ interface EditMenuRecipeProps {
 
 function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
     const { setIsDragging } = useContext(EditMenuIsDraggingContext)
+    const navigate = useNavigate()
 
     const [isClicked, setIsClicked] = useState(false)
 
-    const { mutate: removeRecipeFromMenu, isLoading: isRemoveRecipeFromMenuLoading } = useRemoveRecipeFromMenuMutation()
+    const { mutate: removeRecipeFromMenu } = useRemoveRecipeFromMenuMutation()
 
     return (
         <div className='flex justify-between w-full max-w-md mt-1'>
@@ -43,9 +44,7 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
             >
                 {name}
             </button>
-            {isRemoveRecipeFromMenuLoading ? (
-                <Loader size='small' />
-            ) : (
+            <div>
                 <button
                     type='button'
                     onClick={() => {
@@ -58,10 +57,14 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
                             }
                         )
                     }}
+                    className='mr-4'
                 >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
                 </button>
-            )}
+                <button type='button' onClick={() => navigate(`/recipes/edit/${id}`)}>
+                    <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                </button>
+            </div>
         </div>
     )
 }

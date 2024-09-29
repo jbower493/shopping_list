@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useGetItemsQuery } from './queries'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import Loader from 'components/Loader'
@@ -37,7 +37,9 @@ function Items() {
                     filteredItems.map(({ name, id, category }) => (
                         <div key={id} className='flex justify-between w-full max-w-md mb-2'>
                             <div className='flex items-center flex-wrap'>
-                                {name}
+                                <Link to={`/items/edit/${id}`} className='text-black hover:text-black'>
+                                    {name}
+                                </Link>
                                 <CategoryTag
                                     key={id}
                                     className='ml-2'

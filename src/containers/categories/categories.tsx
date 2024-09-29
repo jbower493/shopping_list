@@ -1,5 +1,5 @@
 import React from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useGetCategoriesQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
@@ -21,7 +21,9 @@ function Categories() {
             </Button>
             {getCategoriesData.map(({ name, id }) => (
                 <div key={id} className='flex justify-between w-full max-w-md mb-2'>
-                    <p>{name}</p>
+                    <Link to={`/categories/edit/${id}`} className='text-black hover:text-black'>
+                        {name}
+                    </Link>
                     <div>
                         <button className='mr-4' type='button' onClick={() => navigate(`/categories/edit/${id}`)}>
                             <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
