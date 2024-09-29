@@ -48,6 +48,7 @@ import { ChangePasswordForm } from 'containers/account/modules/changePassword/fo
 import { RemoveAdditionalUserForm } from 'containers/account/modules/additionalUsers/forms/removeAdditionalUserForm'
 import { DeleteAccountForm } from 'containers/account/modules/deleteAccount/forms/deleteAccountForm'
 import CreateShareRecipeRequestForm from 'containers/recipes/forms/createShareRecipeRequestForm'
+import AcceptSharedRecipeForm from 'containers/recipes/forms/acceptSharedRecipeForm'
 
 function UserRouter() {
     return (
@@ -82,6 +83,7 @@ function UserRouter() {
             <Route path='/recipes' element={<Recipes />}>
                 <Route path='new' element={<AddRecipeForm />} />
                 <Route path='delete/:recipeId' element={<DeleteRecipeForm />} />
+                <Route path='accept-shared/:shareRequestId' element={<AcceptSharedRecipeForm />} />
             </Route>
             <Route path='/recipes/edit/:recipeId' element={<EditRecipe />}>
                 <Route path='details' element={<EditRecipeDetailsForm />} />

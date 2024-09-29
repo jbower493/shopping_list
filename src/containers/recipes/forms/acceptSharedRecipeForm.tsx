@@ -9,10 +9,10 @@ import { queryClient } from 'utils/queryClient'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
-import Modal from 'components/Modal'
 import { recipesQueryKey, useAcceptSharedRecipeMutation } from '../queries'
 import { notificationsQueryKey, useNotificationsQuery } from 'components/Notifications/queries'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import UrlModal from 'components/Modal/UrlModal'
 
 type Inputs = {
     name: string
@@ -22,13 +22,14 @@ const schema = z.object({
     name: z.string().min(1, 'Required')
 })
 
-function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: boolean; onClose: () => void; shareRequestId: number }) {
+function AcceptSharedRecipeForm() {
     const navigate = useNavigate()
+    const { shareRequestId } = useParams()
 
     const { data: notificationsData } = useNotificationsQuery()
     const { mutateAsync: acceptSharedRecipe } = useAcceptSharedRecipeMutation()
 
-    const shareRequest = notificationsData?.notifications.find(({ share_request_id }) => share_request_id === shareRequestId)
+    const shareRequest = notificationsData?.notifications.find(({ share_request_id }) => share_request_id === Number(shareRequestId))
 
     const methods = useForm<Inputs>({
         mode: 'all',
@@ -48,13 +49,12 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name }) => {
         await acceptSharedRecipe(
-            { newRecipeName: name, shareRequestId },
+            { newRecipeName: name, shareRequestId: Number(shareRequestId) },
             {
                 onSuccess: (res) => {
                     toast.success(res.message)
                     queryClient.invalidateQueries(notificationsQueryKey())
                     queryClient.invalidateQueries(recipesQueryKey())
-                    onClose()
                     navigate(`/recipes/edit/${res.data?.new_recipe_id}`)
                 }
             }
@@ -63,9 +63,8 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
 
     return (
         <div>
-            <Modal
-                open={isOpen}
-                onClose={onClose}
+            <UrlModal
+                onClose={() => navigate('/recipes')}
                 title='Accept Recipe'
                 desc={`"${shareRequest?.recipe_name || ''}" from ${shareRequest?.owner_name || ''}`}
             >
@@ -78,7 +77,7 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
                         </ModalBody>
                         <ModalFooter
                             buttons={[
-                                <Button key={1} color='secondary' onClick={onClose}>
+                                <Button key={1} color='secondary' onClick={() => navigate('/recipes')}>
                                     Back
                                 </Button>,
                                 <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Accept Recipe' />
@@ -86,7 +85,7 @@ function AcceptSharedRecipeForm({ isOpen, onClose, shareRequestId }: { isOpen: b
                         />
                     </form>
                 </FormProvider>
-            </Modal>
+            </UrlModal>
         </div>
     )
 }

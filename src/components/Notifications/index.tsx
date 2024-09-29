@@ -1,13 +1,12 @@
 import { BellIcon } from '@heroicons/react/24/outline'
 import { useEffect, useRef, useState } from 'react'
 import { useNotificationsQuery } from './queries'
-import AcceptSharedRecipeForm from 'containers/recipes/forms/acceptSharedRecipeForm'
+import { Link } from 'react-router-dom'
 
 export function Notifications() {
     const notificationIconRef = useRef<HTMLButtonElement | null>(null)
 
     const [isListShowing, setIsListShowing] = useState(false)
-    const [shareRequestToAccept, setShareRequestToAccept] = useState<number | null>(null)
 
     const { data: notificationsData } = useNotificationsQuery()
 
@@ -38,13 +37,12 @@ export function Notifications() {
                 {notificationsData.notifications.map(({ share_request_id, owner_name, recipe_name }) => {
                     return (
                         <li key={share_request_id}>
-                            <button
+                            <Link
                                 className='py-1 px-2 w-full text-left text-sky-500 hover:text-sky-600 hover:underline overflow-hidden whitespace-nowrap text-ellipsis'
-                                type='button'
-                                onClick={() => setShareRequestToAccept(share_request_id)}
+                                to={`/recipes/accept-shared/${share_request_id}`}
                             >
                                 {owner_name} shared &quot;{recipe_name}&quot; with you
-                            </button>
+                            </Link>
                         </li>
                     )
                 })}
@@ -61,11 +59,6 @@ export function Notifications() {
                 </div>
             </button>
             {renderList()}
-            <AcceptSharedRecipeForm
-                isOpen={!!shareRequestToAccept}
-                onClose={() => setShareRequestToAccept(null)}
-                shareRequestId={shareRequestToAccept || -1}
-            />
         </div>
     )
 }
