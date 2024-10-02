@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useLoginMutation } from 'containers/auth/queries'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
@@ -10,6 +10,7 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
 import { FullScreenPage } from 'components/FullScreenPage'
+import { useEffect } from 'react'
 
 type Inputs = {
     email: string
@@ -22,13 +23,17 @@ const schema = z.object({
 })
 
 function LoginForm() {
+    // Prefill user email when its a recipe share request link
+    const [searchParams] = useSearchParams()
+    const recipientEmail = searchParams.get('recipient-email')
+
     const { mutateAsync: login } = useLoginMutation()
 
     const methods = useForm<Inputs>({
         mode: 'all',
         resolver: zodResolver(schema),
         defaultValues: {
-            email: '',
+            email: recipientEmail || '',
             password: ''
         }
     })
@@ -47,6 +52,12 @@ function LoginForm() {
         })
     }
 
+    useEffect(() => {
+        if (recipientEmail) {
+            toast.success('Login to accept shared recipe. You will be prompted to accept the share request after loggin in.')
+        }
+    }, [])
+
     return (
         <FullScreenPage>
             <div className='flex items-center h-full p-4'>
@@ -60,9 +71,9 @@ function LoginForm() {
                             <InputField.HookForm label='Password' name='password' type='password' />
                         </FormRow>
                         <SubmitButton isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Login' fullWidth />
-                        <Link className='mt-3 w-fit block' to='/register'>
-                            Register
-                        </Link>
+                        <p className='mt-6'>
+                            Don&apos;t have an account? <Link to='/register'>Register</Link>
+                        </p>
                         <Link className='mt-1 w-fit block' to='/forgot-password'>
                             Forgot Password
                         </Link>

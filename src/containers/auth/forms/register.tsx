@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useRegisterMutation } from 'containers/auth/queries'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import InputField from 'components/Form/Inputs/InputField'
@@ -8,6 +8,9 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
 import { FullScreenPage } from 'components/FullScreenPage'
+import { queryClient } from 'utils/queryClient'
+import { userQueryKey } from 'utils/queryClient/keyFactory'
+import { useEffect } from 'react'
 
 type Inputs = {
     name: string
@@ -29,7 +32,9 @@ const schema = z
     })
 
 function RegisterForm() {
-    const navigate = useNavigate()
+    // Prefill user email when its a recipe share request link
+    const [searchParams] = useSearchParams()
+    const recipientEmail = searchParams.get('recipient-email')
 
     const { mutateAsync: registerUser } = useRegisterMutation()
 
@@ -38,7 +43,7 @@ function RegisterForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: '',
-            email: '',
+            email: recipientEmail || '',
             password: '',
             confirm_password: ''
         }
@@ -53,10 +58,16 @@ function RegisterForm() {
         await registerUser(data, {
             onSuccess: (res) => {
                 toast.success(res.message)
-                navigate('/login')
+                queryClient.invalidateQueries(userQueryKey)
             }
         })
     }
+
+    useEffect(() => {
+        if (recipientEmail) {
+            toast.success('Register for an account to accept shared recipe. You will be prompted to accept the share request after registering.')
+        }
+    }, [])
 
     return (
         <FullScreenPage>

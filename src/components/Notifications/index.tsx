@@ -33,12 +33,12 @@ export function Notifications() {
         }
 
         return (
-            <ul className='absolute top-8 right-0 w-72 bg-white border-primary border'>
+            <ul className='absolute top-8 right-0 w-80 bg-white border-primary border'>
                 {notificationsData.notifications.map(({ share_request_id, owner_name, recipe_name }) => {
                     return (
                         <li key={share_request_id}>
                             <Link
-                                className='py-1 px-2 w-full text-left text-sky-500 hover:text-sky-600 hover:underline overflow-hidden whitespace-nowrap text-ellipsis'
+                                className='py-1 px-2 block w-full text-left text-sky-500 hover:text-sky-600 hover:underline overflow-hidden whitespace-nowrap text-ellipsis'
                                 to={`/recipes/accept-shared/${share_request_id}`}
                             >
                                 {owner_name} shared &quot;{recipe_name}&quot; with you

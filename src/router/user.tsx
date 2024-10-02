@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom'
 
 import Items from 'containers/items/items'
 import AddItemForm from 'containers/items/forms/addItemForm'
@@ -50,10 +50,22 @@ import { DeleteAccountForm } from 'containers/account/modules/deleteAccount/form
 import CreateShareRecipeRequestForm from 'containers/recipes/forms/createShareRecipeRequestForm'
 import AcceptSharedRecipeForm from 'containers/recipes/forms/acceptSharedRecipeForm'
 
+function RedirectToRefAfterLogin() {
+    const [searchParams] = useSearchParams()
+    const ref = searchParams.get('ref')
+
+    if (ref) {
+        return <Navigate to={ref} replace />
+    }
+
+    return <Navigate to='/lists' replace />
+}
+
 function UserRouter() {
     return (
         <Routes>
-            <Route path='/login' element={<Navigate to='/' replace />} />
+            <Route path='/login' element={<RedirectToRefAfterLogin />} />
+            <Route path='/register' element={<RedirectToRefAfterLogin />} />
             <Route path='/' element={<Navigate to='/lists' replace />} />
             <Route path='/items' element={<Items />}>
                 <Route path='new' element={<AddItemForm />} />

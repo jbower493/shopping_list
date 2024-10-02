@@ -47,7 +47,7 @@ function App() {
 
     return (
         <div>
-            <Toaster />
+            <Toaster toastOptions={{ duration: 7000 }} />
             <header className='fixed top-0 w-full z-20 h-14 px-4 flex justify-between items-center bg-white border-b border-b-gray-300'>
                 <Link to='/lists' className='hover:no-underline'>
                     <h1 className='text-primary text-xl sm:text-3xl'>Shopping List</h1>
