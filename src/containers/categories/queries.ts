@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Category, EditCategoryPayload, NewCategory } from 'containers/categories/types'
+import { queryClient } from 'utils/queryClient'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { MutationResponse, QueryResponse } from 'utils/queryClient/types'
 
@@ -16,6 +17,10 @@ export function useGetCategoriesQuery() {
         queryFn: getCategories,
         select: (res) => res.data.categories
     })
+}
+
+export function prefetchGetCategoriesQuery() {
+    queryClient.prefetchQuery({ queryKey: categoriesQueryKey(), queryFn: getCategories })
 }
 
 /***** Create category *****/

@@ -20,7 +20,8 @@ import { QuantityUnit } from 'containers/quantityUnits/types'
 const recipesKeySet = new QueryKeySet('Recipe')
 
 /***** Get recipes *****/
-export const getRecipes = (): Promise<QueryResponse<{ recipes: Recipe[] }>> => axios.get('/recipe')
+const getRecipes = (): Promise<QueryResponse<{ recipes: Recipe[] }>> => axios.get('/recipe')
+export type GetRecipesReturnType = ReturnType<typeof getRecipes>
 export const recipesQueryKey = recipesKeySet.many
 
 export function useGetRecipesQuery() {
@@ -31,12 +32,19 @@ export function useGetRecipesQuery() {
     })
 }
 
+export function prefetchGetRecipesQuery() {
+    queryClient.prefetchQuery({ queryKey: recipesQueryKey(), queryFn: getRecipes })
+}
+
 /***** Create recipe *****/
-const createRecipe = (newRecipe: NewRecipe): Promise<MutationResponse> => axios.post('/recipe', newRecipe)
+const createRecipe = (newRecipe: NewRecipe): Promise<MutationResponse<{ recipe_id: number }>> => axios.post('/recipe', newRecipe)
 
 export function useCreateRecipeMutation() {
     return useMutation({
-        mutationFn: createRecipe
+        mutationFn: createRecipe,
+        onSuccess(res) {
+            prefetchSingleRecipeQuery(res.data?.recipe_id.toString() || '')
+        }
     })
 }
 
@@ -58,6 +66,13 @@ export function useGetSingleRecipeQuery(id: string) {
         queryKey: singleRecipeQueryKey(id),
         queryFn: () => getSingleRecipe(id),
         select: (res) => res.data.recipe
+    })
+}
+
+export function prefetchSingleRecipeQuery(recipeId: string) {
+    queryClient.prefetchQuery({
+        queryKey: singleRecipeQueryKey(recipeId),
+        queryFn: () => getSingleRecipe(recipeId)
     })
 }
 

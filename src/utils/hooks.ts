@@ -1,3 +1,9 @@
+import { prefetchGetCategoriesQuery } from 'containers/categories/queries'
+import { prefetchGetItemsQuery } from 'containers/items/queries'
+import { prefetchListsQuery } from 'containers/lists/queries'
+import { prefetchGetMenusQuery } from 'containers/menus/queries'
+import { prefetchGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
+import { prefetchGetRecipesQuery } from 'containers/recipes/queries'
 import { useState, useEffect } from 'react'
 
 function getFromLocalStorage<t>(key: string, defaultValue: t) {
@@ -17,4 +23,17 @@ export function useLocalStorage<t>(key: string, defaultValue: t) {
     }, [value])
 
     return { value, setValue }
+}
+
+export function usePrefetchAppCriticalData() {
+    useEffect(() => {
+        prefetchListsQuery()
+        prefetchGetRecipesQuery()
+        prefetchGetRecipeCategoriesQuery()
+        prefetchGetMenusQuery()
+        prefetchGetCategoriesQuery()
+        prefetchGetItemsQuery()
+    }, [])
+
+    return null
 }

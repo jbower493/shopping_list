@@ -4,8 +4,11 @@ import { useGetMenusQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
+import { usePrefetchMenusCriticalData } from './hooks'
 
 function Menus() {
+    usePrefetchMenusCriticalData()
+
     const navigate = useNavigate()
 
     const { data: getMenusData, isFetching: isGetMenusFetching, isError: isGetMenusError } = useGetMenusQuery()

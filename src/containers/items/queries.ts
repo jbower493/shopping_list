@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import type { EditItemPayload, Item, NewItem } from 'containers/items/types'
+import { queryClient } from 'utils/queryClient'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 
@@ -16,6 +17,10 @@ export function useGetItemsQuery() {
         queryFn: getItems,
         select: (res) => res.data.items
     })
+}
+
+export function prefetchGetItemsQuery() {
+    queryClient.prefetchQuery({ queryKey: itemsQueryKey(), queryFn: getItems })
 }
 
 /***** Create item *****/

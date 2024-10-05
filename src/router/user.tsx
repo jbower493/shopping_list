@@ -49,6 +49,7 @@ import { RemoveAdditionalUserForm } from 'containers/account/modules/additionalU
 import { DeleteAccountForm } from 'containers/account/modules/deleteAccount/forms/deleteAccountForm'
 import CreateShareRecipeRequestForm from 'containers/recipes/forms/createShareRecipeRequestForm'
 import AcceptSharedRecipeForm from 'containers/recipes/forms/acceptSharedRecipeForm'
+import { usePrefetchAppCriticalData } from 'utils/hooks'
 
 function RedirectToRefAfterLogin() {
     const [searchParams] = useSearchParams()
@@ -62,6 +63,8 @@ function RedirectToRefAfterLogin() {
 }
 
 function UserRouter() {
+    usePrefetchAppCriticalData()
+
     return (
         <Routes>
             <Route path='/login' element={<RedirectToRefAfterLogin />} />

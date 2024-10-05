@@ -4,7 +4,7 @@ import { Menu, NewMenu, DetailedMenu, EditMenuPayload, UpdateMenuRecipePayload, 
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
-import { getRecipes, recipesQueryKey } from 'containers/recipes/queries'
+import { GetRecipesReturnType, recipesQueryKey } from 'containers/recipes/queries'
 
 const menusKeySet = new QueryKeySet('Menu')
 
@@ -20,12 +20,19 @@ export function useGetMenusQuery() {
     })
 }
 
+export function prefetchGetMenusQuery() {
+    queryClient.prefetchQuery({ queryKey: menusQueryKey(), queryFn: getMenus })
+}
+
 /***** Create menu *****/
-const createMenu = (newMenu: NewMenu): Promise<MutationResponse> => axios.post('/menu', newMenu)
+const createMenu = (newMenu: NewMenu): Promise<MutationResponse<{ menu_id: number }>> => axios.post('/menu', newMenu)
 
 export function useCreateMenuMutation() {
     return useMutation({
-        mutationFn: createMenu
+        mutationFn: createMenu,
+        onSuccess(res) {
+            prefetchSingleMenuQuery(res.data?.menu_id.toString() || '')
+        }
     })
 }
 
@@ -50,6 +57,13 @@ export function useGetSingleMenuQuery(id: string) {
     })
 }
 
+export function prefetchSingleMenuQuery(menuId: string) {
+    queryClient.prefetchQuery({
+        queryKey: singleMenuQueryKey(menuId),
+        queryFn: () => getSingleMenu(menuId)
+    })
+}
+
 /***** Add recipe to menu *****/
 const addRecipeToMenu = ({ menuId, recipeId, day }: { menuId: string; recipeId: string; day: string | null }): Promise<MutationResponse> =>
     axios.post(`/menu/${menuId}/add-recipe/${recipeId}`, { day })
@@ -65,7 +79,7 @@ export function useAddRecipeToMenuMutation() {
             type SingleMenuQueryData = Awaited<ReturnType<typeof getSingleMenu>> | undefined
             const singleMenuQueryData: SingleMenuQueryData = queryClient.getQueryData(singleMenuQueryKey(payload.menuId))
 
-            type RecipesQueryData = Awaited<ReturnType<typeof getRecipes>> | undefined
+            type RecipesQueryData = Awaited<GetRecipesReturnType> | undefined
             const recipesQueryData: RecipesQueryData = queryClient.getQueryData(recipesQueryKey())
 
             // Optimistically update to new value

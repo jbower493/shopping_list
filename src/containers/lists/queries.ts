@@ -23,12 +23,19 @@ export function useListsQuery() {
     })
 }
 
+export function prefetchListsQuery() {
+    queryClient.prefetchQuery({ queryKey: listsQueryKey(), queryFn: getLists })
+}
+
 /***** Create list *****/
-const createList = (newList: NewList): Promise<MutationResponse> => axios.post('/list', newList)
+const createList = (newList: NewList): Promise<MutationResponse<{ list_id: number }>> => axios.post('/list', newList)
 
 export function useCreateListMutation() {
     return useMutation({
-        mutationFn: createList
+        mutationFn: createList,
+        onSuccess(res) {
+            prefetchSingleListQuery(res.data?.list_id.toString() || '')
+        }
     })
 }
 
@@ -52,6 +59,10 @@ export function useGetSingleListQuery(id: string) {
         queryFn: ({ signal }) => getSingleList(id, signal),
         select: (res) => res.data.list
     })
+}
+
+export function prefetchSingleListQuery(listId: string) {
+    queryClient.prefetchQuery({ queryKey: singleListQueryKey(listId), queryFn: ({ signal }) => getSingleList(listId, signal) })
 }
 
 /***** Add item to list *****/

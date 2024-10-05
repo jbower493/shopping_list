@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { RecipeCategory, NewRecipeCategory, EditRecipeCategoryPayload } from 'containers/recipeCategories/types'
+import { queryClient } from 'utils/queryClient'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import type { MutationResponse, QueryResponse } from 'utils/queryClient/types'
 
@@ -16,6 +17,10 @@ export function useGetRecipeCategoriesQuery() {
         queryFn: getRecipeCategories,
         select: (res) => res.data.recipe_categories
     })
+}
+
+export function prefetchGetRecipeCategoriesQuery() {
+    queryClient.prefetchQuery({ queryKey: recipeCategoriesQueryKey(), queryFn: getRecipeCategories })
 }
 
 /***** Create recipe category *****/

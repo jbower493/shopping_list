@@ -4,8 +4,11 @@ import { useListsQuery } from './queries'
 import Loader from 'components/Loader'
 import Button from 'components/Button'
 import { TrashIcon, PencilSquareIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
+import { usePrefetchListsCriticalData } from './hooks'
 
 function Lists() {
+    usePrefetchListsCriticalData()
+
     const navigate = useNavigate()
 
     const { data: getListsData, isFetching: isGetListsFetching, isError: isGetListsError } = useListsQuery()
