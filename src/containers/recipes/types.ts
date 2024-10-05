@@ -10,6 +10,7 @@ export interface Recipe {
 
 export interface NewRecipe {
     name: string
+    instructions?: string
     recipe_category_id?: number | null
 }
 

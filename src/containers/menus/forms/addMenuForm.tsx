@@ -46,8 +46,8 @@ function AddMenuForm() {
                 onSuccess: (res) => {
                     toast.success(res.message)
                     queryClient.invalidateQueries(menusQueryKey())
-                },
-                onSettled: () => navigate(-1)
+                    navigate(`/menus/edit/${res.data?.menu_id.toString()}`)
+                }
             }
         )
     }

@@ -5,24 +5,26 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { recipesQueryKey, useCreateRecipeMutation } from '../queries'
+import { useCreateRecipeMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
-import { queryClient } from 'utils/queryClient'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { getRecipeCategoryOptions } from 'utils/functions'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
+import TextAreaField from 'components/Form/Inputs/TextAreaField'
 
 type Inputs = {
     name: string
     recipeCategoryId: string
+    instructions: string
 }
 
 const schema = z.object({
     name: z.string().min(1, 'Required'),
+    instructions: z.string(),
     recipeCategoryId: z.string()
 })
 
@@ -47,15 +49,14 @@ function AddRecipeForm() {
         formState: { isDirty, isValid, isSubmitting }
     } = methods
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId, instructions }) => {
         await createRecipe(
-            { name, recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId) },
+            { name, recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId), instructions },
             {
                 onSuccess: (res) => {
                     toast.success(res.message)
-                    queryClient.invalidateQueries(recipesQueryKey())
-                },
-                onSettled: () => navigate(-1)
+                    navigate(`/recipes/edit/${res.data?.recipe_id.toString()}`)
+                }
             }
         )
     }
@@ -74,6 +75,9 @@ function AddRecipeForm() {
                                 name='recipeCategoryId'
                                 options={getRecipeCategoryOptions(recipeCategoriesdata)}
                             />
+                        </FormRow>
+                        <FormRow>
+                            <TextAreaField.HookForm label='Instructions' name='instructions' />
                         </FormRow>
                     </ModalBody>
                     <ModalFooter

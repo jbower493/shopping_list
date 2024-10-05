@@ -46,8 +46,8 @@ function AddListForm() {
                 onSuccess: (res) => {
                     toast.success(res.message)
                     queryClient.invalidateQueries(listsQueryKey())
-                },
-                onSettled: () => navigate(-1)
+                    navigate(`/lists/edit/${res.data?.list_id.toString()}`)
+                }
             }
         )
     }

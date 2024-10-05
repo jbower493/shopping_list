@@ -43,6 +43,7 @@ export function useCreateRecipeMutation() {
     return useMutation({
         mutationFn: createRecipe,
         onSuccess(res) {
+            queryClient.invalidateQueries(recipesQueryKey())
             prefetchSingleRecipeQuery(res.data?.recipe_id.toString() || '')
         }
     })
