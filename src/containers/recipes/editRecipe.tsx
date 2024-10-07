@@ -31,7 +31,7 @@ function EditRecipe() {
     if (isGetSingleRecipeLoading || isGetItemsLoading) return <Loader fullPage />
     if (isGetSingleRecipeError || !getSingleRecipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
-    const { name, id, items, instructions, recipe_category } = getSingleRecipeData
+    const { name, id, items, instructions, recipe_category, image_url } = getSingleRecipeData
 
     const renderInstructions = () => {
         if (!isInstructionsShowing) {
@@ -56,8 +56,8 @@ function EditRecipe() {
     const renderCurrentItems = () => {
         return (
             <>
-                <h3 className='mb-2'>Items</h3>
-                <ul className='overflow-hidden pb-40'>
+                <h3>Items</h3>
+                <ul className='mt-2 overflow-hidden pb-40'>
                     {[...items]
                         .sort((a, b) => (a.name > b.name ? 1 : -1))
                         .map((item, index) => (
@@ -81,7 +81,7 @@ function EditRecipe() {
                     </button>
                 </div>
             </div>
-            <div className='mb-7 mt-2'>
+            <div className='mt-2'>
                 <div className='flex items-center'>
                     <h2>{name}</h2>
                     <button className='ml-4' type='button' onClick={() => navigate(`/recipes/edit/${id}/details`)}>
@@ -99,7 +99,23 @@ function EditRecipe() {
                 </div>
             </div>
 
-            <div className='mb-8'>
+            {image_url ? (
+                <div className='relative mt-4 h-36 max-w-[450px]'>
+                    <img className='h-full w-full object-cover rounded-md' src={image_url || ''} alt={name} />
+                    <Link
+                        to={`/recipes/edit/${id}/upload-image`}
+                        className='absolute top-3 right-3 bg-white h-8 w-8 flex justify-center items-center rounded-full'
+                    >
+                        <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                    </Link>
+                </div>
+            ) : (
+                <div className='mt-2'>
+                    <Link to={`/recipes/edit/${id}/upload-image`}>Upload Image</Link>
+                </div>
+            )}
+
+            <div className='mt-4'>
                 <div className='flex items-center mb-2'>
                     <h3>Instructions</h3>
                     <button
@@ -117,7 +133,7 @@ function EditRecipe() {
             </div>
 
             <AddItem
-                className='mb-6'
+                className='mt-6'
                 onAdd={(itemToAdd, categoryId, quantity, quantityUnitId) => {
                     const payload: AddItemToRecipePayload = { recipeId: id.toString(), itemName: itemToAdd, quantity }
 
@@ -129,7 +145,7 @@ function EditRecipe() {
                 itemsList={getItemsData}
             />
 
-            {renderCurrentItems()}
+            <div className='mt-4'>{renderCurrentItems()}</div>
 
             <Outlet />
         </div>

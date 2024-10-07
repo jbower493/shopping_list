@@ -20,6 +20,7 @@ export interface DetailedRecipe {
     instructions: string | null
     items: RecipeItem[]
     recipe_category: RecipeCategory | null
+    image_url: string | null
 }
 
 export interface AddItemToRecipePayload {

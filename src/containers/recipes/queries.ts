@@ -354,3 +354,17 @@ export function useAcceptSharedRecipeMutation() {
         mutationFn: acceptSharedRecipe
     })
 }
+
+/***** Upload recipe image *****/
+const uploadRecipeImage = ({ id, formData }: { id: string; formData: FormData }): Promise<MutationResponse> =>
+    axios.post(`/recipe/${id}/upload-image`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+export function useUploadRecipeImageMutation() {
+    return useMutation({
+        mutationFn: uploadRecipeImage
+    })
+}
