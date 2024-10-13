@@ -71,6 +71,11 @@ export function UploadRecipeImageForm() {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <ModalBody>
+                            {singleRecipeData?.image_url ? (
+                                <p className='mb-4'>
+                                    <strong>Warning</strong>: Uploading a new image for this recipe will permanently remove the current recipe image.
+                                </p>
+                            ) : null}
                             <FormRow>
                                 <input id='recipeImage' type='file' name='recipe_image' />
                             </FormRow>

@@ -4,13 +4,14 @@ import { useAddItemToRecipeMutation } from './queries'
 import { useGetSingleRecipeQuery } from './queries'
 import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
-import { ArrowUpTrayIcon, Square2StackIcon, PencilSquareIcon, PencilIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { ArrowUpTrayIcon, Square2StackIcon, PencilSquareIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/solid'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToRecipePayload } from 'containers/recipes/types'
 import CategoryTag from 'components/CategoryTag'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import { Dropdown } from 'components/Dropdown'
+import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
 
 function EditRecipe() {
     const [isInstructionsShowing, setIsInstructionsShowing] = useState<boolean>(true)
@@ -108,8 +109,8 @@ function EditRecipe() {
                         menuButton={<EllipsisHorizontalIcon className='size-6' style={{ transform: 'scale(400%)' }} />}
                         menuItems={[
                             <Dropdown.MenuItem.Link key='1' to={`/recipes/edit/${id}/upload-image`}>
-                                <PencilIcon className='size-4 text-primary' />
-                                Edit
+                                <CloudArrowUpIcon className='size-4 text-primary' />
+                                Upload new
                             </Dropdown.MenuItem.Link>,
                             <Dropdown.MenuItem.Link key='2' to={`/recipes/edit/${id}/remove-image`}>
                                 <TrashIcon className='size-4 text-primary' />
