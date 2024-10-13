@@ -51,6 +51,7 @@ import CreateShareRecipeRequestForm from 'containers/recipes/forms/createShareRe
 import AcceptSharedRecipeForm from 'containers/recipes/forms/acceptSharedRecipeForm'
 import { usePrefetchAppCriticalData } from 'utils/hooks'
 import { UploadRecipeImageForm } from 'containers/recipes/forms/uploadRecipeImageForm'
+import { RemoveRecipeImageForm } from 'containers/recipes/forms/removeRecipeImageForm'
 
 function RedirectToRefAfterLogin() {
     const [searchParams] = useSearchParams()
@@ -106,6 +107,7 @@ function UserRouter() {
                 <Route path='duplicate' element={<DuplicateRecipeForm />} />
                 <Route path='share' element={<CreateShareRecipeRequestForm />} />
                 <Route path='upload-image' element={<UploadRecipeImageForm />} />
+                <Route path='remove-image' element={<RemoveRecipeImageForm />} />
                 <Route path='update-item-quantity/:itemId' element={<UpdateRecipeItemQuantityForm />} />
             </Route>
             <Route path='/menus' element={<Menus />}>

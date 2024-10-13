@@ -368,3 +368,12 @@ export function useUploadRecipeImageMutation() {
         mutationFn: uploadRecipeImage
     })
 }
+
+/***** Remove recipe image *****/
+const removeRecipeImage = (id: string): Promise<MutationResponse> => axios.delete(`/recipe/${id}/remove-image`)
+
+export function useRemoveRecipeImageMutation() {
+    return useMutation({
+        mutationFn: removeRecipeImage
+    })
+}

@@ -4,12 +4,13 @@ import { useAddItemToRecipeMutation } from './queries'
 import { useGetSingleRecipeQuery } from './queries'
 import { useGetItemsQuery } from 'containers/items/queries'
 import Loader from 'components/Loader'
-import { ArrowUpTrayIcon, DocumentDuplicateIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
+import { ArrowUpTrayIcon, Square2StackIcon, PencilSquareIcon, PencilIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/solid'
 import EditRecipeItem from 'containers/recipes/components/editRecipeItem'
 import AddItem from 'containers/lists/components/addItem'
 import type { AddItemToRecipePayload } from 'containers/recipes/types'
 import CategoryTag from 'components/CategoryTag'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
+import { Dropdown } from 'components/Dropdown'
 
 function EditRecipe() {
     const [isInstructionsShowing, setIsInstructionsShowing] = useState<boolean>(true)
@@ -74,7 +75,7 @@ function EditRecipe() {
                 <Link to='/recipes'>Back to recipes</Link>
                 <div className='flex justify-between gap-4'>
                     <button type='button' onClick={() => navigate(`/recipes/edit/${id}/duplicate`)}>
-                        <DocumentDuplicateIcon className='w-5 text-primary hover:text-primary-hover' />
+                        <Square2StackIcon className='w-5 text-primary hover:text-primary-hover' />
                     </button>
                     <button type='button' onClick={() => navigate(`/recipes/edit/${id}/share`)}>
                         <ArrowUpTrayIcon className='w-5 text-primary hover:text-primary-hover' />
@@ -98,16 +99,24 @@ function EditRecipe() {
                     />
                 </div>
             </div>
-
             {image_url ? (
                 <div className='relative mt-4 h-36 max-w-[450px]'>
                     <img className='h-full w-full object-cover rounded-md' src={image_url || ''} alt={name} />
-                    <Link
-                        to={`/recipes/edit/${id}/upload-image`}
-                        className='absolute top-3 right-3 bg-white h-8 w-8 flex justify-center items-center rounded-full'
-                    >
-                        <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
-                    </Link>
+                    <Dropdown
+                        dropdownClassName='!absolute top-3 right-3 h-8 w-8'
+                        menuButtonClassName='bg-white w-full h-full flex justify-center items-center rounded-full'
+                        menuButton={<EllipsisHorizontalIcon className='size-6' style={{ transform: 'scale(400%)' }} />}
+                        menuItems={[
+                            <Dropdown.MenuItem.Link key='1' to={`/recipes/edit/${id}/upload-image`}>
+                                <PencilIcon className='size-4 text-primary' />
+                                Edit
+                            </Dropdown.MenuItem.Link>,
+                            <Dropdown.MenuItem.Link key='2' to={`/recipes/edit/${id}/remove-image`}>
+                                <TrashIcon className='size-4 text-primary' />
+                                Remove
+                            </Dropdown.MenuItem.Link>
+                        ]}
+                    />
                 </div>
             ) : (
                 <div className='mt-2'>
@@ -131,7 +140,6 @@ function EditRecipe() {
                 </div>
                 {renderInstructions()}
             </div>
-
             <AddItem
                 className='mt-6'
                 onAdd={(itemToAdd, categoryId, quantity, quantityUnitId) => {
@@ -144,9 +152,7 @@ function EditRecipe() {
                 }}
                 itemsList={getItemsData}
             />
-
             <div className='mt-4'>{renderCurrentItems()}</div>
-
             <Outlet />
         </div>
     )

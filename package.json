@@ -4,7 +4,7 @@
     "private": true,
     "prettier": "@jbower493/prettier-config",
     "dependencies": {
-        "@headlessui/react": "^1.6.6",
+        "@headlessui/react": "^2.1.0",
         "@heroicons/react": "^2.0.0",
         "@hookform/resolvers": "^3.3.4",
         "@tanstack/react-query": "^4.32.0",
