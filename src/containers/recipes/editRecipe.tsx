@@ -101,7 +101,7 @@ function EditRecipe() {
                 </div>
             </div>
             {image_url ? (
-                <div className='relative mt-4 h-36 max-w-[450px]'>
+                <div className='relative mt-4 h-40 max-w-[450px]'>
                     <img className='h-full w-full object-cover rounded-md' src={image_url || ''} alt={name} />
                     <Dropdown
                         dropdownClassName='!absolute top-3 right-3 h-8 w-8'
