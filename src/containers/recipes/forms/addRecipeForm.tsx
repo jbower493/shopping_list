@@ -90,7 +90,7 @@ function AddRecipeForm() {
                             />
                         </FormRow>
                         <div className='flex gap-1 mb-3'>
-                            <InputField.HookForm label='Prep Time' name='prepTime' type='number' step={1} className='flex-1' />
+                            <InputField.HookForm label='Prep Time (mins)' name='prepTime' type='number' step={1} className='flex-1' />
                             <InputField.HookForm label='Serves' name='serves' type='number' step={1} className='flex-1' />
                         </div>
                         <FormRow>
