@@ -45,6 +45,9 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
                 {name}
             </button>
             <div>
+                <button className='mr-4' type='button' onClick={() => navigate(`/recipes/edit/${id}`)}>
+                    <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
+                </button>
                 <button
                     type='button'
                     onClick={() => {
@@ -57,12 +60,8 @@ function EditMenuRecipe({ recipe: { name, id }, menuId }: EditMenuRecipeProps) {
                             }
                         )
                     }}
-                    className='mr-4'
                 >
                     <TrashIcon className='w-5 text-primary hover:text-primary-hover' />
-                </button>
-                <button type='button' onClick={() => navigate(`/recipes/edit/${id}`)}>
-                    <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
                 </button>
             </div>
         </div>

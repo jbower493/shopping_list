@@ -21,6 +21,8 @@ export interface DetailedRecipe {
     items: RecipeItem[]
     recipe_category: RecipeCategory | null
     image_url: string | null
+    prep_time: number | null
+    serves: number
 }
 
 export interface AddItemToRecipePayload {

@@ -94,8 +94,8 @@ function EditMenu() {
                 Add Recipe
             </Button>
             <p className='mb-4'>Drag and drop recipes to change the day</p>
-            <Days recipes={recipes} menuId={Number(menuId)} />
             {renderRecipesWithNoDay()}
+            <Days recipes={recipes} menuId={Number(menuId)} />
             <Outlet />
         </div>
     )

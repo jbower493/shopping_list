@@ -86,7 +86,7 @@ export function Days({ recipes, menuId }: { recipes: MenuRecipe[]; menuId: numbe
                     const recipesOnThisDay = recipes.filter(({ day_of_week }) => day_of_week.day === date)
 
                     return (
-                        <li key={day} className='w-full max-w-md mb-4'>
+                        <li key={day} className='w-full max-w-md mt-4'>
                             <Droppable
                                 className={classnames('h-[32px] w-72 flex items-center rounded-lg pl-2', {
                                     'bg-primary-50 border-primary border-2 border-dashed ml-[-2px]': isDragging

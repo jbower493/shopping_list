@@ -11,7 +11,22 @@ import type { AddItemToRecipePayload } from 'containers/recipes/types'
 import CategoryTag from 'components/CategoryTag'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import { Dropdown } from 'components/Dropdown'
-import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
+import { ClockIcon, CloudArrowUpIcon, UsersIcon } from '@heroicons/react/24/outline'
+
+function formatPrepTime(time: number | null) {
+    if (!time || !Number.isInteger(time)) {
+        return '?'
+    }
+
+    if (time < 60) {
+        return `${time} mins`
+    }
+
+    const mins = time % 60
+    const hrs = (time - mins) / 60
+
+    return `${hrs} ${hrs === 1 ? 'hr' : 'hrs'} ${mins} mins`
+}
 
 function EditRecipe() {
     const [isInstructionsShowing, setIsInstructionsShowing] = useState<boolean>(true)
@@ -33,7 +48,7 @@ function EditRecipe() {
     if (isGetSingleRecipeLoading || isGetItemsLoading) return <Loader fullPage />
     if (isGetSingleRecipeError || !getSingleRecipeData || isGetItemsError || !getItemsData) return <h1>Recipe error</h1>
 
-    const { name, id, items, instructions, recipe_category, image_url } = getSingleRecipeData
+    const { name, id, items, instructions, recipe_category, image_url, prep_time, serves } = getSingleRecipeData
 
     const renderInstructions = () => {
         if (!isInstructionsShowing) {
@@ -41,7 +56,7 @@ function EditRecipe() {
         }
 
         return (
-            <pre className='bg-primary-50 p-3 rounded' style={{ fontFamily: 'inherit' }}>
+            <pre className='text-secondary-500 whitespace-pre-wrap' style={{ fontFamily: 'inherit' }}>
                 {instructions || 'None set. Click the edit icon above to add some instructions.'}
             </pre>
         )
@@ -82,14 +97,21 @@ function EditRecipe() {
                         <PencilSquareIcon className='w-5 text-primary hover:text-primary-hover' />
                     </button>
                 </div>
-                <div className='ml-[-0.5rem] mt-1'>
+                <div className='flex gap-4 items-center mt-3'>
                     <CategoryTag
                         key={id}
-                        className='ml-2'
                         categoriesData={getRecipeCategoriesData || []}
                         categoryName={recipe_category?.name || 'Uncategorized'}
                         size='sm'
                     />
+                    <div className='flex gap-1 items-center'>
+                        <ClockIcon className='w-5 text-primary' />
+                        <p className='text-secondary-500 text-sm'>{formatPrepTime(prep_time)}</p>
+                    </div>
+                    <div className='flex gap-1 items-center'>
+                        <UsersIcon className='w-5 text-primary' />
+                        <p className='text-secondary-500 text-sm'>{serves || '?'}</p>
+                    </div>
                 </div>
             </div>
             {image_url ? (
