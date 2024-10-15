@@ -17,7 +17,7 @@ export function _Dropdown({ menuItems, menuButton, dropdownClassName, menuButton
         <div className={`relative${dropdownClassName ? ' ' + dropdownClassName : ''}`}>
             <Menu>
                 <MenuButton
-                    className={`inline-flex items-center gap-2 rounded bg-white py-1.5 px-3 text-sm/6 font-medium text-primary hover:text-white border border-primary focus:outline-none hover:bg-primary${
+                    className={`inline-flex items-center gap-2 rounded bg-white py-1.5 px-3 text-sm/6 font-medium text-primary border border-primary focus:outline-none${
                         menuButtonClassName ? ' ' + menuButtonClassName : ''
                     }`}
                 >
@@ -28,7 +28,7 @@ export function _Dropdown({ menuItems, menuButton, dropdownClassName, menuButton
                 <MenuItems
                     transition
                     anchor='bottom end'
-                    className='absolute w-40 mt-1 origin-top-right rounded border border bg-white p-1 text-sm/6 text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-10'
+                    className='absolute w-40 mt-1 origin-top-right rounded border bg-white p-1 text-sm/6 text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-10'
                 >
                     {React.Children.toArray(menuItems)}
                 </MenuItems>

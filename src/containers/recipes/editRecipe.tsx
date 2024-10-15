@@ -40,18 +40,10 @@ function EditRecipe() {
             return ''
         }
 
-        if (!instructions) {
-            return <p>None set. Click the &quot;Edit&quot; icon above to add some instructions.</p>
-        }
-
-        const lines = instructions.split('\n')
-
         return (
-            <div>
-                {lines.map((line, index) => (
-                    <p key={index}>{line}</p>
-                ))}
-            </div>
+            <pre className='bg-primary-50 p-3 rounded' style={{ fontFamily: 'inherit' }}>
+                {instructions || 'None set. Click the edit icon above to add some instructions.'}
+            </pre>
         )
     }
 
@@ -101,7 +93,7 @@ function EditRecipe() {
                 </div>
             </div>
             {image_url ? (
-                <div className='relative mt-4 h-40 max-w-[450px]'>
+                <div className='relative mt-4 h-44 max-w-[450px]'>
                     <img className='h-full w-full object-cover rounded-md' src={image_url || ''} alt={name} />
                     <Dropdown
                         dropdownClassName='!absolute top-3 right-3 h-8 w-8'
