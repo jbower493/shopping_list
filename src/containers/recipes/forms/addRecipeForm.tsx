@@ -20,12 +20,16 @@ type Inputs = {
     name: string
     recipeCategoryId: string
     instructions: string
+    prepTime: string
+    serves: string
 }
 
 const schema = z.object({
     name: z.string().min(1, 'Required'),
     instructions: z.string(),
-    recipeCategoryId: z.string()
+    recipeCategoryId: z.string(),
+    prepTime: z.coerce.number(),
+    serves: z.coerce.number()
 })
 
 function AddRecipeForm() {
@@ -40,7 +44,10 @@ function AddRecipeForm() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: '',
-            recipeCategoryId: 'none'
+            instructions: '',
+            recipeCategoryId: 'none',
+            prepTime: '15',
+            serves: '1'
         }
     })
 
@@ -49,9 +56,15 @@ function AddRecipeForm() {
         formState: { isDirty, isValid, isSubmitting }
     } = methods
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId, instructions }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ name, recipeCategoryId, instructions, prepTime, serves }) => {
         await createRecipe(
-            { name, recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId), instructions },
+            {
+                name,
+                recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId),
+                instructions,
+                prep_time: Number(prepTime),
+                serves: Number(serves)
+            },
             {
                 onSuccess: (res) => {
                     toast.success(res.message)
@@ -76,6 +89,10 @@ function AddRecipeForm() {
                                 options={getRecipeCategoryOptions(recipeCategoriesdata)}
                             />
                         </FormRow>
+                        <div className='flex gap-1 mb-3'>
+                            <InputField.HookForm label='Prep Time' name='prepTime' type='number' step={1} className='flex-1' />
+                            <InputField.HookForm label='Serves' name='serves' type='number' step={1} className='flex-1' />
+                        </div>
                         <FormRow>
                             <TextAreaField.HookForm label='Instructions' name='instructions' />
                         </FormRow>

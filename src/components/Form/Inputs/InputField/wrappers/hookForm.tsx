@@ -8,9 +8,18 @@ export interface InputFieldHookFormWrapperProps<T, S = any> {
     name: string
     type?: HTMLInputTypeAttribute
     validate?: Validate<T, S>
+    step?: React.InputHTMLAttributes<HTMLInputElement>['step']
+    className?: string
 }
 
-function InputFieldHookFormWrapper<T, S = any>({ label, name, type = 'text', validate }: InputFieldHookFormWrapperProps<T, S>): JSX.Element {
+function InputFieldHookFormWrapper<T, S = any>({
+    label,
+    name,
+    type = 'text',
+    validate,
+    step,
+    className
+}: InputFieldHookFormWrapperProps<T, S>): JSX.Element {
     const { register, formState } = useFormContext()
 
     // TODO: fix type error and any
@@ -18,7 +27,7 @@ function InputFieldHookFormWrapper<T, S = any>({ label, name, type = 'text', val
     const registered = register(name, { validate })
 
     return (
-        <div>
+        <div className={className}>
             <InputField
                 label={label}
                 name={registered.name}
@@ -26,6 +35,7 @@ function InputFieldHookFormWrapper<T, S = any>({ label, name, type = 'text', val
                 onBlur={registered.onBlur}
                 componentRef={registered.ref}
                 type={type}
+                step={step}
             />
             <ErrorMessage error={formState.touchedFields[registered.name] && formState.errors[registered.name]} />
         </div>

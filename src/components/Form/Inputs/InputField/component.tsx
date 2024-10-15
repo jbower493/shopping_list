@@ -10,15 +10,16 @@ export interface InputFieldProps {
     componentRef?: React.LegacyRef<HTMLInputElement>
     className?: string
     placeholder?: string
+    step?: React.InputHTMLAttributes<HTMLInputElement>['step']
 }
 
 type TInputField = React.FC<InputFieldProps>
 
-const InputField: TInputField = ({ label, name, type = 'text', onChange, onBlur, value, componentRef, className, placeholder }) => {
-    const numberFieldProps: { step?: React.InputHTMLAttributes<HTMLInputElement>['step'] } = {}
+const InputField: TInputField = ({ label, name, type = 'text', onChange, onBlur, value, componentRef, className, placeholder, step }) => {
+    const numberFieldProps: { step?: InputFieldProps['step'] } = {}
 
     if (type === 'number') {
-        numberFieldProps.step = 0.01
+        numberFieldProps.step = step
     }
 
     return (

@@ -22,12 +22,16 @@ type Inputs = {
     name: string
     instructions?: string
     recipeCategoryId: string
+    prepTime: string
+    serves: string
 }
 
 const schema = z.object({
     name: z.string().min(1, 'Required'),
     instructions: z.string(),
-    recipeCategoryId: z.string()
+    recipeCategoryId: z.string(),
+    prepTime: z.coerce.number(),
+    serves: z.coerce.number()
 })
 
 function EditRecipeDetailsForm() {
@@ -46,7 +50,9 @@ function EditRecipeDetailsForm() {
         defaultValues: {
             name: getSingleRecipeData?.name,
             instructions: getSingleRecipeData?.instructions || undefined,
-            recipeCategoryId: getSingleRecipeData?.recipe_category?.id.toString() || 'none'
+            recipeCategoryId: getSingleRecipeData?.recipe_category?.id.toString() || 'none',
+            prepTime: getSingleRecipeData?.prep_time?.toString() || '15',
+            serves: getSingleRecipeData?.serves?.toString() || '1'
         }
     })
 
@@ -55,14 +61,16 @@ function EditRecipeDetailsForm() {
         formState: { isDirty, isValid, isSubmitting }
     } = methods
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ name, instructions, recipeCategoryId }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ name, instructions, recipeCategoryId, prepTime, serves }) => {
         await editRecipe(
             {
                 recipeId: recipeId || '',
                 attributes: {
                     name,
                     instructions,
-                    recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId)
+                    recipe_category_id: recipeCategoryId === 'none' ? null : Number(recipeCategoryId),
+                    prep_time: Number(prepTime),
+                    serves: Number(serves)
                 }
             },
             {
@@ -92,6 +100,10 @@ function EditRecipeDetailsForm() {
                                     options={getRecipeCategoryOptions(getRecipeCategoriesData)}
                                 />
                             </FormRow>
+                            <div className='flex gap-1 mb-3'>
+                                <InputField.HookForm label='Prep Time' name='prepTime' type='number' step={1} className='flex-1' />
+                                <InputField.HookForm label='Serves' name='serves' type='number' step={1} className='flex-1' />
+                            </div>
                             <FormRow>
                                 <TextAreaField.HookForm label='Instructions' name='instructions' />
                             </FormRow>

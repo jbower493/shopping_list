@@ -12,6 +12,8 @@ export interface NewRecipe {
     name: string
     instructions?: string
     recipe_category_id?: number | null
+    prep_time: number | null
+    serves: number | null
 }
 
 export interface DetailedRecipe {
@@ -22,7 +24,7 @@ export interface DetailedRecipe {
     recipe_category: RecipeCategory | null
     image_url: string | null
     prep_time: number | null
-    serves: number
+    serves: number | null
 }
 
 export interface AddItemToRecipePayload {
@@ -37,6 +39,8 @@ export interface EditRecipePayload {
     name: string
     instructions?: string
     recipe_category_id?: number | null
+    prep_time: number | null
+    serves: number | null
 }
 
 export interface RecipeItem {
