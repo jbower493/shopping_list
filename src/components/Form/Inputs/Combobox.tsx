@@ -16,7 +16,7 @@ function ComboBox({ label, options, value, setValue, placeholder }: ComboBoxProp
             : options.filter((option) => option.toLowerCase().replace(/\s+/g, '').includes(value.toLowerCase().replace(/\s+/g, '')))
 
     return (
-        <Combobox value={value} onChange={setValue}>
+        <Combobox value={value} onChange={(value) => setValue(value ?? '')}>
             <div>
                 {label ? <label>{label}</label> : ''}
                 <div className='relative w-40'>
