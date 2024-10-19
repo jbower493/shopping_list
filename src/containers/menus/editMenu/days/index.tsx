@@ -80,7 +80,7 @@ export function Days({ recipes, menuId }: { recipes: MenuRecipe[]; menuId: numbe
     const days = getDayOptions()
 
     return (
-        <div>
+        <div className='pb-8'>
             <ul>
                 {days.map(({ day, date }) => {
                     const recipesOnThisDay = recipes.filter(({ day_of_week }) => day_of_week.day === date)
