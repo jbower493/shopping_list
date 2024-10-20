@@ -5,7 +5,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { useCreateRecipeMutation } from '../queries'
+import { useCreateRecipeMutation, useImportRecipeFromImageMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
@@ -15,6 +15,7 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
 import TextAreaField from 'components/Form/Inputs/TextAreaField'
+import { useRef } from 'react'
 
 type Inputs = {
     name: string
@@ -34,10 +35,12 @@ const schema = z.object({
 
 function AddRecipeForm() {
     const navigate = useNavigate()
+    const importFromImageInputRef = useRef<HTMLInputElement>(null)
 
     const { data: recipeCategoriesdata, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
     const { mutateAsync: createRecipe } = useCreateRecipeMutation()
+    const { mutate: importRecipeFromImage, isLoading: isImportRecipeFromImageLoading } = useImportRecipeFromImageMutation()
 
     const methods = useForm<Inputs>({
         mode: 'all',
@@ -72,6 +75,31 @@ function AddRecipeForm() {
                 }
             }
         )
+    }
+
+    function handleImportFromImageSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+
+        if (!importFromImageInputRef.current) {
+            return
+        }
+
+        const file = importFromImageInputRef.current.files?.[0]
+
+        if (!file) {
+            return
+        }
+
+        const formData = new FormData()
+        formData.append('import_from_image', file)
+
+        importRecipeFromImage(formData, {
+            onSuccess(res) {
+                const recipeText = res.data?.imported_recipe || []
+                const formatted = recipeText.join('\n\n')
+                methods.setValue('instructions', formatted)
+            }
+        })
     }
 
     const renderForm = () => {
@@ -118,7 +146,20 @@ function AddRecipeForm() {
                 onClose={() => navigate(-1)}
                 loading={isGetRecipeCategoriesFetching}
             >
-                {renderForm()}
+                <div>
+                    <form onSubmit={handleImportFromImageSubmit} className='p-4 flex items-end gap-2'>
+                        <div className='flex-1'>
+                            <label className='block mb-1' htmlFor='importFromImage'>
+                                <strong className='text-white bg-primary py-[1px] px-1 rounded-md font-medium text-xs'>NEW</strong> Import From Image
+                            </label>
+                            <input ref={importFromImageInputRef} id='importFromImage' type='file' name='import_from_image' />
+                        </div>
+                        <Button className='w-20' type='submit' loading={isImportRecipeFromImageLoading}>
+                            Import
+                        </Button>
+                    </form>
+                    {renderForm()}
+                </div>
             </UrlModal>
         </div>
     )

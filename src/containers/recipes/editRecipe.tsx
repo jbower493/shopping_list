@@ -81,14 +81,21 @@ function EditRecipe() {
         <div className='p-4'>
             <div className='flex justify-between'>
                 <Link to='/recipes'>Back to recipes</Link>
-                <div className='flex justify-between gap-4'>
-                    <button type='button' onClick={() => navigate(`/recipes/edit/${id}/duplicate`)}>
-                        <Square2StackIcon className='w-5 text-primary hover:text-primary-hover' />
-                    </button>
-                    <button type='button' onClick={() => navigate(`/recipes/edit/${id}/share`)}>
-                        <ArrowUpTrayIcon className='w-5 text-primary hover:text-primary-hover' />
-                    </button>
-                </div>
+                <Dropdown
+                    dropdownClassName='h-8 w-8'
+                    menuButtonClassName='!bg-primary !text-white w-full h-full flex justify-center items-center rounded-full'
+                    menuButton={<EllipsisHorizontalIcon className='size-6' style={{ transform: 'scale(400%)' }} />}
+                    menuItems={[
+                        <Dropdown.MenuItem.Button key='1' onClick={() => navigate(`/recipes/edit/${id}/duplicate`)}>
+                            <Square2StackIcon className='w-4 text-primary' />
+                            Duplicate
+                        </Dropdown.MenuItem.Button>,
+                        <Dropdown.MenuItem.Button key='2' onClick={() => navigate(`/recipes/edit/${id}/share`)}>
+                            <ArrowUpTrayIcon className='w-4 text-primary' />
+                            Share
+                        </Dropdown.MenuItem.Button>
+                    ]}
+                />
             </div>
             <div className='mt-2'>
                 <div className='flex items-center'>
