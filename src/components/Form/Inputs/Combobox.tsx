@@ -1,5 +1,6 @@
 import { ChevronUpDownIcon } from '@heroicons/react/24/solid'
 import { Combobox } from '@headlessui/react'
+import { useEffect, useState } from 'react'
 
 interface ComboBoxProps {
     label?: string
@@ -9,11 +10,24 @@ interface ComboBoxProps {
     placeholder?: string
 }
 
+function getFilteredValues(value: string, options: string[]) {
+    return value === ''
+        ? options
+        : options.filter((option) => option.toLowerCase().replace(/\s+/g, '').includes(value.toLowerCase().replace(/\s+/g, '')))
+}
+
 function ComboBox({ label, options, value, setValue, placeholder }: ComboBoxProps) {
-    const filteredValues =
-        value === ''
-            ? options
-            : options.filter((option) => option.toLowerCase().replace(/\s+/g, '').includes(value.toLowerCase().replace(/\s+/g, '')))
+    const [filteredValues, setFilteredValues] = useState(getFilteredValues(value, options))
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setFilteredValues(getFilteredValues(value, options))
+        }, 400)
+
+        return () => {
+            clearTimeout(timeoutId)
+        }
+    }, [value])
 
     return (
         <Combobox value={value} onChange={(value) => setValue(value ?? '')}>
