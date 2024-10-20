@@ -377,3 +377,17 @@ export function useRemoveRecipeImageMutation() {
         mutationFn: removeRecipeImage
     })
 }
+
+/***** Import recipe from image *****/
+const importRecipeFromImage = (formData: FormData): Promise<MutationResponse<{ imported_recipe: string[] }>> =>
+    axios.post('/recipe/import-from-image', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+export function useImportRecipeFromImageMutation() {
+    return useMutation({
+        mutationFn: importRecipeFromImage
+    })
+}
