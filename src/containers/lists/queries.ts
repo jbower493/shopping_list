@@ -102,13 +102,15 @@ export function useAddItemToListMutation() {
             queryClient.setQueryData(singleListQueryKey(payload.listId), (old: SingleListQueryData) => {
                 if (!old) return undefined
 
+                const matchingItem = itemsQueryData?.data.items.find(({ name }) => name === payload.itemName)
+
                 const getAddedItemCategory = () => {
                     function getCategoryId() {
                         // If its a new item and therefore it is getting assigned a category on creation
                         if (payload.categoryId) return Number(payload.categoryId)
 
                         // If its an existing item, check the items list to see what it's category is (if it has a category)
-                        const matchingItemCategory = itemsQueryData?.data.items.find(({ name }) => name === payload.itemName)?.category
+                        const matchingItemCategory = matchingItem?.category
 
                         return matchingItemCategory?.id || null
                     }
@@ -137,7 +139,8 @@ export function useAddItemToListMutation() {
                         id: 0,
                         name: payload.itemName,
                         category: getAddedItemCategory(),
-                        item_quantity: getAddedItemQuantity()
+                        item_quantity: getAddedItemQuantity(),
+                        image_url: matchingItem?.image_url || null
                     }
                 ]
 

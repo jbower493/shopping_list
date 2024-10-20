@@ -5,7 +5,7 @@ import UrlModal from 'components/Modal/UrlModal'
 import ModalBody from 'components/Modal/ModalBody'
 import ModalFooter from 'components/Modal/ModalFooter'
 import Button from 'components/Button'
-import { itemsQueryKey, useEditItemMutation, useGetItemsQuery } from '../queries'
+import { itemsQueryKey, useEditItemMutation, useGetItemsQuery, useUploadItemImageMutation } from '../queries'
 import InputField from 'components/Form/Inputs/InputField'
 import SubmitButton from 'components/Form/SubmitButton'
 import { queryClient } from 'utils/queryClient'
@@ -17,6 +17,7 @@ import FormRow from 'components/Form/FormRow'
 import { useGetCategoriesQuery } from 'containers/categories/queries'
 import { listsQueryKey } from 'containers/lists/queries'
 import { recipesQueryKey } from 'containers/recipes/queries'
+import { useRef } from 'react'
 
 type Inputs = {
     name: string
@@ -32,9 +33,13 @@ function EditItemDetailsForm() {
     const navigate = useNavigate()
     const { itemId } = useParams()
 
+    const itemImageInputRef = useRef<HTMLInputElement>(null)
+
     const { data: categoriesData } = useGetCategoriesQuery()
     const { data: itemsData } = useGetItemsQuery()
+
     const { mutateAsync: editItem } = useEditItemMutation()
+    const { mutate: uploadItemImage, isLoading: isUploadItemImageLoading } = useUploadItemImageMutation()
 
     const item = itemsData?.find((item) => item.id === Number(itemId))
 
@@ -73,29 +78,76 @@ function EditItemDetailsForm() {
         )
     }
 
+    function handleImportFromImageSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+
+        if (!itemImageInputRef.current) {
+            return
+        }
+
+        const file = itemImageInputRef.current.files?.[0]
+
+        if (!file) {
+            return
+        }
+
+        const formData = new FormData()
+        formData.append('item_image', file)
+
+        uploadItemImage(
+            { id: itemId || '', formData },
+            {
+                onSuccess() {
+                    queryClient.invalidateQueries(listsQueryKey())
+                    queryClient.invalidateQueries(itemsQueryKey())
+                }
+            }
+        )
+    }
+
     return (
         <div>
             <UrlModal title='Edit Item' desc='Update the name or category of your item' onClose={() => navigate(-1)}>
-                <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <ModalBody>
-                            <FormRow>
-                                <InputField.HookForm label='Name' name='name' />
-                            </FormRow>
-                            <FormRow>
-                                <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(categoriesData)} />
-                            </FormRow>
-                        </ModalBody>
-                        <ModalFooter
-                            buttons={[
-                                <Button key={1} color='secondary' onClick={() => navigate(-1)}>
-                                    Back
-                                </Button>,
-                                <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Save' />
-                            ]}
-                        />
+                <div>
+                    <form onSubmit={handleImportFromImageSubmit} className='p-4 flex items-end gap-2'>
+                        <div className='flex-1'>
+                            <label className='block mb-1' htmlFor='importFromImage'>
+                                Image
+                            </label>
+                            {item?.image_url ? (
+                                <div className='relative mb-2 h-32 max-w-[250px]'>
+                                    <img className='h-full w-full object-cover rounded-md' src={item.image_url} alt={item.name} />
+                                </div>
+                            ) : (
+                                <div>None selected</div>
+                            )}
+                            <input ref={itemImageInputRef} id='importFromImage' type='file' name='item_image' />
+                        </div>
+                        <Button className='w-20' type='submit' loading={isUploadItemImageLoading}>
+                            Upload
+                        </Button>
                     </form>
-                </FormProvider>
+                    <FormProvider {...methods}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <ModalBody>
+                                <FormRow>
+                                    <InputField.HookForm label='Name' name='name' />
+                                </FormRow>
+                                <FormRow>
+                                    <SelectField.HookForm label='Category' name='categoryId' options={getCategoryOptions(categoriesData)} />
+                                </FormRow>
+                            </ModalBody>
+                            <ModalFooter
+                                buttons={[
+                                    <Button key={1} color='secondary' onClick={() => navigate(-1)}>
+                                        Back
+                                    </Button>,
+                                    <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Save' />
+                                ]}
+                            />
+                        </form>
+                    </FormProvider>
+                </div>
             </UrlModal>
         </div>
     )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Outlet, useNavigate, useParams } from 'react-router-dom'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid'
 import { useGetSingleListQuery } from 'containers/lists/queries'
 import Loader from 'components/Loader'
@@ -9,9 +9,12 @@ import { getExistingCategories } from 'utils/functions'
 import CategoryTag from 'components/CategoryTag'
 import ItemWithQuantity from 'components/ItemWithQuantity'
 import { ListItem } from 'containers/lists/types'
+import { PhotoIcon } from '@heroicons/react/24/outline'
 
 function Shop() {
     const { listId } = useParams()
+
+    const navigate = useNavigate()
 
     const { value: checked, setValue: setChecked } = useLocalStorage<string[]>(`list${listId?.toString() || ''}`, [])
 
@@ -33,29 +36,36 @@ function Shop() {
             const isChecked = !!checked?.includes(itemWithinCategory.name)
 
             return (
-                <button
-                    key={itemWithinCategory.id}
-                    onClick={() => {
-                        if (isChecked) uncheckItem(itemWithinCategory.name)
-                        else checkItem(itemWithinCategory.name)
-                    }}
-                    className='flex justify-between w-full max-w-md mb-2'
-                >
-                    <div
-                        className={`${
-                            isChecked
-                                ? 'relative opacity-30 after:content-[""] after:w-full after:h-[1px] after:bg-black after:absolute after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2'
-                                : ''
-                        }`}
+                <div className='mb-2 w-full max-w-md flex items-center gap-3'>
+                    {itemWithinCategory.image_url ? (
+                        <button type='button' onClick={() => navigate(`/shop/${listId}/item/${itemWithinCategory.id}/view-image`)}>
+                            <PhotoIcon className='size-6 text-primary' />
+                        </button>
+                    ) : null}
+                    <button
+                        key={itemWithinCategory.id}
+                        onClick={() => {
+                            if (isChecked) uncheckItem(itemWithinCategory.name)
+                            else checkItem(itemWithinCategory.name)
+                        }}
+                        className='flex-1 flex justify-between'
                     >
-                        <ItemWithQuantity
-                            quantityValue={itemWithinCategory.item_quantity.quantity}
-                            unitSymbol={itemWithinCategory.item_quantity.quantity_unit?.symbol}
-                            itemName={itemWithinCategory.name}
-                        />
-                    </div>
-                    <Checkbox isChecked={isChecked} />
-                </button>
+                        <div
+                            className={`${
+                                isChecked
+                                    ? 'relative opacity-30 after:content-[""] after:w-full after:h-[1px] after:bg-black after:absolute after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2'
+                                    : ''
+                            }`}
+                        >
+                            <ItemWithQuantity
+                                quantityValue={itemWithinCategory.item_quantity.quantity}
+                                unitSymbol={itemWithinCategory.item_quantity.quantity_unit?.symbol}
+                                itemName={itemWithinCategory.name}
+                            />
+                        </div>
+                        <Checkbox isChecked={isChecked} />
+                    </button>
+                </div>
             )
         }
 
@@ -92,6 +102,7 @@ function Shop() {
                 <h2>Shop</h2>
             </div>
             {renderItems()}
+            <Outlet />
         </div>
     )
 }

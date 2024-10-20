@@ -50,3 +50,26 @@ export function useEditItemMutation() {
         mutationFn: editItem
     })
 }
+
+/***** Upload item image *****/
+const uploadItemImage = ({ id, formData }: { id: string; formData: FormData }): Promise<MutationResponse> =>
+    axios.post(`/item/${id}/upload-image`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+export function useUploadItemImageMutation() {
+    return useMutation({
+        mutationFn: uploadItemImage
+    })
+}
+
+/***** Remove item image *****/
+const removeItemImage = (id: string): Promise<MutationResponse> => axios.delete(`/item/${id}/remove-image`)
+
+export function useRemoveItemImageMutation() {
+    return useMutation({
+        mutationFn: removeItemImage
+    })
+}

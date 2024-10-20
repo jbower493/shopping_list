@@ -32,6 +32,7 @@ export interface ListItem {
         quantity_unit: QuantityUnit | null
     }
     category: Category | null
+    image_url: string | null
 }
 
 export interface EditListPayload {

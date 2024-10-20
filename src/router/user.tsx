@@ -39,7 +39,7 @@ import EditRecipeCategoryDetailsForm from 'containers/recipeCategories/forms/edi
 import EditMenuDetailsForm from 'containers/menus/forms/editMenuDetailsForm'
 import EditItemDetailsForm from 'containers/items/forms/editItemDetailsForm'
 import { FullScreenPage } from 'components/FullScreenPage'
-import { UpdateListItemQuantityForm } from 'containers/lists/forms/updateListItemQuantityForm'
+import { UpdateListItemForm } from 'containers/lists/forms/updateListItemForm'
 import { UpdateRecipeItemQuantityForm } from 'containers/recipes/forms/updateRecipeItemQuantityForm'
 import { Account } from 'containers/account'
 import { AddAdditionalUserForm } from 'containers/account/modules/additionalUsers/forms/addAdditionalUserForm'
@@ -52,6 +52,7 @@ import AcceptSharedRecipeForm from 'containers/recipes/forms/acceptSharedRecipeF
 import { usePrefetchAppCriticalData } from 'utils/hooks'
 import { UploadRecipeImageForm } from 'containers/recipes/forms/uploadRecipeImageForm'
 import { RemoveRecipeImageForm } from 'containers/recipes/forms/removeRecipeImageForm'
+import { ItemImageModal } from 'containers/shop/itemImageModal'
 
 function RedirectToRefAfterLogin() {
     const [searchParams] = useSearchParams()
@@ -95,7 +96,7 @@ function UserRouter() {
                 <Route path='details' element={<EditListDetailsForm />} />
                 <Route path='add-from-recipe' element={<AddFromRecipeForm />} />
                 <Route path='add-from-menu' element={<AddFromMenuForm />} />
-                <Route path='update-item-quantity/:itemId' element={<UpdateListItemQuantityForm />} />
+                <Route path='update-item-quantity/:itemId' element={<UpdateListItemForm />} />
             </Route>
             <Route path='/recipes' element={<Recipes />}>
                 <Route path='new' element={<AddRecipeForm />} />
@@ -118,7 +119,9 @@ function UserRouter() {
                 <Route path='add-recipe' element={<AddRecipeToMenuForm />} />
                 <Route path='details' element={<EditMenuDetailsForm />} />
             </Route>
-            <Route path='/shop/:listId' element={<Shop />} />
+            <Route path='/shop/:listId' element={<Shop />}>
+                <Route path='item/:itemId/view-image' element={<ItemImageModal />} />
+            </Route>
             <Route path='/account' element={<Account />}>
                 <Route path='additional-user/add' element={<AddAdditionalUserForm />} />
                 <Route path='additional-user/remove' element={<RemoveAdditionalUserForm />} />
