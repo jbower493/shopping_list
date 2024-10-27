@@ -28,8 +28,8 @@ function Recipes() {
     const filteredRecipes = getRecipesData.filter((recipe) => recipe.name.toLowerCase().includes(search.toLowerCase()))
 
     const renderCurrentRecipes = () => {
-        // Get a unique list of all the recipe categories present in the recipe
-        const recipeCategoriesInRecipe = getExistingRecipeCategories(filteredRecipes)
+        // Get a unique list of all the recipe categories present in the existing recipes
+        const recipeCategoriesOfExistingRecipes = getExistingRecipeCategories(filteredRecipes)
 
         const renderRecipeCategory = (recipeCategoryId: number, recipeCategoryName: string) => {
             let recipeslist = filteredRecipes.filter(({ recipe_category }) => !recipe_category)
@@ -37,12 +37,12 @@ function Recipes() {
             if (recipeCategoryId !== -1) recipeslist = filteredRecipes.filter(({ recipe_category }) => recipe_category?.id === recipeCategoryId)
 
             // TODO: remove this once the recipes are being sorted already by the backend
-            recipeslist.sort((a, b) => (a.name > b.name ? 1 : -1))
+            recipeslist.sort()
 
             return (
                 <div key={recipeCategoryId} className='mb-6'>
                     <div className='mb-2'>
-                        <CategoryTag categoriesData={recipeCategoriesInRecipe.filter(({ id }) => id !== -1)} categoryName={recipeCategoryName} />
+                        <CategoryTag categoriesData={recipeCategoriesOfExistingRecipes.filter(({ id }) => id !== -1)} categoryName={recipeCategoryName} />
                         {recipeCategoryId === -1 ? <p className='text-[13px] opacity-40 mt-1'>Edit the recipe to assign it to a category</p> : ''}
                     </div>
                     <ul>
@@ -66,7 +66,7 @@ function Recipes() {
             )
         }
 
-        return recipeCategoriesInRecipe.map(({ id, name }) => renderRecipeCategory(id, name))
+        return recipeCategoriesOfExistingRecipes.map(({ id, name }) => renderRecipeCategory(id, name))
     }
 
     const noRecipesMessage = search
