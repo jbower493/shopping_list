@@ -54,7 +54,7 @@ function EditItemDetailsForm() {
 
     const {
         handleSubmit,
-        formState: { isDirty, isValid, isSubmitting }
+        formState: { isValid, isSubmitting }
     } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ name, categoryId }) => {
@@ -142,7 +142,7 @@ function EditItemDetailsForm() {
                                     <Button key={1} color='secondary' onClick={() => navigate(-1)}>
                                         Back
                                     </Button>,
-                                    <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Save' />
+                                    <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Save' />
                                 ]}
                             />
                         </form>

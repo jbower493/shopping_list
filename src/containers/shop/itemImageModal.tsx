@@ -17,7 +17,7 @@ export function ItemImageModal() {
     return (
         <UrlModal onClose={() => navigate(`/shop/${listId}`)} title={item.name}>
             <div className='p-4'>
-                <div className='relative h-44 w-full max-w-[480px]'>
+                <div className='relative h-80 w-full max-w-[480px]'>
                     <img className='h-full w-full object-cover rounded-md' src={item.image_url || ''} alt={item.name} />
                 </div>
             </div>

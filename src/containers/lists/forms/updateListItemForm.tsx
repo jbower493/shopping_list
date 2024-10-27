@@ -43,7 +43,7 @@ export function UpdateListItemForm() {
 
     const {
         handleSubmit,
-        formState: { isValid, isSubmitting, isDirty }
+        formState: { isValid, isSubmitting }
     } = methods
 
     const onSubmit: SubmitHandler<Inputs> = async ({ quantity, quantityUnitId }) => {
@@ -139,7 +139,7 @@ export function UpdateListItemForm() {
                                 <Button key={1} color='secondary' onClick={() => navigate(-1)}>
                                     Back
                                 </Button>,
-                                <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={isDirty} text='Update' />
+                                <SubmitButton key={2} isSubmitting={isSubmitting} isValid={isValid} isDirty={true} text='Update' />
                             ]}
                         />
                     </form>
