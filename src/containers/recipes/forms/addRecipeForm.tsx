@@ -147,7 +147,7 @@ function AddRecipeForm() {
                 loading={isGetRecipeCategoriesFetching}
             >
                 <div>
-                    {/* <form onSubmit={handleImportFromImageSubmit} className='p-4 flex items-end gap-2'>
+                    <form onSubmit={handleImportFromImageSubmit} className='p-4 flex items-end gap-2'>
                         <div className='flex-1'>
                             <label className='block mb-1' htmlFor='importFromImage'>
                                 <strong className='text-white bg-primary py-[1px] px-1 rounded-md font-medium text-xs'>NEW</strong> Import From Image
@@ -157,7 +157,7 @@ function AddRecipeForm() {
                         <Button className='w-20' type='submit' loading={isImportRecipeFromImageLoading}>
                             Import
                         </Button>
-                    </form> */}
+                    </form>
                     {renderForm()}
                 </div>
             </UrlModal>
