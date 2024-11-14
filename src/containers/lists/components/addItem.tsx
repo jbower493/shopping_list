@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { PlusIcon } from '@heroicons/react/24/solid'
-import ComboBox from 'components/Form/Inputs/Combobox'
+import { Combobox } from 'components/Form/Inputs/Combobox'
 import { Item } from 'containers/items/types'
 import NewItemCategoryForm from 'containers/lists/components/newItemCategoryForm'
 import SelectField from 'components/Form/Inputs/SelectField'
@@ -44,7 +44,7 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
     return (
         <div className={className}>
             <p>Add an item</p>
-            <div className='flex gap-1 h-11'>
+            <div className='flex gap-1 mb-4'>
                 <InputField
                     name='quanity'
                     onChange={(e) => setQuantityValueToAdd(e.target.value)}
@@ -59,7 +59,12 @@ function AddItem({ onAdd, itemsList, className }: AddItemProps) {
                     options={quantityUnitOptions}
                     className='px-[2px] w-[85px]'
                 />
-                <ComboBox value={itemToAdd} setValue={setItemToAdd} options={itemsList.map(({ name }) => name)} placeholder='Item name' />
+                <Combobox
+                    value={itemToAdd}
+                    setValue={setItemToAdd}
+                    options={itemsList.map(({ name, id }) => ({ value: name, id }))}
+                    placeholder='Item name'
+                />
                 <div className='w-10 h-9 flex justify-center items-center relative'>
                     <div
                         className={`absolute w-[150px] h-6 right-12 pointer-events-none opacity-0${
