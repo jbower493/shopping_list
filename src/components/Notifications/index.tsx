@@ -1,7 +1,8 @@
 import { BellIcon } from '@heroicons/react/24/outline'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNotificationsQuery } from './queries'
 import { Link } from 'react-router-dom'
+import { useClickAway } from 'utils/hooks'
 
 export function Notifications() {
     const notificationIconRef = useRef<HTMLButtonElement | null>(null)
@@ -10,19 +11,7 @@ export function Notifications() {
 
     const { data: notificationsData } = useNotificationsQuery()
 
-    const handleClickAway = (e: MouseEvent) => {
-        const target = e.target as Node
-        if (notificationIconRef.current && !notificationIconRef.current.contains(target)) {
-            setIsListShowing(false)
-        }
-    }
-
-    useEffect(() => {
-        document.addEventListener('click', handleClickAway)
-
-        return () => document.removeEventListener('click', handleClickAway)
-    }, [])
-
+    useClickAway([notificationIconRef], () => setIsListShowing(false))
     if (!notificationsData || notificationsData.notifications.length <= 0) {
         return null
     }

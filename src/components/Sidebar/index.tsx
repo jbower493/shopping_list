@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useLogoutMutation } from 'containers/auth/queries'
 import { useGetUserQuery } from 'containers/auth/queries'
@@ -7,6 +7,7 @@ import Button from 'components/Button'
 import { queryClient } from 'utils/queryClient'
 import { userQueryKey } from 'utils/queryClient/keyFactory'
 import { UserIcon, UsersIcon } from '@heroicons/react/24/solid'
+import { useClickAway } from 'utils/hooks'
 
 interface SidebarProps {
     showMenu: boolean
@@ -20,16 +21,7 @@ function Sidebar({ showMenu, closeMenu, menuIconRef }: SidebarProps) {
     const { data: getUserData, isFetching: isGetUserFetching, isError: isGetUserError } = useGetUserQuery()
     const { mutate: logout, isLoading: isLogoutLoading } = useLogoutMutation()
 
-    const handleClickAway = (e: MouseEvent) => {
-        const target = e.target as Node
-        if (sidebarRef.current && !sidebarRef.current.contains(target) && !menuIconRef.current?.contains(target)) closeMenu()
-    }
-
-    useEffect(() => {
-        document.addEventListener('click', handleClickAway)
-
-        return () => document.removeEventListener('click', handleClickAway)
-    }, [])
+    useClickAway([sidebarRef, menuIconRef], closeMenu)
 
     return (
         <nav

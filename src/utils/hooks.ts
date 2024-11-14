@@ -37,3 +37,23 @@ export function usePrefetchAppCriticalData() {
 
     return null
 }
+
+export function useClickAway(refs: React.MutableRefObject<HTMLElement | null>[], onClickAway: () => void) {
+    function handleClickAway(e: MouseEvent) {
+        if (!refs || refs.length <= 0) {
+            return
+        }
+
+        if (!refs.some((ref) => !ref.current || ref.current.contains(e.target as Node))) {
+            onClickAway()
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickAway)
+
+        return () => document.removeEventListener('click', handleClickAway)
+    }, [])
+
+    return null
+}
