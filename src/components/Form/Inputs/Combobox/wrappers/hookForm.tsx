@@ -7,15 +7,17 @@ export interface ComboboxHookFormWrapperProps {
     name: string
     options: ComboboxOptions
     className?: string
+    listClassName?: string
 }
 
-export const _ComboboxHookFormWrapper: React.FC<ComboboxHookFormWrapperProps> = ({ label, name, options, className }) => {
+export const _ComboboxHookFormWrapper: React.FC<ComboboxHookFormWrapperProps> = ({ label, name, options, className, listClassName }) => {
     const { field, fieldState } = useController({ name })
 
     return (
         <div>
             <_Combobox
                 className={className}
+                listClassName={listClassName}
                 label={label}
                 value={field.value}
                 setValue={(newValue) => field.onChange(newValue)}

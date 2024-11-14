@@ -89,6 +89,7 @@ function AddFromRecipeForm() {
                         <FormRow className='mb-40'>
                             <Combobox.HookForm
                                 className='w-full'
+                                listClassName='max-h-40'
                                 label='Recipe'
                                 name='recipeName'
                                 options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}

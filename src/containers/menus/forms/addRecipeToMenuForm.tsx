@@ -112,6 +112,7 @@ function AddRecipeToMenuForm() {
                         <FormRow>
                             <Combobox.HookForm
                                 className='w-full'
+                                listClassName='max-h-40'
                                 label='Recipe'
                                 name='recipeName'
                                 options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
