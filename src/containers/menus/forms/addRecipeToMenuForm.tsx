@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
@@ -16,6 +15,7 @@ import FormRow from 'components/Form/FormRow'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getDayOptions } from '../editMenu/days'
+import { Combobox } from 'components/Form/Inputs/Combobox'
 
 export function getFilteredRecipes(selectedRecipeCategoryId: string | undefined, getRecipesData: Recipe[]) {
     function filterFn({ recipe_category }: Recipe) {
@@ -37,22 +37,16 @@ export function getFilteredRecipes(selectedRecipeCategoryId: string | undefined,
     const list = (getRecipesData || []).filter(filterFn)
 
     return list.map(({ id, name }) => ({
-        label: name,
-        value: id.toString()
+        id,
+        value: name
     }))
 }
 
 type Inputs = {
     recipeCategoryId: string | undefined
-    recipeId: string
+    recipeName: string
     day: string
 }
-
-const schema = z.object({
-    recipeCategoryId: z.string(),
-    recipeId: z.string(),
-    day: z.string()
-})
 
 function AddRecipeToMenuForm() {
     const navigate = useNavigate()
@@ -63,12 +57,20 @@ function AddRecipeToMenuForm() {
 
     const { mutate: addRecipeToMenu } = useAddRecipeToMenuMutation()
 
+    const allowedRecipeNames = getRecipesData?.map((recipe) => recipe.name) || []
+
+    const schema = z.object({
+        recipeCategoryId: z.string(),
+        recipeName: z.string().refine((val) => allowedRecipeNames.includes(val), { message: 'Must be one of your existing recipes.' }),
+        day: z.string()
+    })
+
     const methods = useForm<Inputs>({
         mode: 'all',
         resolver: zodResolver(schema),
         defaultValues: {
             recipeCategoryId: 'ALL_CATEGORIES',
-            recipeId: getRecipesData?.[0]?.id.toString(),
+            recipeName: '',
             day: 'NO_DAY'
         }
     })
@@ -76,34 +78,21 @@ function AddRecipeToMenuForm() {
     const {
         handleSubmit,
         formState: { isValid, isSubmitting },
-        watch,
-        setValue
+        watch
     } = methods
 
     const selectedRecipeCategoryId = watch('recipeCategoryId')
 
-    const onSubmit: SubmitHandler<Inputs> = async ({ recipeId, day }) => {
+    const onSubmit: SubmitHandler<Inputs> = async ({ recipeName, day }) => {
+        const recipeIdToAdd = getRecipesData?.find((recipe) => recipe.name === recipeName)?.id.toString() || ''
+
         navigate(-1)
-        addRecipeToMenu({ menuId: menuId || '', recipeId, day: day === 'NO_DAY' ? null : day })
+        addRecipeToMenu({
+            menuId: menuId || '',
+            recipeId: recipeIdToAdd,
+            day: day === 'NO_DAY' ? null : day
+        })
     }
-
-    useEffect(() => {
-        function getInitialRecipeIdValue() {
-            if (selectedRecipeCategoryId === 'ALL_CATEGORIES') {
-                return getRecipesData?.[0]?.id.toString() || ''
-            }
-
-            if (selectedRecipeCategoryId === 'none') {
-                return getRecipesData?.find(({ recipe_category }) => !recipe_category)?.id.toString() || ''
-            }
-
-            return (
-                getRecipesData?.find(({ recipe_category }) => recipe_category?.id?.toString() === selectedRecipeCategoryId || '')?.id.toString() || ''
-            )
-        }
-
-        setValue('recipeId', getInitialRecipeIdValue())
-    }, [selectedRecipeCategoryId])
 
     const renderForm = () => {
         if (isGetRecipesError) return <h2>Error fetching recipes!</h2>
@@ -121,13 +110,14 @@ function AddRecipeToMenuForm() {
                             />
                         </FormRow>
                         <FormRow>
-                            <SelectField.HookForm
+                            <Combobox.HookForm
+                                className='w-full'
                                 label='Recipe'
-                                name='recipeId'
+                                name='recipeName'
                                 options={getFilteredRecipes(selectedRecipeCategoryId, getRecipesData)}
                             />
                         </FormRow>
-                        <FormRow>
+                        <FormRow className='mb-24'>
                             <SelectField.HookForm
                                 label='Day'
                                 name='day'
