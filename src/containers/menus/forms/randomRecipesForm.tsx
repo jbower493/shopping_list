@@ -10,6 +10,7 @@ import SelectField from 'components/Form/Inputs/SelectField'
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import { useRandomRecipesMutation } from '../queries'
+import toast from 'react-hot-toast'
 
 type ChosenCategory = {
     id: string
@@ -35,7 +36,12 @@ export function RandomRecipesForm() {
                     recipe_categories: chosenCategories.map(({ id, quantity }) => ({ id: id === 'ALL_CATEGORIES' ? id : Number(id), quantity }))
                 }
             },
-            { onSuccess: () => navigate(-1) }
+            {
+                onSuccess: (res) => {
+                    toast.success(res.message)
+                    navigate(-1)
+                }
+            }
         )
     }
 
@@ -82,7 +88,7 @@ export function RandomRecipesForm() {
 
                             return (
                                 <div key={chosenCategory.id} className='flex gap-5'>
-                                    <div className='w-60'>
+                                    <div className='flex-1'>
                                         <CategoryTag
                                             categoriesData={recipeCategoriesData}
                                             categoryName={chosenCategory.id === 'ALL_CATEGORIES' ? 'All Categories' : recipeCategory?.name || ''}
