@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Menu, NewMenu, DetailedMenu, EditMenuPayload, UpdateMenuRecipePayload, MenuRecipe } from 'containers/menus/types'
+import { Menu, NewMenu, DetailedMenu, EditMenuPayload, UpdateMenuRecipePayload, MenuRecipe, RandomRecipesPayload } from 'containers/menus/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
@@ -252,6 +252,20 @@ export function useUpdateMenuRecipeMutation() {
             // Roll back to old data on error
             queryClient.setQueryData(singleMenuQueryKey(variables.menuId), context?.singleMenuQueryData)
             fireErrorNotification(err)
+        }
+    })
+}
+
+/***** Random recipes *****/
+const randomRecipes = ({ menuId, attributes }: { menuId: string; attributes: RandomRecipesPayload }): Promise<MutationResponse> =>
+    axios.put(`/menu/${menuId}/random-recipes`, attributes)
+
+export function useRandomRecipesMutation() {
+    return useMutation({
+        mutationFn: randomRecipes,
+        onSuccess: (data, variables) => {
+            // Because I'm using optimistic update with other things that edit the single menu query cache, I need to reset the query so that we don't see state data while this refecth is occuring
+            queryClient.resetQueries(singleMenuQueryKey(variables.menuId))
         }
     })
 }

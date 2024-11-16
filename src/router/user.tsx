@@ -53,6 +53,7 @@ import { usePrefetchAppCriticalData } from 'utils/hooks'
 import { UploadRecipeImageForm } from 'containers/recipes/forms/uploadRecipeImageForm'
 import { RemoveRecipeImageForm } from 'containers/recipes/forms/removeRecipeImageForm'
 import { ItemImageModal } from 'containers/shop/itemImageModal'
+import { RandomRecipesForm } from 'containers/menus/forms/randomRecipesForm'
 
 function RedirectToRefAfterLogin() {
     const [searchParams] = useSearchParams()
@@ -118,6 +119,7 @@ function UserRouter() {
             <Route path='/menus/edit/:menuId' element={<EditMenu />}>
                 <Route path='add-recipe' element={<AddRecipeToMenuForm />} />
                 <Route path='details' element={<EditMenuDetailsForm />} />
+                <Route path='random-recipes' element={<RandomRecipesForm />} />
             </Route>
             <Route path='/shop/:listId' element={<Shop />}>
                 <Route path='item/:itemId/view-image' element={<ItemImageModal />} />

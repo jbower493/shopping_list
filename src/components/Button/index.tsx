@@ -16,14 +16,16 @@ interface ButtonProps {
 }
 
 function Button({ children, className, type, onClick, to, loading, disabled, color }: ButtonProps) {
+    const isDisabled = disabled || loading
+
     const getColor = () => {
-        if (disabled) return 'bg-gray-300 text-white'
+        if (isDisabled) return 'bg-gray-300 text-white'
         if (color === 'error') return 'bg-error hover:bg-error-hover text-white'
         if (color === 'secondary') return 'bg-secondary hover:bg-secondary-hover'
         return 'bg-primary hover:bg-primary-hover text-white'
     }
 
-    const finalClassName = `px-4 ${disabled ? 'cursor-default ' : ''}${getColor()} h-9 font-medium flex justify-center items-center rounded${
+    const finalClassName = `px-4 ${isDisabled ? 'cursor-default ' : ''}${getColor()} h-9 font-medium flex justify-center items-center rounded${
         className ? ' ' + className : ''
     }`
 
@@ -40,11 +42,11 @@ function Button({ children, className, type, onClick, to, loading, disabled, col
             className={finalClassName}
             type={type ? 'submit' : 'button'}
             onClick={() => {
-                if (!disabled && onClick) onClick()
+                if (!isDisabled && onClick) onClick()
             }}
-            disabled={disabled}
+            disabled={isDisabled}
         >
-            {loading ? <Loader size='small' color={disabled ? 'disabled' : 'primary'} /> : children}
+            {loading ? <Loader size='small' color={isDisabled ? 'disabled' : 'primary'} /> : children}
         </button>
     )
 }

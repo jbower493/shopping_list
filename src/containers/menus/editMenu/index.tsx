@@ -2,13 +2,15 @@ import { useParams, Link, useNavigate, Outlet } from 'react-router-dom'
 import { useGetSingleMenuQuery, useUpdateMenuRecipeMutation } from '../queries'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import Loader from 'components/Loader'
-import { PencilSquareIcon } from '@heroicons/react/24/solid'
+import { PencilSquareIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
+import { LightBulbIcon } from '@heroicons/react/24/outline'
 import EditMenuRecipe from 'containers/menus/components/editMenuRecipe'
 import Button from 'components/Button'
 import { Days, getDayOptions } from './days'
 import { Droppable } from './days/droppable'
 import { createContext, useContext, useState } from 'react'
 import classnames from 'classnames'
+import { Dropdown } from 'components/Dropdown'
 
 export const EditMenuIsDraggingContext = createContext({
     isDragging: false,
@@ -83,7 +85,20 @@ function EditMenu() {
 
     return (
         <div className='p-4'>
-            <Link to='/menus'>Back to menus</Link>
+            <div className='flex justify-between'>
+                <Link to='/menus'>Back to menus</Link>
+                <Dropdown
+                    dropdownClassName='h-8 w-8'
+                    menuButtonClassName='!bg-primary !text-white w-full h-full flex justify-center items-center rounded-full'
+                    menuButton={<EllipsisHorizontalIcon className='size-6' style={{ transform: 'scale(400%)' }} />}
+                    menuItems={[
+                        <Dropdown.MenuItem.Link key='1' to={`/menus/edit/${id}/random-recipes`}>
+                            <LightBulbIcon className='w-4 text-primary' />
+                            Random recipes
+                        </Dropdown.MenuItem.Link>
+                    ]}
+                />
+            </div>
             <div className='flex items-center mb-7 mt-2'>
                 <h2>{name}</h2>
                 <button className='ml-4' type='button' onClick={() => navigate(`/menus/edit/${id}/details`)}>

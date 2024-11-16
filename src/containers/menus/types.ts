@@ -28,3 +28,10 @@ export interface EditMenuPayload {
 export interface UpdateMenuRecipePayload {
     day: string | null
 }
+
+export interface RandomRecipesPayload {
+    recipe_categories: {
+        id: 'ALL_CATEGORIES' | number
+        quantity: number
+    }[]
+}
