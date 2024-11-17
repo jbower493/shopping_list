@@ -77,6 +77,8 @@ function LoginForm() {
                         <Link className='mt-1 w-fit block' to='/forgot-password'>
                             Forgot Password
                         </Link>
+
+                        <a href='http://localhost:8000/auth/google/redirect'>Login with Google</a>
                     </form>
                 </FormProvider>
             </div>
