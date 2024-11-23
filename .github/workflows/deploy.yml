@@ -8,14 +8,17 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            # Checkout code
-            - name: Checkout code
-              uses: actions/checkout@v4
+            # Build
+            - name: Build react app
+              run: echo "This is some text" > filename.txt
 
-            # Install deps
-            - name: Install dependencies
-              run: npm install
-
-        # Build
-
-        # Deploy
+            # Deploy
+            - name: Deploy react app to server
+              uses: appleboy/scp-action@v0.1.7
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  key: ${{ secrets.KEY }}
+                  source: 'filename.txt'
+                  target: ${{ secrets.TARGET_PATH }}
+                  rm: true
