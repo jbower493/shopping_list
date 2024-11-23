@@ -6,11 +6,11 @@ import './index.css'
 import App from 'containers/app'
 import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
-import { baseUrl } from 'config'
+import { baseApiUrl } from 'config'
 import { queryClient } from 'utils/queryClient'
 import 'drag-drop-touch'
 
-axios.defaults.baseURL = baseUrl
+axios.defaults.baseURL = baseApiUrl
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
