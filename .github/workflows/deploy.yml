@@ -8,9 +8,23 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            # Checkout code
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # Use node and ensure correct version
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+
+            # Install deps
+            - name: Install dependencies
+              run: npm install
+
             # Build
             - name: Build react app
-              run: echo "This is some text" > filename.txt
+              run: CI=false npm run build
 
             # Deploy
             - name: Deploy react app to server
@@ -19,6 +33,8 @@ jobs:
                   host: ${{ secrets.HOST }}
                   username: ${{ secrets.USERNAME }}
                   key: ${{ secrets.KEY }}
-                  source: 'filename.txt'
+                  source: './build/*'
                   target: ${{ secrets.TARGET_PATH }}
+                  # Remove the ./build from the start of the path
+                  strip_components: 1
                   rm: true
