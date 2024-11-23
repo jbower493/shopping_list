@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import FormRow from 'components/Form/FormRow'
 import { FullScreenPage } from 'components/FullScreenPage'
 import { useEffect } from 'react'
+import { baseUrl } from 'config'
 
 type Inputs = {
     email: string
@@ -64,6 +65,17 @@ function LoginForm() {
                 <FormProvider {...methods}>
                     <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
                         <h2 className='text-center mb-2'>Login</h2>
+                        <div className='flex items-center gap-4 mt-4'>
+                            <p>Login with:</p>
+                            <a href={`${baseUrl}/auth/google/redirect`}>
+                                <img src='/google-sso/web_light_sq_na.svg' alt='Signin with Google' />
+                            </a>
+                        </div>
+                        <div className='flex gap-3 items-center my-2'>
+                            <span className='h-[1px] flex-1 bg-slate-200' />
+                            <p className='text-slate-400'>OR</p>
+                            <span className='h-[1px] flex-1 bg-slate-200' />
+                        </div>
                         <FormRow>
                             <InputField.HookForm label='Email' name='email' type='email' />
                         </FormRow>
