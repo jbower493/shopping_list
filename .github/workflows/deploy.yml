@@ -1,0 +1,21 @@
+name: Deploy production
+
+on:
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            # Checkout code
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # Install deps
+            - name: Install dependencies
+              run: npm install
+
+        # Build
+
+        # Deploy
