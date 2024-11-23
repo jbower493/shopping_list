@@ -66,7 +66,7 @@ function LoginForm() {
                     <form className='max-w-xs w-full mx-auto p-3 border border-primary rounded' onSubmit={handleSubmit(onSubmit)}>
                         <h2 className='text-center mb-2'>Login</h2>
                         <div className='flex items-center gap-4 mt-4'>
-                            <p>Login with:</p>
+                            <p>Sign in with:</p>
                             <a href={`${baseUrl}/auth/google/redirect`}>
                                 <img src='/google-sso/web_light_sq_na.svg' alt='Signin with Google' />
                             </a>
