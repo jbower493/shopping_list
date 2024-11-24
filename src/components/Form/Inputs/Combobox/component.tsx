@@ -1,6 +1,7 @@
 import { ChevronUpDownIcon, XCircleIcon } from '@heroicons/react/24/solid'
 import classNames from 'classnames'
 import { useEffect, useRef, useState } from 'react'
+import { useClickAway } from 'utils/hooks'
 
 export type ComboboxOptions = {
     id: number
@@ -70,6 +71,8 @@ export function _Combobox({ label, value, setValue, options, placeholder = '', o
         setShowList(false)
     }
 
+    useClickAway([inputRef, comboboxRef], () => setShowList(false))
+
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setFilteredOptions(getFilteredValues(value, options))
@@ -90,13 +93,7 @@ export function _Combobox({ label, value, setValue, options, placeholder = '', o
                     onChange={(e) => setValue(e.target.value)}
                     placeholder={placeholder}
                     onFocus={() => setShowList(true)}
-                    onBlur={() => {
-                        // Have to use this to to close the list instead of useClickAway, because useClickAway doesn't work inside of a modal for some reason
-                        setTimeout(() => {
-                            onBlur?.()
-                            setShowList(false)
-                        }, 100)
-                    }}
+                    onBlur={onBlur}
                     className='pr-7'
                 />
                 {value ? (

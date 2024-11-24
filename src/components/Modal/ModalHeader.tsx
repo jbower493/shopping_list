@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog } from '@headlessui/react'
+import * as Dialog from '@radix-ui/react-dialog'
 
 interface ModalHeaderProps {
     title: string
