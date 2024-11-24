@@ -1,6 +1,16 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Menu, NewMenu, DetailedMenu, EditMenuPayload, UpdateMenuRecipePayload, MenuRecipe, RandomRecipesPayload } from 'containers/menus/types'
+import {
+    Menu,
+    NewMenu,
+    DetailedMenu,
+    EditMenuPayload,
+    UpdateMenuRecipePayload,
+    MenuRecipe,
+    RandomRecipesPayload,
+    RandomRecipesPreview,
+    AddRecipestoMenuPayload
+} from 'containers/menus/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
 import { fireErrorNotification, queryClient } from 'utils/queryClient'
@@ -65,12 +75,12 @@ export function prefetchSingleMenuQuery(menuId: string) {
 }
 
 /***** Add recipe to menu *****/
-const addRecipeToMenu = ({ menuId, recipeId, day }: { menuId: string; recipeId: string; day: string | null }): Promise<MutationResponse> =>
-    axios.post(`/menu/${menuId}/add-recipe/${recipeId}`, { day })
+const addRecipesToMenu = ({ menuId, recipes }: AddRecipestoMenuPayload): Promise<MutationResponse> =>
+    axios.post(`/menu/${menuId}/add-recipes`, { recipes })
 
-export function useAddRecipeToMenuMutation() {
+export function useAddRecipesToMenuMutation() {
     return useMutation({
-        mutationFn: addRecipeToMenu,
+        mutationFn: addRecipesToMenu,
         onMutate: async (payload) => {
             // Cancel any outgoing refetches so they don't overwrite our optimistic update
             queryClient.cancelQueries(singleMenuQueryKey(payload.menuId))
@@ -86,19 +96,21 @@ export function useAddRecipeToMenuMutation() {
             queryClient.setQueryData(singleMenuQueryKey(payload.menuId), (old: SingleMenuQueryData) => {
                 if (!old) return undefined
 
-                const addedRecipeData = recipesQueryData?.data.recipes.find(({ id }) => id === Number(payload.recipeId))
+                const newRecipes: MenuRecipe[] = [...old.data.menu.recipes]
 
-                const newRecipes: MenuRecipe[] = [
-                    ...old.data.menu.recipes,
-                    {
-                        id: 0,
+                // Loop through each recipe that was added and add each one to the existing query cache
+                payload.recipes.forEach((payloadRecipe) => {
+                    const addedRecipeData = recipesQueryData?.data.recipes.find(({ id }) => id === Number(payloadRecipe.id))
+
+                    newRecipes.push({
+                        id: Number(payloadRecipe.id),
                         name: addedRecipeData?.name || '',
                         day_of_week: {
-                            day: payload.day || null
+                            day: payloadRecipe.day || null
                         },
                         recipe_category: addedRecipeData?.recipe_category || null
-                    }
-                ]
+                    })
+                })
 
                 const newData: SingleMenuQueryData = {
                     data: {
@@ -109,7 +121,7 @@ export function useAddRecipeToMenuMutation() {
                     },
                     message: old.message
                 }
-
+                console.log(newData)
                 return newData
             })
 
@@ -133,12 +145,6 @@ export function useAddRecipeToMenuMutation() {
 /***** Remove recipe from menu *****/
 const removeRecipeFromMenu = ({ menuId, recipeId }: { menuId: string; recipeId: number }): Promise<MutationResponse> =>
     axios.post(`/menu/${menuId}/remove-recipe`, { recipe_id: recipeId })
-
-// export function useRemoveRecipeFromMenuMutation() {
-//     return useMutation({
-//         mutationFn: removeRecipeFromMenu
-//     })
-// }
 
 export function useRemoveRecipeFromMenuMutation() {
     return useMutation({
@@ -256,16 +262,17 @@ export function useUpdateMenuRecipeMutation() {
     })
 }
 
-/***** Random recipes *****/
-const randomRecipes = ({ menuId, attributes }: { menuId: string; attributes: RandomRecipesPayload }): Promise<MutationResponse> =>
-    axios.put(`/menu/${menuId}/random-recipes`, attributes)
+/***** Random recipes preview *****/
+const randomRecipesPreview = ({
+    menuId,
+    attributes
+}: {
+    menuId: string
+    attributes: RandomRecipesPayload
+}): Promise<MutationResponse<RandomRecipesPreview>> => axios.put(`/menu/${menuId}/random-recipes/preview`, attributes)
 
-export function useRandomRecipesMutation() {
+export function useRandomRecipesPreviewMutation() {
     return useMutation({
-        mutationFn: randomRecipes,
-        onSuccess: (data, variables) => {
-            // Because I'm using optimistic update with other things that edit the single menu query cache, I need to reset the query so that we don't see state data while this refecth is occuring
-            queryClient.resetQueries(singleMenuQueryKey(variables.menuId))
-        }
+        mutationFn: randomRecipesPreview
     })
 }

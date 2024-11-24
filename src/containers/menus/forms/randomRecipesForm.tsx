@@ -9,7 +9,7 @@ import { useState } from 'react'
 import SelectField from 'components/Form/Inputs/SelectField'
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import { PlusIcon } from '@heroicons/react/24/solid'
-import { useRandomRecipesMutation } from '../queries'
+import { useAddRecipesToMenuMutation, useRandomRecipesPreviewMutation } from '../queries'
 import toast from 'react-hot-toast'
 
 type ChosenCategory = {
@@ -26,15 +26,31 @@ export function RandomRecipesForm() {
 
     const { data: recipeCategoriesData, isLoading: isRecipeCategoriesLoading, isError: isGetRecipeCategoriesError } = useGetRecipeCategoriesQuery()
 
-    const { mutate: randomRecipes, isLoading: isRandomRecipesLoading } = useRandomRecipesMutation()
+    const {
+        data: randomRecipesPreviewData,
+        mutate: randomRecipesPreview,
+        isLoading: isRandomRecipesPreviewLoading
+    } = useRandomRecipesPreviewMutation()
+    const { mutate: addRecipesToMenu, isLoading: isAddRecipesToMenuLoading } = useAddRecipesToMenuMutation()
 
     function generateRandomRecipes() {
-        randomRecipes(
+        randomRecipesPreview({
+            menuId: menuId || '',
+            attributes: {
+                recipe_categories: chosenCategories.map(({ id, quantity }) => ({ id: id === 'ALL_CATEGORIES' ? id : Number(id), quantity }))
+            }
+        })
+    }
+
+    function addRandomRecipesToMenu() {
+        addRecipesToMenu(
             {
                 menuId: menuId || '',
-                attributes: {
-                    recipe_categories: chosenCategories.map(({ id, quantity }) => ({ id: id === 'ALL_CATEGORIES' ? id : Number(id), quantity }))
-                }
+                recipes:
+                    randomRecipesPreviewData?.data?.recipes.map((recipeToAdd) => ({
+                        day: null,
+                        id: recipeToAdd.id.toString()
+                    })) || []
             },
             {
                 onSuccess: (res) => {
@@ -54,7 +70,7 @@ export function RandomRecipesForm() {
                 <ModalBody>
                     <div className='flex gap-2 mb-6'>
                         <SelectField
-                            className='w-60'
+                            className='w-40'
                             name='categoryToAdd'
                             value={categoryToAdd}
                             onChange={(e) => setCategoryToAdd(e.target.value)}
@@ -81,6 +97,15 @@ export function RandomRecipesForm() {
                         >
                             <PlusIcon className='w-8 text-primary hover:text-primary-hover' />
                         </button>
+                        <Button
+                            className='w-28'
+                            disabled={chosenCategories.length <= 0}
+                            loading={isRandomRecipesPreviewLoading}
+                            color='primary'
+                            onClick={generateRandomRecipes}
+                        >
+                            Generate
+                        </Button>
                     </div>
                     <div className='flex flex-col gap-2'>
                         {chosenCategories.map((chosenCategory) => {
@@ -131,6 +156,18 @@ export function RandomRecipesForm() {
                             )
                         })}
                     </div>
+                    <div className='mt-4'>
+                        <h3 className='mb-1'>Recipes</h3>
+                        <ul>
+                            {randomRecipesPreviewData?.data?.recipes.map(({ id, name, recipe_category }) => {
+                                return (
+                                    <li key={id}>
+                                        {name} ({recipe_category?.name || 'Uncategorized'})
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
                 </ModalBody>
                 <ModalFooter
                     buttons={[
@@ -139,12 +176,12 @@ export function RandomRecipesForm() {
                         </Button>,
                         <Button
                             key={2}
-                            disabled={chosenCategories.length <= 0}
-                            loading={isRandomRecipesLoading}
+                            disabled={!randomRecipesPreviewData}
+                            loading={isAddRecipesToMenuLoading}
                             color='primary'
-                            onClick={generateRandomRecipes}
+                            onClick={addRandomRecipesToMenu}
                         >
-                            Generate
+                            Add To Menu
                         </Button>
                     ]}
                 />

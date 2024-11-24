@@ -29,9 +29,21 @@ export interface UpdateMenuRecipePayload {
     day: string | null
 }
 
+export interface AddRecipestoMenuPayload {
+    menuId: string
+    recipes: {
+        id: string
+        day: string | null
+    }[]
+}
+
 export interface RandomRecipesPayload {
     recipe_categories: {
         id: 'ALL_CATEGORIES' | number
         quantity: number
     }[]
+}
+
+export interface RandomRecipesPreview {
+    recipes: Recipe[]
 }

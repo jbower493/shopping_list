@@ -9,7 +9,7 @@ import SubmitButton from 'components/Form/SubmitButton'
 import { useGetRecipesQuery } from 'containers/recipes/queries'
 import { useGetRecipeCategoriesQuery } from 'containers/recipeCategories/queries'
 import { getRecipeCategoryOptions } from 'utils/functions'
-import { useAddRecipeToMenuMutation } from '../queries'
+import { useAddRecipesToMenuMutation } from '../queries'
 import { Recipe } from 'containers/recipes/types'
 import FormRow from 'components/Form/FormRow'
 import * as z from 'zod'
@@ -55,7 +55,7 @@ function AddRecipeToMenuForm() {
     const { data: getRecipesData, isFetching: isGetRecipesFetching, isError: isGetRecipesError } = useGetRecipesQuery()
     const { data: getRecipeCategoriesData, isFetching: isGetRecipeCategoriesFetching } = useGetRecipeCategoriesQuery()
 
-    const { mutate: addRecipeToMenu } = useAddRecipeToMenuMutation()
+    const { mutate: addRecipesToMenu } = useAddRecipesToMenuMutation()
 
     const allowedRecipeNames = getRecipesData?.map((recipe) => recipe.name) || []
 
@@ -87,10 +87,14 @@ function AddRecipeToMenuForm() {
         const recipeIdToAdd = getRecipesData?.find((recipe) => recipe.name === recipeName)?.id.toString() || ''
 
         navigate(-1)
-        addRecipeToMenu({
+        addRecipesToMenu({
             menuId: menuId || '',
-            recipeId: recipeIdToAdd,
-            day: day === 'NO_DAY' ? null : day
+            recipes: [
+                {
+                    id: recipeIdToAdd,
+                    day: day === 'NO_DAY' ? null : day
+                }
+            ]
         })
     }
 
