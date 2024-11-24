@@ -36,7 +36,7 @@ function Shop() {
             const isChecked = !!checked?.includes(itemWithinCategory.name)
 
             return (
-                <div className='mb-2 w-full max-w-md flex items-center gap-3'>
+                <div className='mb-3 w-full max-w-md flex items-center gap-3'>
                     {itemWithinCategory.image_url ? (
                         <button type='button' onClick={() => navigate(`/shop/${listId}/item/${itemWithinCategory.id}/view-image`)}>
                             <PhotoIcon className='size-6 text-primary' />
@@ -78,7 +78,7 @@ function Shop() {
 
             return (
                 <>
-                    <CategoryTag key={id} className='mb-2' categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
+                    <CategoryTag key={id} className='mb-4' categoriesData={categoriesInList.filter(({ id }) => id !== -1)} categoryName={name} />
                     <ul className='mb-6'>{list.map((itemWithinCategory) => renderOneItem(itemWithinCategory))}</ul>
                 </>
             )
