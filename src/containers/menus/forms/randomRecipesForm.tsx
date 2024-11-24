@@ -10,7 +10,6 @@ import SelectField from 'components/Form/Inputs/SelectField'
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import { useAddRecipesToMenuMutation, useRandomRecipesPreviewMutation } from '../queries'
-import toast from 'react-hot-toast'
 
 type ChosenCategory = {
     id: string
@@ -43,22 +42,15 @@ export function RandomRecipesForm() {
     }
 
     function addRandomRecipesToMenu() {
-        addRecipesToMenu(
-            {
-                menuId: menuId || '',
-                recipes:
-                    randomRecipesPreviewData?.data?.recipes.map((recipeToAdd) => ({
-                        day: null,
-                        id: recipeToAdd.id.toString()
-                    })) || []
-            },
-            {
-                onSuccess: (res) => {
-                    toast.success(res.message)
-                    navigate(-1)
-                }
-            }
-        )
+        navigate(-1)
+        addRecipesToMenu({
+            menuId: menuId || '',
+            recipes:
+                randomRecipesPreviewData?.data?.recipes.map((recipeToAdd) => ({
+                    day: null,
+                    id: recipeToAdd.id.toString()
+                })) || []
+        })
     }
 
     function renderForm() {
@@ -157,7 +149,7 @@ export function RandomRecipesForm() {
                         })}
                     </div>
                     <div className='mt-4'>
-                        <h3 className='mb-1'>Recipes</h3>
+                        <h3 className='mb-1'>Recipes to add</h3>
                         <ul>
                             {randomRecipesPreviewData?.data?.recipes.map(({ id, name, recipe_category }) => {
                                 return (
@@ -193,7 +185,7 @@ export function RandomRecipesForm() {
         <div>
             <UrlModal
                 title='Random Recipes'
-                desc='Generate a set of random recipes for your menu. Choose how many recipes you would like, and which categories you would like them from. This will override any recipes already in the menu.'
+                desc='Generate a set of random recipes for your menu. Choose how many recipes you would like, and which categories you would like them from.'
                 onClose={() => navigate(-1)}
                 loading={isRecipeCategoriesLoading}
             >
