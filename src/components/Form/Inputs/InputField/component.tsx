@@ -15,7 +15,7 @@ export interface InputFieldProps {
 
 type TInputField = React.FC<InputFieldProps>
 
-const InputField: TInputField = ({ label, name, type = 'text', onChange, onBlur, value, componentRef, className, placeholder, step }) => {
+const InputField: TInputField = ({ label, name, type = 'text', onChange, onBlur, value, componentRef, className, placeholder, step = 0.001 }) => {
     const numberFieldProps: { step?: InputFieldProps['step'] } = {}
 
     if (type === 'number') {
