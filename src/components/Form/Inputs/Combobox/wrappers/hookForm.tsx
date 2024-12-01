@@ -3,14 +3,22 @@ import { _Combobox, ComboboxOptions } from '../component'
 import ErrorMessage from 'components/Form/ErrorMessage'
 
 export interface ComboboxHookFormWrapperProps {
-    label: string
+    label?: string
     name: string
     options: ComboboxOptions
     className?: string
     listClassName?: string
+    placeholder?: string
 }
 
-export const _ComboboxHookFormWrapper: React.FC<ComboboxHookFormWrapperProps> = ({ label, name, options, className, listClassName }) => {
+export const _ComboboxHookFormWrapper: React.FC<ComboboxHookFormWrapperProps> = ({
+    label,
+    name,
+    options,
+    className,
+    listClassName,
+    placeholder = 'Item name'
+}) => {
     const { field, fieldState } = useController({ name })
 
     return (
@@ -22,7 +30,7 @@ export const _ComboboxHookFormWrapper: React.FC<ComboboxHookFormWrapperProps> = 
                 value={field.value}
                 setValue={(newValue) => field.onChange(newValue)}
                 options={options}
-                placeholder='Item name'
+                placeholder={placeholder}
                 onBlur={field.onBlur}
             />
             <ErrorMessage error={fieldState.isTouched && fieldState.error} />

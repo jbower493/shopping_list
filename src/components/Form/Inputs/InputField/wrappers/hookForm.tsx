@@ -4,7 +4,7 @@ import ErrorMessage from 'components/Form/ErrorMessage'
 import { HTMLInputTypeAttribute } from 'react'
 
 export interface InputFieldHookFormWrapperProps<T, S = any> {
-    label: string
+    label?: string
     name: string
     type?: HTMLInputTypeAttribute
     validate?: Validate<T, S>

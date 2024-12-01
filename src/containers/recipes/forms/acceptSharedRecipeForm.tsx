@@ -13,6 +13,7 @@ import { recipesQueryKey, useAcceptSharedRecipeMutation } from '../queries'
 import { notificationsQueryKey, useNotificationsQuery } from 'components/Notifications/queries'
 import { useNavigate, useParams } from 'react-router-dom'
 import UrlModal from 'components/Modal/UrlModal'
+import { ShareRequest } from 'components/Notifications/types'
 
 type Inputs = {
     name: string
@@ -29,7 +30,10 @@ function AcceptSharedRecipeForm() {
     const { data: notificationsData } = useNotificationsQuery()
     const { mutateAsync: acceptSharedRecipe } = useAcceptSharedRecipeMutation()
 
-    const shareRequest = notificationsData?.notifications.find(({ share_request_id }) => share_request_id === Number(shareRequestId))
+    const shareRequests = notificationsData?.notifications.filter(({ type }) => type === 'share_request')?.map(({ meta }) => meta) as
+        | ShareRequest[]
+        | undefined
+    const shareRequest = shareRequests?.find(({ share_request_id }) => share_request_id === Number(shareRequestId))
 
     const methods = useForm<Inputs>({
         mode: 'all',

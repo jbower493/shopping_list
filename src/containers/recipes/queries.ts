@@ -7,7 +7,8 @@ import {
     AddItemToRecipePayload,
     EditRecipePayload,
     RecipeItem,
-    UpdateRecipeItemQuantityPayload
+    UpdateRecipeItemQuantityPayload,
+    ConfirmImportedRecipePayload
 } from 'containers/recipes/types'
 import type { QueryResponse, MutationResponse } from 'utils/queryClient/types'
 import { QueryKeySet } from 'utils/queryClient/keyFactory'
@@ -389,5 +390,21 @@ const importRecipeFromImage = (formData: FormData): Promise<MutationResponse<{ i
 export function useImportRecipeFromImageMutation() {
     return useMutation({
         mutationFn: importRecipeFromImage
+    })
+}
+
+/***** Confirm imported recipe *****/
+const confirmImportedRecipe = ({
+    newRecipeData,
+    importedRecipeId
+}: {
+    newRecipeData: ConfirmImportedRecipePayload
+    importedRecipeId: number
+}): Promise<MutationResponse<{ new_recipe_id: number }>> =>
+    axios.post(`/recipe/confirm-import-from-chrome-extension/${importedRecipeId}`, newRecipeData)
+
+export function useConfirmImportedRecipeMutation() {
+    return useMutation({
+        mutationFn: confirmImportedRecipe
     })
 }

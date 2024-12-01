@@ -16,7 +16,7 @@ export interface SelectFieldProps {
 
 type TSelectField = React.FC<SelectFieldProps>
 
-const SelectField: TSelectField = ({ label, options = [], name, onChange, onBlur, value, componentRef, className }) => {
+export const _SelectField: TSelectField = ({ label, options = [], name, onChange, onBlur, value, componentRef, className }) => {
     return (
         <div>
             {label ? <label>{label}</label> : ''}
@@ -30,5 +30,3 @@ const SelectField: TSelectField = ({ label, options = [], name, onChange, onBlur
         </div>
     )
 }
-
-export default SelectField

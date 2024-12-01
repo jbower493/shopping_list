@@ -54,6 +54,7 @@ import { UploadRecipeImageForm } from 'containers/recipes/forms/uploadRecipeImag
 import { RemoveRecipeImageForm } from 'containers/recipes/forms/removeRecipeImageForm'
 import { ItemImageModal } from 'containers/shop/itemImageModal'
 import { RandomRecipesForm } from 'containers/menus/forms/randomRecipesForm'
+import { ConfirmImportedRecipeForm } from 'containers/recipes/forms/confirmImportedRecipeForm'
 
 function RedirectToRefAfterLogin() {
     const [searchParams] = useSearchParams()
@@ -103,6 +104,7 @@ function UserRouter() {
                 <Route path='new' element={<AddRecipeForm />} />
                 <Route path='delete/:recipeId' element={<DeleteRecipeForm />} />
                 <Route path='accept-shared/:shareRequestId' element={<AcceptSharedRecipeForm />} />
+                <Route path='confirm-import/:importedRecipeId' element={<ConfirmImportedRecipeForm />} />
             </Route>
             <Route path='/recipes/edit/:recipeId' element={<EditRecipe />}>
                 <Route path='details' element={<EditRecipeDetailsForm />} />

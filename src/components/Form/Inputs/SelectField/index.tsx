@@ -1,7 +1,7 @@
-import SelectField, { SelectFieldProps } from './component'
+import { SelectFieldProps, _SelectField } from './component'
 import SelectFieldHookFormWrapper, { SelectFieldHookFormWrapperProps } from './wrappers/hookForm'
 
-const Component: React.FC<SelectFieldProps> & { HookForm: React.FC<SelectFieldHookFormWrapperProps> } = Object.assign(SelectField, {
+const Component: React.FC<SelectFieldProps> & { HookForm: React.FC<SelectFieldHookFormWrapperProps> } = Object.assign(_SelectField, {
     HookForm: SelectFieldHookFormWrapper
 })
 

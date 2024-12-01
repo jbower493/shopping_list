@@ -58,3 +58,12 @@ export interface UpdateRecipeItemQuantityPayload {
     quantity: number
     quantity_unit_id: number | null
 }
+
+export interface ConfirmImportedRecipePayload extends NewRecipe {
+    items: {
+        name: string
+        quantity: number
+        quantity_unit_id: number | null
+        category_id?: number | null
+    }[]
+}

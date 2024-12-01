@@ -23,14 +23,34 @@ export function Notifications() {
 
         return (
             <ul className='absolute top-8 right-0 w-80 bg-white border-primary border'>
-                {notificationsData.notifications.map(({ share_request_id, owner_name, recipe_name }) => {
+                {notificationsData.notifications.map(({ type, meta }) => {
+                    if (type === 'share_request') {
+                        const { share_request_id, owner_name, recipe_name } = meta
+
+                        return (
+                            <li key={`share-request_${share_request_id}`}>
+                                <Link
+                                    className='py-1 px-2 block w-full text-left text-sky-500 hover:text-sky-600 hover:underline overflow-hidden whitespace-nowrap text-ellipsis'
+                                    to={`/recipes/accept-shared/${share_request_id}`}
+                                >
+                                    {owner_name} shared &quot;{recipe_name}&quot; with you
+                                </Link>
+                            </li>
+                        )
+                    }
+
+                    const {
+                        imported_recipe_id,
+                        recipe: { name }
+                    } = meta
+
                     return (
-                        <li key={share_request_id}>
+                        <li key={`imported-recipe_${imported_recipe_id}`}>
                             <Link
                                 className='py-1 px-2 block w-full text-left text-sky-500 hover:text-sky-600 hover:underline overflow-hidden whitespace-nowrap text-ellipsis'
-                                to={`/recipes/accept-shared/${share_request_id}`}
+                                to={`/recipes/confirm-import/${imported_recipe_id}`}
                             >
-                                {owner_name} shared &quot;{recipe_name}&quot; with you
+                                Confirm recipe &quot;{name}&quot; imported from chrome
                             </Link>
                         </li>
                     )
