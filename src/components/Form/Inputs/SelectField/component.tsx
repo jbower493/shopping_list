@@ -20,7 +20,7 @@ export const _SelectField: TSelectField = ({ label, options = [], name, onChange
     return (
         <div>
             {label ? <label>{label}</label> : ''}
-            <select className={className} name={name} onChange={onChange} onBlur={onBlur} value={value} ref={componentRef} placeholder='No unit'>
+            <select className={className} name={name} onChange={onChange} onBlur={onBlur} value={value} ref={componentRef}>
                 {options.map(({ label, value }, index) => (
                     <option key={index} value={value}>
                         {label}
