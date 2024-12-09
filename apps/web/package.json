@@ -4,6 +4,7 @@
     "private": true,
     "prettier": "@jbower493/prettier-config",
     "dependencies": {
+        "@repo/queries": "*",
         "@headlessui/react": "^2.1.0",
         "@heroicons/react": "^2.0.0",
         "@hookform/resolvers": "^3.3.4",

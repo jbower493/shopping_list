@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
         "target": "es5",
         "lib": [
             "dom",
@@ -14,7 +16,7 @@
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "module": "esnext",
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": false,
         "noEmit": true,
@@ -23,5 +25,9 @@
     },
     "include": [
         "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
     ]
 }
