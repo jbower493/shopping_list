@@ -8,6 +8,10 @@
         "start": {
             "persistent": true,
             "cache": false
+        },
+        "build": {
+            "persistent": true,
+            "cache": false
         }
     }
 }

@@ -1,1 +1,1 @@
-- When I ran npm install inside apps/web, it creates node_modules in the root. Think this is fine, but then when running the start command I get a type error that i don't get on master branch.
+- Build fails when I import ts files that are not pre-compiled. I should be able to do this but not sure why. Might be better to just compile them first.
