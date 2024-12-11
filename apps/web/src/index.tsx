@@ -9,10 +9,6 @@ import axios from 'axios'
 import { baseApiUrl } from 'config'
 import { queryClient } from 'utils/queryClient'
 import 'drag-drop-touch'
-// Temp, just testing out turbo repo packages
-import { add } from '@repo/queries/queryClient'
-
-console.log(add(1, 5))
 
 axios.defaults.baseURL = baseApiUrl
 axios.defaults.withCredentials = true

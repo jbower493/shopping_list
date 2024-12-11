@@ -1,17 +1,13 @@
 {
     "$schema": "https://turbo.build/schema.json",
     "tasks": {
-        "dev": {
-            "persistent": true,
-            "cache": false
-        },
         "start": {
             "persistent": true,
-            "cache": false
+            "cache": true
         },
         "build": {
             "persistent": true,
-            "cache": false
+            "cache": true
         }
     }
 }
