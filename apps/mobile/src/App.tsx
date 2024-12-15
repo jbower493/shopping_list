@@ -9,9 +9,11 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button } from "@react-navigation/elements";
+import { SessionProvider, useSession } from "@/utils/authContext";
 
 function HomeScreen() {
     const navigation = useNavigation();
+    const { signOut } = useSession();
 
     return (
         <View
@@ -21,6 +23,7 @@ function HomeScreen() {
             <Button onPress={() => navigation.navigate("Lists")}>
                 Lists Page
             </Button>
+            <Button onPress={() => signOut()}>Sign Out</Button>
         </View>
     );
 }
@@ -36,11 +39,14 @@ function ListsScreen() {
 }
 
 function SignInScreen() {
+    const { signIn } = useSession();
+
     return (
         <View
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
             <Text>Sign In Screen</Text>
+            <Button onPress={() => signIn()}>Sign In</Button>
         </View>
     );
 }
@@ -48,7 +54,12 @@ function SignInScreen() {
 function SplashScreen() {
     return (
         <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#10b981",
+            }}
         >
             <Text style={{ color: "#ffffff", fontSize: 22 }}>
                 Splash Screen
@@ -57,21 +68,20 @@ function SplashScreen() {
     );
 }
 
-const SignInContext = createContext<boolean>(true);
-
 function useIsSignedIn() {
-    const isSignedIn = useContext(SignInContext);
-    return isSignedIn;
+    const { session } = useSession();
+    return !!session;
 }
 
 function useIsSignedOut() {
-    const isSignedIn = useContext(SignInContext);
-    return !isSignedIn;
+    const { session } = useSession();
+
+    return !session;
 }
 
 const RootStack = createNativeStackNavigator({
     screenOptions: {
-        headerStyle: { backgroundColor: "tomato" },
+        headerStyle: { backgroundColor: "#10b981" },
     },
     screens: {
         // Common screens
@@ -103,7 +113,7 @@ const RootStack = createNativeStackNavigator({
 const Navigation = createStaticNavigation(RootStack);
 
 function AuthWrapper() {
-    const isLoading = true;
+    const { isLoading } = useSession();
 
     if (isLoading) {
         return <SplashScreen />;
@@ -113,12 +123,10 @@ function AuthWrapper() {
 }
 
 export function App() {
-    const isSignedIn = false;
-
     return (
-        <SignInContext.Provider value={isSignedIn}>
+        <SessionProvider>
             <AuthWrapper />
-        </SignInContext.Provider>
+        </SessionProvider>
     );
 }
 
