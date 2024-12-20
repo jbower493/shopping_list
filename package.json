@@ -9,8 +9,10 @@
         "turbo": "latest"
     },
     "packageManager": "npm@10.0.0",
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ]
+    "workspaces": {
+        "packages": [
+            "apps/*",
+            "packages/*"
+        ]
+    }
 }
