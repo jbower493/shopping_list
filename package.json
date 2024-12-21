@@ -8,11 +8,9 @@
     "devDependencies": {
         "turbo": "latest"
     },
-    "packageManager": "npm@10.0.0",
-    "workspaces": {
-        "packages": [
-            "apps/*",
-            "packages/*"
-        ]
-    }
+    "packageManager": "yarn@1.22.19",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ]
 }

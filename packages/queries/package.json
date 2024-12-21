@@ -1,6 +1,8 @@
 {
     "name": "@repo/queries",
+    "version": "0.0.1",
     "type": "module",
+    "private": true,
     "scripts": {
         "dev": "tsc --watch",
         "build": "tsc"
@@ -19,5 +21,10 @@
     "peerDependencies": {
         "@tanstack/react-query": "^4.32.0",
         "react": "^18.2.0"
+    },
+    "workspaces": {
+        "nohoist": [
+            "**"
+        ]
     }
 }
