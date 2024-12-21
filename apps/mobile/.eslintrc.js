@@ -1,16 +1,10 @@
 module.exports = {
-  root: true,
-  extends: '@react-native-community',
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  overrides: [
-    {
-      files: ['*.ts', '*.tsx'],
-      rules: {
-        '@typescript-eslint/no-shadow': ['error'],
-        'no-shadow': 'off',
-        'no-undef': 'off',
-      },
+    extends: "@jbower493/eslint-config-typescript",
+    rules: {
+        "linebreak-style": ["off"],
+        indent: ["warn", 4, { SwitchCase: 1 }],
+        "@typescript-eslint/no-var-requires": ["off"],
+        "@typescript-eslint/ban-ts-comment": ["off"],
+        "react/react-in-jsx-scope": ["off"],
     },
-  ],
 };
